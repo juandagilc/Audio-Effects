@@ -2,16 +2,17 @@
 
 <JUCERPROJECT id="sxag2f" name="Template Plugin" displaySplashScreen="1" reportAppUsage="1"
               splashScreenColour="Dark" projectType="audioplug" version="1.0.0"
-              bundleIdentifier="com.yourcompany.TemplatePlugin" includeBinaryInAppConfig="1"
+              bundleIdentifier="com.JuanGil.TemplatePlugin" includeBinaryInAppConfig="1"
               cppLanguageStandard="latest" buildVST="1" buildVST3="0" buildAU="1"
               buildAUv3="0" buildRTAS="0" buildAAX="0" buildStandalone="1"
               enableIAA="0" pluginName="Template Plugin" pluginDesc="Template Plugin"
-              pluginManufacturer="yourcompany" pluginManufacturerCode="Manu"
-              pluginCode="Sxag" pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="0"
-              pluginProducesMidiOut="0" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
+              pluginManufacturer="Juan Gil" pluginManufacturerCode="JGIL" pluginCode="plug"
+              pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="1"
+              pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="TemplatePluginAU" pluginRTASCategory=""
-              aaxIdentifier="com.yourcompany.TemplatePlugin" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.1.2">
+              aaxIdentifier="com.JuanGil.TemplatePlugin" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
+              jucerVersion="5.1.2" companyName="Juan Gil" companyWebsite="http://juangil.com/"
+              companyEmail="juan@juangil.com">
   <MAINGROUP id="NfrEue" name="Template Plugin">
     <GROUP id="{B020AB17-7C95-5FEE-2B96-B21A0256861B}" name="Source">
       <FILE id="fu0bJM" name="PluginProcessor.cpp" compile="1" resource="0"
@@ -26,8 +27,12 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Template Plugin"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Template Plugin"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Template Plugin"
+                       xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
+                       osxArchitecture="64BitUniversal"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Template Plugin"
+                       xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
+                       osxArchitecture="64BitUniversal"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>
