@@ -41,10 +41,9 @@ DelayAudioProcessor::DelayAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , parameter1 (parameters, "Parameter 1", "", 0.0f, 1.0f, 0.5f, [](float value){ return value * 127.0f; })
-    , parameter2 (parameters, "Parameter 2", "", 0.0f, 1.0f, 0.5f)
-    , parameter3 (parameters, "Parameter 3", false, [](float value){ return value * (-2.0f) + 1.0f; })
-    , parameter4 (parameters, "Parameter 4", {"Option A", "Option B"}, 1)
+    , paramDelayTime (parameters, "Delay time", "s", 0.0f, 5.0f, 0.1f)
+    , paramFeedback (parameters, "Feedback", "", 0.0f, 0.9f, 0.7f)
+    , paramMix (parameters, "Mix", "", 0.0f, 1.0f, 1.0f)
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -58,10 +57,22 @@ DelayAudioProcessor::~DelayAudioProcessor()
 void DelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
-    parameter1.reset (sampleRate, smoothTime);
-    parameter2.reset (sampleRate, smoothTime);
-    parameter3.reset (sampleRate, smoothTime);
-    parameter4.reset (sampleRate, smoothTime);
+    paramDelayTime.reset (sampleRate, smoothTime);
+    paramFeedback.reset (sampleRate, smoothTime);
+    paramMix.reset (sampleRate, smoothTime);
+
+    //======================================
+
+    float maxDelayTime = paramDelayTime.maxValue;
+    delayBufferSamples = (int)(maxDelayTime * (float)sampleRate) + 1;
+    if (delayBufferSamples < 1)
+        delayBufferSamples = 1;
+
+    delayBufferChannels = getTotalNumInputChannels();
+    delayBuffer.setSize (delayBufferChannels, delayBufferSamples);
+    delayBuffer.clear();
+
+    delayWritePosition = 0;
 }
 
 void DelayAudioProcessor::releaseResources()
@@ -78,41 +89,46 @@ void DelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& m
 
     //======================================
 
-    float currentParameter2 = parameter2.getNextValue();
-    float currentParameter3 = parameter3.getNextValue();
-    float currentParameter4 = parameter4.getNextValue();
+    float currentDelayTime = paramDelayTime.getTargetValue() * (float)getSampleRate();
+    float currentFeedback = paramFeedback.getNextValue();
+    float currentMix = paramMix.getNextValue();
 
-    float factor = currentParameter2 * currentParameter3 * currentParameter4;
+    int localWritePosition;
 
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
+        float* delayData = delayBuffer.getWritePointer (channel);
+        localWritePosition = delayWritePosition;
 
         for (int sample = 0; sample < numSamples; ++sample) {
             const float in = channelData[sample];
-            float out = in * factor;
+            float out = 0.0f;
 
-            channelData[sample] = out;
+            float readPosition =
+                fmodf ((float)localWritePosition - currentDelayTime + (float)delayBufferSamples, delayBufferSamples);
+            int localReadPosition = floorf (readPosition);
+
+            if (localReadPosition != localWritePosition) {
+                float fraction = readPosition - (float)localReadPosition;
+                float delayed1 = delayData[(localReadPosition + 0)];
+                float delayed2 = delayData[(localReadPosition + 1) % delayBufferSamples];
+                out = delayed1 + fraction * (delayed2 - delayed1);
+
+                channelData[sample] = in + currentMix * (out - in);
+                delayData[localWritePosition] = in + out * currentFeedback;
+            }
+
+            if (++localWritePosition >= delayBufferSamples)
+                localWritePosition -= delayBufferSamples;
         }
     }
 
-    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
-        buffer.clear (channel, 0, numSamples);
+    delayWritePosition = localWritePosition;
 
     //======================================
 
-    MidiBuffer processedMidi;
-    MidiMessage message;
-    int time;
-
-    for (MidiBuffer::Iterator iter (midiMessages); iter.getNextEvent (message, time);) {
-        if (message.isNoteOn()) {
-            uint8 newVel = (uint8)(parameter1.getTargetValue());
-            message = MidiMessage::noteOn (message.getChannel(), message.getNoteNumber(), newVel);
-        }
-        processedMidi.addEvent (message, time);
-    }
-
-    midiMessages.swapWith (processedMidi);
+    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
+        buffer.clear (channel, 0, numSamples);
 }
 
 //==============================================================================

@@ -93,12 +93,18 @@ public:
 
     //==============================================================================
 
+    AudioSampleBuffer delayBuffer;
+    int delayBufferSamples;
+    int delayBufferChannels;
+    int delayWritePosition;
+
+    //======================================
+
     PluginParametersManager parameters;
 
-    PluginParameterLinSlider parameter1;
-    PluginParameterLinSlider parameter2;
-    PluginParameterToggle parameter3;
-    PluginParameterComboBox parameter4;
+    PluginParameterLinSlider paramDelayTime;
+    PluginParameterLinSlider paramFeedback;
+    PluginParameterLinSlider paramMix;
 
 private:
     //==============================================================================
