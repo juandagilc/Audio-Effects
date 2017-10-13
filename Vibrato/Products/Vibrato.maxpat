@@ -49,7 +49,7 @@
 					"numoutlets" : 8,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
-					"patching_rect" : [ 15.0, 135.0, 390.0, 120.0 ],
+					"patching_rect" : [ 15.0, 135.0, 420.0, 150.0 ],
 					"presentation_linecount" : 3,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
 					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Vibrato/Products/Vibrato.vst", ";" ],
@@ -85,9 +85,9 @@
 							"version" : 1,
 							"isbank" : 0,
 							"isbase64" : 1,
-							"sliderorder" : [ 0, 1, 2 ],
-							"slidervisibility" : [ 1, 1, 1 ],
-							"blob" : "218.CMlaKA....fQPMDZ....APFagkG....Y....A.........................................fmVMjLgTI....ODUFagkmO7.UPRETSfjFY8HBYkwVX4QWZsUlHfXWXrUWY8HBLtDCLv.CLv.CLwPSNvDSL1DSL4LCNh7hO7.UPRETSfjFY8HhYkUFYhE1XqIBH1EFa0UVOh.iK1jSN4jSN4fCNvbSNvbSLvPCM4HiHu3COPEjTA0DHoQVOhzVZ3IBH1EFa0UVOhDiHu3COuPTYrEVd9.."
+							"sliderorder" : [ 0, 1, 2, 3 ],
+							"slidervisibility" : [ 1, 1, 1, 1 ],
+							"blob" : "226.CMlaKA....fQPMDZ....AXmXxQG....Y....A.........................................foVMjLgzI....OVklXxEFcu4COPEjTA0DHoQVOhbWZjQGZh.hcgwVck0iHw.iHu3COPEjTA0DHoQVOhvlYuYlbkEWck41X4IBH1EFa0UVOhHiHu3COPEjTA0DHoQVOhvlYucWX1UlYuIWah.hcgwVck0iHvHxK9vCTAIUPMARZj0iHo4FckIGbuwVXzk1atIBH1EFa0UVOhDiHu3COuXUZhIWXz8lO.."
 						}
 ,
 						"snapshotlist" : 						{
@@ -109,9 +109,9 @@
 										"version" : 1,
 										"isbank" : 0,
 										"isbase64" : 1,
-										"sliderorder" : [ 0, 1, 2 ],
-										"slidervisibility" : [ 1, 1, 1 ],
-										"blob" : "218.CMlaKA....fQPMDZ....APFagkG....Y....A.........................................fmVMjLgTI....ODUFagkmO7.UPRETSfjFY8HBYkwVX4QWZsUlHfXWXrUWY8HBLtDCLv.CLv.CLwPSNvDSL1DSL4LCNh7hO7.UPRETSfjFY8HhYkUFYhE1XqIBH1EFa0UVOh.iK1jSN4jSN4fCNvbSNvbSLvPCM4HiHu3COPEjTA0DHoQVOhzVZ3IBH1EFa0UVOhDiHu3COuPTYrEVd9.."
+										"sliderorder" : [ 0, 1, 2, 3 ],
+										"slidervisibility" : [ 1, 1, 1, 1 ],
+										"blob" : "226.CMlaKA....fQPMDZ....AXmXxQG....Y....A.........................................foVMjLgzI....OVklXxEFcu4COPEjTA0DHoQVOhbWZjQGZh.hcgwVck0iHw.iHu3COPEjTA0DHoQVOhvlYuYlbkEWck41X4IBH1EFa0UVOhHiHu3COPEjTA0DHoQVOhvlYucWX1UlYuIWah.hcgwVck0iHvHxK9vCTAIUPMARZj0iHo4FckIGbuwVXzk1atIBH1EFa0UVOhDiHu3COuXUZhIWXz8lO.."
 									}
 ,
 									"fileref" : 									{
@@ -119,7 +119,7 @@
 										"filename" : "Vibrato.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "a284ea7e8cdeee2fbfe47f24f84b3394"
+										"snapshotfileid" : "93ee5e7b591ae9f3991be9c6f5f82fe5"
 									}
 
 								}
@@ -141,7 +141,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.0, 270.0, 45.0, 45.0 ],
+					"patching_rect" : [ 15.0, 300.0, 45.0, 45.0 ],
 					"style" : ""
 				}
 
@@ -193,21 +193,21 @@
 								"filekind" : "audiofile",
 								"loop" : 1,
 								"content_state" : 								{
-									"pitchcorrection" : [ 0 ],
-									"originaltempo" : [ 120.0 ],
-									"formant" : [ 1.0 ],
-									"mode" : [ "basic" ],
-									"followglobaltempo" : [ 0 ],
 									"basictuning" : [ 440 ],
-									"timestretch" : [ 0 ],
-									"play" : [ 0 ],
-									"pitchshift" : [ 1.0 ],
-									"speed" : [ 1.0 ],
-									"formantcorrection" : [ 0 ],
-									"slurtime" : [ 0.0 ],
-									"originallength" : [ 0.0, "ticks" ],
 									"quality" : [ "basic" ],
-									"originallengthms" : [ 0.0 ]
+									"slurtime" : [ 0.0 ],
+									"formant" : [ 1.0 ],
+									"originaltempo" : [ 120.0 ],
+									"play" : [ 0 ],
+									"originallengthms" : [ 0.0 ],
+									"originallength" : [ 0.0, "ticks" ],
+									"speed" : [ 1.0 ],
+									"pitchshift" : [ 1.0 ],
+									"formantcorrection" : [ 0 ],
+									"mode" : [ "basic" ],
+									"pitchcorrection" : [ 0 ],
+									"timestretch" : [ 0 ],
+									"followglobaltempo" : [ 0 ]
 								}
 
 							}

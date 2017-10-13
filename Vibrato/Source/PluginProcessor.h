@@ -93,18 +93,55 @@ public:
 
     //==============================================================================
 
+    StringArray waveformItemsUI = {
+        "Sine",
+        "Triangle",
+        "Sawtooth (rising)",
+        "Sawtooth (falling)"
+    };
+
+    enum waveformIndex {
+        waveformSine = 0,
+        waveformTriangle,
+        waveformSawtooth,
+        waveformInverseSawtooth,
+    };
+
+    //======================================
+
+    StringArray interpolationItemsUI = {
+        "None",
+        "Linear",
+        "Cubic"
+    };
+
+    enum interpolationIndex {
+        interpolationNearestNeighbour = 0,
+        interpolationLinear,
+        interpolationCubic,
+    };
+
+    //======================================
+
     AudioSampleBuffer delayBuffer;
     int delayBufferSamples;
     int delayBufferChannels;
     int delayWritePosition;
 
+    float lfoPhase;
+    float inverseSampleRate;
+    float twoPi;
+
+    float lfo (float phase, int waveform);
+
     //======================================
 
     PluginParametersManager parameters;
 
-    PluginParameterLinSlider paramDelayTime;
-    PluginParameterLinSlider paramFeedback;
-    PluginParameterLinSlider paramMix;
+    PluginParameterLinSlider paramWidth;
+    PluginParameterLinSlider paramFrequency;
+    PluginParameterComboBox paramWaveform;
+    PluginParameterComboBox paramInterpolation;
 
 private:
     //==============================================================================

@@ -41,9 +41,10 @@ VibratoAudioProcessor::VibratoAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , paramDelayTime (parameters, "Delay time", "s", 0.0f, 5.0f, 0.1f)
-    , paramFeedback (parameters, "Feedback", "", 0.0f, 0.9f, 0.7f)
-    , paramMix (parameters, "Mix", "", 0.0f, 1.0f, 1.0f)
+    , paramWidth (parameters, "Width", "ms", 1.0f, 50.0f, 10.0f, [](float value){ return value * 0.001f; })
+    , paramFrequency (parameters, "LFO Frequency", "Hz", 0.0f, 10.0f, 2.0f)
+    , paramWaveform (parameters, "LFO Waveform", waveformItemsUI, waveformSine)
+    , paramInterpolation (parameters, "Interpolation", interpolationItemsUI, interpolationLinear)
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -57,13 +58,14 @@ VibratoAudioProcessor::~VibratoAudioProcessor()
 void VibratoAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
-    paramDelayTime.reset (sampleRate, smoothTime);
-    paramFeedback.reset (sampleRate, smoothTime);
-    paramMix.reset (sampleRate, smoothTime);
+    paramWidth.reset (sampleRate, smoothTime);
+    paramFrequency.reset (sampleRate, smoothTime);
+    paramWaveform.reset (sampleRate, smoothTime);
+    paramInterpolation.reset (sampleRate, smoothTime);
 
     //======================================
 
-    float maxDelayTime = paramDelayTime.maxValue;
+    float maxDelayTime = paramWidth.maxValue;
     delayBufferSamples = (int)(maxDelayTime * (float)sampleRate) + 1;
     if (delayBufferSamples < 1)
         delayBufferSamples = 1;
@@ -73,6 +75,9 @@ void VibratoAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     delayBuffer.clear();
 
     delayWritePosition = 0;
+    lfoPhase = 0.0f;
+    inverseSampleRate = 1.0f / (float)sampleRate;
+    twoPi = 2.0f * M_PI;
 }
 
 void VibratoAudioProcessor::releaseResources()
@@ -89,46 +94,118 @@ void VibratoAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 
     //======================================
 
-    float currentDelayTime = paramDelayTime.getTargetValue() * (float)getSampleRate();
-    float currentFeedback = paramFeedback.getNextValue();
-    float currentMix = paramMix.getNextValue();
+    float currentWidth = paramWidth.getNextValue();
+    float currentFrequency = paramFrequency.getNextValue();
 
     int localWritePosition;
+    float phase;
 
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
         float* delayData = delayBuffer.getWritePointer (channel);
         localWritePosition = delayWritePosition;
+        phase = lfoPhase;
 
         for (int sample = 0; sample < numSamples; ++sample) {
             const float in = channelData[sample];
             float out = 0.0f;
 
+            float localDelayTime = currentWidth * lfo (phase, (int)paramWaveform.getTargetValue()) * (float)getSampleRate();
+
             float readPosition =
-                fmodf ((float)localWritePosition - currentDelayTime + (float)delayBufferSamples, delayBufferSamples);
+                fmodf ((float)localWritePosition - localDelayTime + (float)delayBufferSamples - 1.0f, delayBufferSamples);
             int localReadPosition = floorf (readPosition);
 
-            if (localReadPosition != localWritePosition) {
-                float fraction = readPosition - (float)localReadPosition;
-                float delayed1 = delayData[(localReadPosition + 0)];
-                float delayed2 = delayData[(localReadPosition + 1) % delayBufferSamples];
-                out = delayed1 + fraction * (delayed2 - delayed1);
+            switch ((int)paramInterpolation.getTargetValue()) {
+                case interpolationNearestNeighbour: {
+                    float closestSample = delayData[localReadPosition % delayBufferSamples];
+                    out = closestSample;
+                    break;
+                }
+                case interpolationLinear: {
+                    float fraction = readPosition - (float)localReadPosition;
+                    float delayed0 = delayData[(localReadPosition + 0)];
+                    float delayed1 = delayData[(localReadPosition + 1) % delayBufferSamples];
+                    out = delayed0 + fraction * (delayed1 - delayed0);
+                    break;
+                }
+                case interpolationCubic: {
+                    float fraction = readPosition - (float)localReadPosition;
+                    float fractionSqrt = fraction * fraction;
+                    float fractionCube = fractionSqrt * fraction;
 
-                channelData[sample] = in + currentMix * (out - in);
-                delayData[localWritePosition] = in + out * currentFeedback;
+                    float sample0 = delayData[(localReadPosition - 1 + delayBufferSamples) % delayBufferSamples];
+                    float sample1 = delayData[(localReadPosition + 0)];
+                    float sample2 = delayData[(localReadPosition + 1) % delayBufferSamples];
+                    float sample3 = delayData[(localReadPosition + 2) % delayBufferSamples];
+
+                    float a0 = - 0.5f * sample0 + 1.5f * sample1 - 1.5f * sample2 + 0.5f * sample3;
+                    float a1 = sample0 - 2.5f * sample1 + 2.0f * sample2 - 0.5f * sample3;
+                    float a2 = - 0.5f * sample0 + 0.5f * sample2;
+                    float a3 = sample1;
+                    out = a0 * fractionCube + a1 * fractionSqrt + a2 * fraction + a3;
+                    break;
+                }
             }
+
+            channelData[sample] = out;
+            delayData[localWritePosition] = in;
 
             if (++localWritePosition >= delayBufferSamples)
                 localWritePosition -= delayBufferSamples;
+
+            phase += currentFrequency * inverseSampleRate;
+            if (phase >= 1.0f)
+                phase -= 1.0f;
         }
     }
 
     delayWritePosition = localWritePosition;
+    lfoPhase = phase;
 
     //======================================
 
     for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
         buffer.clear (channel, 0, numSamples);
+}
+
+//==============================================================================
+
+float VibratoAudioProcessor::lfo (float phase, int waveform)
+{
+    float out = 0.0f;
+
+    switch (waveform) {
+        case waveformSine: {
+            out = 0.5f + 0.5f * sinf (twoPi * phase);
+            break;
+        }
+        case waveformTriangle: {
+            if (phase < 0.25f)
+                out = 0.5f + 2.0f * phase;
+            else if (phase < 0.75f)
+                out = 1.0f - 2.0f * (phase - 0.25f);
+            else
+                out = 2.0f * (phase - 0.75f);
+            break;
+        }
+        case waveformSawtooth: {
+            if (phase < 0.5f)
+                out = 0.5f + phase;
+            else
+                out = phase - 0.5f;
+            break;
+        }
+        case waveformInverseSawtooth: {
+            if (phase < 0.5f)
+                out = 0.5f - phase;
+            else
+                out = 1.5f - phase;
+            break;
+        }
+    }
+
+    return out;
 }
 
 //==============================================================================
