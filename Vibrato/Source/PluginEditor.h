@@ -27,7 +27,7 @@
 
 //==============================================================================
 
-class VibratoAudioProcessorEditor : public AudioProcessorEditor
+class VibratoAudioProcessorEditor : public AudioProcessorEditor, private Timer
 {
 public:
     //==============================================================================
@@ -74,6 +74,12 @@ private:
 
     OwnedArray<Label> labels;
     Array<Component*> components;
+
+    //======================================
+
+    void timerCallback() override;
+    void updateUIcomponents();
+    Label pitchShiftLabel;
 
     //==============================================================================
 
