@@ -27,7 +27,7 @@
 
 //==============================================================================
 
-class FlangerAudioProcessorEditor : public AudioProcessorEditor, private Timer
+class FlangerAudioProcessorEditor : public AudioProcessorEditor
 {
 public:
     //==============================================================================
@@ -74,12 +74,6 @@ private:
 
     OwnedArray<Label> labels;
     Array<Component*> components;
-
-    //======================================
-
-    void timerCallback() override;
-    void updateUIcomponents();
-    Label pitchShiftLabel;
 
     //==============================================================================
 

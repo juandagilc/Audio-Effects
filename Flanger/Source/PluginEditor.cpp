@@ -98,14 +98,10 @@ FlangerAudioProcessorEditor::FlangerAudioProcessorEditor (FlangerAudioProcessor&
         }
     }
 
-    addAndMakeVisible (&pitchShiftLabel);
-    editorHeight += 20;
-
     //======================================
 
     editorHeight += components.size() * editorPadding;
     setSize (editorWidth, editorHeight);
-    startTimer (50);
 }
 
 FlangerAudioProcessorEditor::~FlangerAudioProcessorEditor()
@@ -136,64 +132,6 @@ void FlangerAudioProcessorEditor::resized()
 
         r = r.removeFromBottom (r.getHeight() - editorPadding);
     }
-
-    pitchShiftLabel.setBounds (0, getBottom() - 20, getWidth(), 20);
-}
-
-//==============================================================================
-
-void FlangerAudioProcessorEditor::timerCallback()
-{
-    updateUIcomponents();
-}
-
-void FlangerAudioProcessorEditor::updateUIcomponents()
-{
-    float minPitch = 0.0f;
-    float maxPitch = 0.0f;
-    float minSpeed = 1.0f;
-    float maxSpeed = 1.0f;
-    String pitchShiftText = "";
-
-    float width = processor.paramWidth.getTargetValue();
-    float frequency = processor.paramFrequency.getTargetValue();
-    int waveform = (int)processor.paramWaveform.getTargetValue();
-
-    switch (waveform) {
-        case FlangerAudioProcessor::waveformSine: {
-            minSpeed = 1.0f - M_PI * width * frequency;
-            maxSpeed = 1.0f + M_PI * width * frequency;
-            break;
-        }
-        case FlangerAudioProcessor::waveformTriangle: {
-            minSpeed = 1.0f - 2.0f * width * frequency;
-            maxSpeed = 1.0f + 2.0f * width * frequency;
-            break;
-        }
-        case FlangerAudioProcessor::waveformSawtooth: {
-            minSpeed = 1.0f - width * frequency;
-            maxSpeed = 1.0f;
-            break;
-        }
-        case FlangerAudioProcessor::waveformInverseSawtooth: {
-            minSpeed = 1.0f;
-            maxSpeed = 1.0f + width * frequency;
-            break;
-        }
-    }
-
-    maxPitch = 12.0f * logf (maxSpeed) / logf (2.0f);
-
-    if (minSpeed > 0.0f) {
-        minPitch = 12.0f * logf (minSpeed) / logf (2.0f);
-        pitchShiftText = String::formatted ("Vibrato range: %+.2f to %+.2f semitones (speed %.3f to %.3f)",
-                                            minPitch, maxPitch, minSpeed, maxSpeed);
-    } else {
-        pitchShiftText = String::formatted ("Vibrato range: ----- to %+.2f semitones (speed %.3f to %.3f)",
-                                            minPitch, maxPitch, minSpeed, maxSpeed);
-    }
-
-    pitchShiftLabel.setText (pitchShiftText, dontSendNotification);
 }
 
 //==============================================================================
