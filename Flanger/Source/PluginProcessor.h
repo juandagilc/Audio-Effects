@@ -138,10 +138,15 @@ public:
 
     PluginParametersManager parameters;
 
+    PluginParameterLinSlider paramDelay;
     PluginParameterLinSlider paramWidth;
+    PluginParameterLinSlider paramDepth;
+    PluginParameterLinSlider paramFeedback;
+    PluginParameterToggle paramInverted;
     PluginParameterLinSlider paramFrequency;
     PluginParameterComboBox paramWaveform;
     PluginParameterComboBox paramInterpolation;
+    PluginParameterToggle paramStereo;
 
 private:
     //==============================================================================

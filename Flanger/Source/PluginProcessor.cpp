@@ -41,10 +41,15 @@ FlangerAudioProcessor::FlangerAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , paramWidth (parameters, "Width", "ms", 1.0f, 50.0f, 10.0f, [](float value){ return value * 0.001f; })
-    , paramFrequency (parameters, "LFO Frequency", "Hz", 0.0f, 10.0f, 2.0f)
+    , paramDelay (parameters, "Delay", "ms", 1.0f, 20.0f, 2.5f, [](float value){ return value * 0.001f; })
+    , paramWidth (parameters, "Width", "ms", 1.0f, 20.0f, 10.0f, [](float value){ return value * 0.001f; })
+    , paramDepth (parameters, "Depth", "", 0.0f, 1.0f, 1.0f)
+    , paramFeedback (parameters, "Feedback", "", 0.0f, 0.5f, 0.0f)
+    , paramInverted (parameters, "Inverted mode", false, [](float value){ return value * (-2.0f) + 1.0f; })
+    , paramFrequency (parameters, "LFO Frequency", "Hz", 0.05f, 2.0f, 0.2f)
     , paramWaveform (parameters, "LFO Waveform", waveformItemsUI, waveformSine)
     , paramInterpolation (parameters, "Interpolation", interpolationItemsUI, interpolationLinear)
+    , paramStereo (parameters, "Stereo")
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -58,14 +63,19 @@ FlangerAudioProcessor::~FlangerAudioProcessor()
 void FlangerAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
+    paramDelay.reset (sampleRate, smoothTime);
     paramWidth.reset (sampleRate, smoothTime);
+    paramDepth.reset (sampleRate, smoothTime);
+    paramFeedback.reset (sampleRate, smoothTime);
+    paramInverted.reset (sampleRate, smoothTime);
     paramFrequency.reset (sampleRate, smoothTime);
     paramWaveform.reset (sampleRate, smoothTime);
     paramInterpolation.reset (sampleRate, smoothTime);
+    paramStereo.reset (sampleRate, smoothTime);
 
     //======================================
 
-    float maxDelayTime = paramWidth.maxValue;
+    float maxDelayTime = paramDelay.maxValue + paramWidth.maxValue;
     delayBufferSamples = (int)(maxDelayTime * (float)sampleRate) + 1;
     if (delayBufferSamples < 1)
         delayBufferSamples = 1;
@@ -94,26 +104,34 @@ void FlangerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 
     //======================================
 
+    float currentDelay = paramDelay.getNextValue();
     float currentWidth = paramWidth.getNextValue();
+    float currentDepth = paramDepth.getNextValue();
+    float currentFeedback = paramFeedback.getNextValue();
+    float currentInverted = paramInverted.getNextValue();
     float currentFrequency = paramFrequency.getNextValue();
 
     int localWritePosition;
     float phase;
+    float phaseMain;
 
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
         float* delayData = delayBuffer.getWritePointer (channel);
         localWritePosition = delayWritePosition;
         phase = lfoPhase;
+        if ((bool)paramStereo.getTargetValue() && channel != 0)
+            phase = fmodf (phase + 0.25f, 1.0f);
 
         for (int sample = 0; sample < numSamples; ++sample) {
             const float in = channelData[sample];
             float out = 0.0f;
 
-            float localDelayTime = currentWidth * lfo (phase, (int)paramWaveform.getTargetValue()) * (float)getSampleRate();
+            float localDelayTime =
+                (currentDelay + currentWidth * lfo (phase, (int)paramWaveform.getTargetValue())) * (float)getSampleRate();
 
             float readPosition =
-                fmodf ((float)localWritePosition - localDelayTime + (float)delayBufferSamples - 1.0f, delayBufferSamples);
+                fmodf ((float)localWritePosition - localDelayTime + (float)delayBufferSamples, delayBufferSamples);
             int localReadPosition = floorf (readPosition);
 
             switch ((int)paramInterpolation.getTargetValue()) {
@@ -148,8 +166,8 @@ void FlangerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
                 }
             }
 
-            channelData[sample] = out;
-            delayData[localWritePosition] = in;
+            channelData[sample] = in + out * currentDepth * currentInverted;
+            delayData[localWritePosition] = in + out * currentFeedback;
 
             if (++localWritePosition >= delayBufferSamples)
                 localWritePosition -= delayBufferSamples;
@@ -158,10 +176,13 @@ void FlangerAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
             if (phase >= 1.0f)
                 phase -= 1.0f;
         }
+
+        if (channel == 0)
+            phaseMain = phase;
     }
 
     delayWritePosition = localWritePosition;
-    lfoPhase = phase;
+    lfoPhase = phaseMain;
 
     //======================================
 
