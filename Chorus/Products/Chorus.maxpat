@@ -49,7 +49,7 @@
 					"numoutlets" : 8,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
-					"patching_rect" : [ 15.0, 135.0, 420.0, 285.0 ],
+					"patching_rect" : [ 15.0, 135.0, 420.0, 255.0 ],
 					"presentation_linecount" : 3,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
 					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Chorus/Products/Chorus.vst", ";" ],
@@ -85,9 +85,9 @@
 							"version" : 1,
 							"isbank" : 0,
 							"isbase64" : 1,
-							"sliderorder" : [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ],
-							"slidervisibility" : [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-							"blob" : "405.CMlaKA....fQPMDZ....AXFatcF....Y....A........................................DPVVMjLg.U....OFwVXtcVYx4COPEjTA0DHoQVOhPVYrEVdh.hcgwVck0iHx3RMh7hO7.UPRETSfjFY8HxcoQFcnIBH1EFa0UVOhDCLh7hO7.UPRETSfjFY8HBYkAGcnIBH1EFa0UVOhDiHu3COPEjTA0DHoQVOhXVYkQlXgM1Zh.hcgwVck0iHvHxK9vCTAIUPMARZj0iHo4lckIGckQVauQVYh.hcgwVck0iHvHxK9vCTAIUPMARZj0iHrY1alIWYwUWYtMVdh.hcgwVck0iHv3hLv.CLv.CLvHSN3.iLyHiLyfyM2HxK9vCTAIUPMARZj0iHrY1a2ElckY1ax0lHfXWXrUWY8HBLh7hO7.UPRETSfjFY8HRZtQWYxA2arEFco8lah.hcgwVck0iHwHxK9vCTAIUPMARZj0iHyQWYxU1ah.hcgwVck0iHvHxK9vyKFwVXtcVYx4C."
+							"sliderorder" : [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+							"slidervisibility" : [ 1, 1, 1, 1, 1, 1, 1, 1 ],
+							"blob" : "372.CMlaKA....fQPMDZ....ALFZuIG....Y....A........................................D.NVMjLg7R....OCg1axU2b9vCTAIUPMARZj0iHjUFagkmHfXWXrUWY8HxLvHxK9vCTAIUPMARZj0iH2kFYzglHfXWXrUWY8HhLvHxK9vCTAIUPMARZj0iHjUFbzglHfXWXrUWY8HRLh7hO7.UPRETSfjFY8Hha00lXkI2alY2aoMVYyIBH1EFa0UVOh.iHu3COPEjTA0DHoQVOhvlYuYlbkEWck41X4IBH1EFa0UVOh.iKx.CLv.CLv.iL4fCLxLiLxLCN2biHu3COPEjTA0DHoQVOhvlYucWX1UlYuIWah.hcgwVck0iHvHxK9vCTAIUPMARZj0iHo4FckIGbuwVXzk1atIBH1EFa0UVOhDiHu3COPEjTA0DHoQVOhLGckIWYuIBH1EFa0UVOhDiHu3COuLDZuIWcy4C."
 						}
 ,
 						"snapshotlist" : 						{
@@ -109,9 +109,9 @@
 										"version" : 1,
 										"isbank" : 0,
 										"isbase64" : 1,
-										"sliderorder" : [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ],
-										"slidervisibility" : [ 1, 1, 1, 1, 1, 1, 1, 1, 1 ],
-										"blob" : "405.CMlaKA....fQPMDZ....AXFatcF....Y....A........................................DPVVMjLg.U....OFwVXtcVYx4COPEjTA0DHoQVOhPVYrEVdh.hcgwVck0iHx3RMh7hO7.UPRETSfjFY8HxcoQFcnIBH1EFa0UVOhDCLh7hO7.UPRETSfjFY8HBYkAGcnIBH1EFa0UVOhDiHu3COPEjTA0DHoQVOhXVYkQlXgM1Zh.hcgwVck0iHvHxK9vCTAIUPMARZj0iHo4lckIGckQVauQVYh.hcgwVck0iHvHxK9vCTAIUPMARZj0iHrY1alIWYwUWYtMVdh.hcgwVck0iHv3hLv.CLv.CLvHSN3.iLyHiLyfyM2HxK9vCTAIUPMARZj0iHrY1a2ElckY1ax0lHfXWXrUWY8HBLh7hO7.UPRETSfjFY8HRZtQWYxA2arEFco8lah.hcgwVck0iHwHxK9vCTAIUPMARZj0iHyQWYxU1ah.hcgwVck0iHvHxK9vyKFwVXtcVYx4C."
+										"sliderorder" : [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+										"slidervisibility" : [ 1, 1, 1, 1, 1, 1, 1, 1 ],
+										"blob" : "372.CMlaKA....fQPMDZ....ALFZuIG....Y....A........................................D.NVMjLg7R....OCg1axU2b9vCTAIUPMARZj0iHjUFagkmHfXWXrUWY8HxLvHxK9vCTAIUPMARZj0iH2kFYzglHfXWXrUWY8HhLvHxK9vCTAIUPMARZj0iHjUFbzglHfXWXrUWY8HRLh7hO7.UPRETSfjFY8Hha00lXkI2alY2aoMVYyIBH1EFa0UVOh.iHu3COPEjTA0DHoQVOhvlYuYlbkEWck41X4IBH1EFa0UVOh.iKx.CLv.CLv.iL4fCLxLiLxLCN2biHu3COPEjTA0DHoQVOhvlYucWX1UlYuIWah.hcgwVck0iHvHxK9vCTAIUPMARZj0iHo4FckIGbuwVXzk1atIBH1EFa0UVOhDiHu3COPEjTA0DHoQVOhLGckIWYuIBH1EFa0UVOhDiHu3COuLDZuIWcy4C."
 									}
 ,
 									"fileref" : 									{
@@ -119,7 +119,7 @@
 										"filename" : "Chorus.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "2cc2fd2bc22087add89cd89a3716bda3"
+										"snapshotfileid" : "7d104c461ab84e8e2c066a08bd384670"
 									}
 
 								}
@@ -141,7 +141,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.0, 435.0, 45.0, 45.0 ],
+					"patching_rect" : [ 15.0, 405.0, 45.0, 45.0 ],
 					"style" : ""
 				}
 
@@ -193,21 +193,21 @@
 								"filekind" : "audiofile",
 								"loop" : 1,
 								"content_state" : 								{
-									"followglobaltempo" : [ 0 ],
+									"slurtime" : [ 0.0 ],
+									"originallengthms" : [ 0.0 ],
+									"pitchshift" : [ 1.0 ],
+									"speed" : [ 1.0 ],
+									"formant" : [ 1.0 ],
+									"play" : [ 0 ],
 									"originaltempo" : [ 120.0 ],
-									"timestretch" : [ 0 ],
+									"basictuning" : [ 440 ],
 									"mode" : [ "basic" ],
+									"followglobaltempo" : [ 0 ],
 									"originallength" : [ 0.0, "ticks" ],
 									"formantcorrection" : [ 0 ],
-									"basictuning" : [ 440 ],
-									"originallengthms" : [ 0.0 ],
-									"speed" : [ 1.0 ],
-									"pitchshift" : [ 1.0 ],
-									"pitchcorrection" : [ 0 ],
-									"play" : [ 0 ],
 									"quality" : [ "basic" ],
-									"formant" : [ 1.0 ],
-									"slurtime" : [ 0.0 ]
+									"timestretch" : [ 0 ],
+									"pitchcorrection" : [ 0 ]
 								}
 
 							}

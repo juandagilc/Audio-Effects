@@ -141,8 +141,7 @@ public:
     PluginParameterLinSlider paramDelay;
     PluginParameterLinSlider paramWidth;
     PluginParameterLinSlider paramDepth;
-    PluginParameterLinSlider paramFeedback;
-    PluginParameterToggle paramInverted;
+    PluginParameterComboBox paramNumVoices;
     PluginParameterLinSlider paramFrequency;
     PluginParameterComboBox paramWaveform;
     PluginParameterComboBox paramInterpolation;

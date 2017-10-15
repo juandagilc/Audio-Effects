@@ -41,15 +41,14 @@ ChorusAudioProcessor::ChorusAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , paramDelay (parameters, "Delay", "ms", 1.0f, 20.0f, 2.5f, [](float value){ return value * 0.001f; })
-    , paramWidth (parameters, "Width", "ms", 1.0f, 20.0f, 10.0f, [](float value){ return value * 0.001f; })
+    , paramDelay (parameters, "Delay", "ms", 10.0f, 50.0f, 30.0f, [](float value){ return value * 0.001f; })
+    , paramWidth (parameters, "Width", "ms", 10.0f, 50.0f, 20.0f, [](float value){ return value * 0.001f; })
     , paramDepth (parameters, "Depth", "", 0.0f, 1.0f, 1.0f)
-    , paramFeedback (parameters, "Feedback", "", 0.0f, 0.5f, 0.0f)
-    , paramInverted (parameters, "Inverted mode", false, [](float value){ return value * (-2.0f) + 1.0f; })
+    , paramNumVoices (parameters, "Number of voices", {"2", "3", "4", "5"}, 0, [](float value){ return value + 2; })
     , paramFrequency (parameters, "LFO Frequency", "Hz", 0.05f, 2.0f, 0.2f)
     , paramWaveform (parameters, "LFO Waveform", waveformItemsUI, waveformSine)
     , paramInterpolation (parameters, "Interpolation", interpolationItemsUI, interpolationLinear)
-    , paramStereo (parameters, "Stereo")
+    , paramStereo (parameters, "Stereo", true)
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -66,8 +65,7 @@ void ChorusAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     paramDelay.reset (sampleRate, smoothTime);
     paramWidth.reset (sampleRate, smoothTime);
     paramDepth.reset (sampleRate, smoothTime);
-    paramFeedback.reset (sampleRate, smoothTime);
-    paramInverted.reset (sampleRate, smoothTime);
+    paramNumVoices.reset (sampleRate, smoothTime);
     paramFrequency.reset (sampleRate, smoothTime);
     paramWaveform.reset (sampleRate, smoothTime);
     paramInterpolation.reset (sampleRate, smoothTime);
@@ -107,67 +105,85 @@ void ChorusAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
     float currentDelay = paramDelay.getNextValue();
     float currentWidth = paramWidth.getNextValue();
     float currentDepth = paramDepth.getNextValue();
-    float currentFeedback = paramFeedback.getNextValue();
-    float currentInverted = paramInverted.getNextValue();
+    int numVoices = (int)paramNumVoices.getTargetValue();
     float currentFrequency = paramFrequency.getNextValue();
+    bool stereo = (bool)paramStereo.getTargetValue();
 
     int localWritePosition;
     float phase;
-    float phaseMain;
 
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
         float* delayData = delayBuffer.getWritePointer (channel);
         localWritePosition = delayWritePosition;
         phase = lfoPhase;
-        if ((bool)paramStereo.getTargetValue() && channel != 0)
-            phase = fmodf (phase + 0.25f, 1.0f);
 
         for (int sample = 0; sample < numSamples; ++sample) {
             const float in = channelData[sample];
             float out = 0.0f;
+            float phaseOffset = 0.0f;
+            float weight;
 
-            float localDelayTime =
-                (currentDelay + currentWidth * lfo (phase, (int)paramWaveform.getTargetValue())) * (float)getSampleRate();
-
-            float readPosition =
-                fmodf ((float)localWritePosition - localDelayTime + (float)delayBufferSamples, delayBufferSamples);
-            int localReadPosition = floorf (readPosition);
-
-            switch ((int)paramInterpolation.getTargetValue()) {
-                case interpolationNearestNeighbour: {
-                    float closestSample = delayData[localReadPosition % delayBufferSamples];
-                    out = closestSample;
-                    break;
+            for (int voice = 0; voice < numVoices - 1; ++voice) {
+                if (stereo && numVoices > 2) {
+                    weight = (float)voice / (float)(numVoices - 2);
+                    if (channel != 0)
+                        weight = 1.0f - weight;
+                } else {
+                    weight = 1.0f;
                 }
-                case interpolationLinear: {
-                    float fraction = readPosition - (float)localReadPosition;
-                    float delayed0 = delayData[(localReadPosition + 0)];
-                    float delayed1 = delayData[(localReadPosition + 1) % delayBufferSamples];
-                    out = delayed0 + fraction * (delayed1 - delayed0);
-                    break;
-                }
-                case interpolationCubic: {
-                    float fraction = readPosition - (float)localReadPosition;
-                    float fractionSqrt = fraction * fraction;
-                    float fractionCube = fractionSqrt * fraction;
 
-                    float sample0 = delayData[(localReadPosition - 1 + delayBufferSamples) % delayBufferSamples];
-                    float sample1 = delayData[(localReadPosition + 0)];
-                    float sample2 = delayData[(localReadPosition + 1) % delayBufferSamples];
-                    float sample3 = delayData[(localReadPosition + 2) % delayBufferSamples];
+                float localDelayTime =
+                    (currentDelay + currentWidth * lfo (phase + phaseOffset, (int)paramWaveform.getTargetValue())) * (float)getSampleRate();
 
-                    float a0 = - 0.5f * sample0 + 1.5f * sample1 - 1.5f * sample2 + 0.5f * sample3;
-                    float a1 = sample0 - 2.5f * sample1 + 2.0f * sample2 - 0.5f * sample3;
-                    float a2 = - 0.5f * sample0 + 0.5f * sample2;
-                    float a3 = sample1;
-                    out = a0 * fractionCube + a1 * fractionSqrt + a2 * fraction + a3;
-                    break;
+                float readPosition =
+                    fmodf ((float)localWritePosition - localDelayTime + (float)delayBufferSamples, delayBufferSamples);
+                int localReadPosition = floorf (readPosition);
+
+                switch ((int)paramInterpolation.getTargetValue()) {
+                    case interpolationNearestNeighbour: {
+                        float closestSample = delayData[localReadPosition % delayBufferSamples];
+                        out = closestSample;
+                        break;
+                    }
+                    case interpolationLinear: {
+                        float fraction = readPosition - (float)localReadPosition;
+                        float delayed0 = delayData[(localReadPosition + 0)];
+                        float delayed1 = delayData[(localReadPosition + 1) % delayBufferSamples];
+                        out = delayed0 + fraction * (delayed1 - delayed0);
+                        break;
+                    }
+                    case interpolationCubic: {
+                        float fraction = readPosition - (float)localReadPosition;
+                        float fractionSqrt = fraction * fraction;
+                        float fractionCube = fractionSqrt * fraction;
+
+                        float sample0 = delayData[(localReadPosition - 1 + delayBufferSamples) % delayBufferSamples];
+                        float sample1 = delayData[(localReadPosition + 0)];
+                        float sample2 = delayData[(localReadPosition + 1) % delayBufferSamples];
+                        float sample3 = delayData[(localReadPosition + 2) % delayBufferSamples];
+
+                        float a0 = - 0.5f * sample0 + 1.5f * sample1 - 1.5f * sample2 + 0.5f * sample3;
+                        float a1 = sample0 - 2.5f * sample1 + 2.0f * sample2 - 0.5f * sample3;
+                        float a2 = - 0.5f * sample0 + 0.5f * sample2;
+                        float a3 = sample1;
+                        out = a0 * fractionCube + a1 * fractionSqrt + a2 * fraction + a3;
+                        break;
+                    }
                 }
+
+                if (stereo && numVoices == 2)
+                    channelData[sample] = (channel == 0) ? in : out * currentDepth;
+                else
+                    channelData[sample] += out * currentDepth * weight;
+
+                if (numVoices == 3)
+                    phaseOffset += 0.25f;
+                else if (numVoices > 3)
+                    phaseOffset += 1.0f / (float)(numVoices - 1);
             }
 
-            channelData[sample] = in + out * currentDepth * currentInverted;
-            delayData[localWritePosition] = in + out * currentFeedback;
+            delayData[localWritePosition] = in;
 
             if (++localWritePosition >= delayBufferSamples)
                 localWritePosition -= delayBufferSamples;
@@ -176,13 +192,10 @@ void ChorusAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
             if (phase >= 1.0f)
                 phase -= 1.0f;
         }
-
-        if (channel == 0)
-            phaseMain = phase;
     }
 
     delayWritePosition = localWritePosition;
-    lfoPhase = phaseMain;
+    lfoPhase = phase;
 
     //======================================
 
