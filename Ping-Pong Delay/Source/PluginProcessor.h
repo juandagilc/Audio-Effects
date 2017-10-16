@@ -102,6 +102,7 @@ public:
 
     PluginParametersManager parameters;
 
+    PluginParameterLinSlider paramBalance;
     PluginParameterLinSlider paramDelayTime;
     PluginParameterLinSlider paramFeedback;
     PluginParameterLinSlider paramMix;

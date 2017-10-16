@@ -41,6 +41,7 @@ PingPongDelayAudioProcessor::PingPongDelayAudioProcessor():
                    ),
 #endif
     parameters (*this)
+    , paramBalance (parameters, "Balance input", "", 0.0f, 1.0f, 0.25f)
     , paramDelayTime (parameters, "Delay time", "s", 0.0f, 5.0f, 0.1f)
     , paramFeedback (parameters, "Feedback", "", 0.0f, 0.9f, 0.7f)
     , paramMix (parameters, "Mix", "", 0.0f, 1.0f, 1.0f)
@@ -57,6 +58,7 @@ PingPongDelayAudioProcessor::~PingPongDelayAudioProcessor()
 void PingPongDelayAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
+    paramBalance.reset (sampleRate, smoothTime);
     paramDelayTime.reset (sampleRate, smoothTime);
     paramFeedback.reset (sampleRate, smoothTime);
     paramMix.reset (sampleRate, smoothTime);
@@ -89,38 +91,45 @@ void PingPongDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 
     //======================================
 
+    float currentBalance = paramBalance.getNextValue();
     float currentDelayTime = paramDelayTime.getTargetValue() * (float)getSampleRate();
     float currentFeedback = paramFeedback.getNextValue();
     float currentMix = paramMix.getNextValue();
 
-    int localWritePosition;
+    int localWritePosition = delayWritePosition;
 
-    for (int channel = 0; channel < numInputChannels; ++channel) {
-        float* channelData = buffer.getWritePointer (channel);
-        float* delayData = delayBuffer.getWritePointer (channel);
-        localWritePosition = delayWritePosition;
+    float* channelDataL = buffer.getWritePointer (0);
+    float* channelDataR = buffer.getWritePointer (1);
+    float* delayDataL = delayBuffer.getWritePointer (0);
+    float* delayDataR = delayBuffer.getWritePointer (1);
 
-        for (int sample = 0; sample < numSamples; ++sample) {
-            const float in = channelData[sample];
-            float out = 0.0f;
+    for (int sample = 0; sample < numSamples; ++sample) {
+        const float inL = (1.0f - currentBalance) * channelDataL[sample];
+        const float inR = currentBalance * channelDataR[sample];
+        float outL = 0.0f;
+        float outR = 0.0f;
 
-            float readPosition =
-                fmodf ((float)localWritePosition - currentDelayTime + (float)delayBufferSamples, delayBufferSamples);
-            int localReadPosition = floorf (readPosition);
+        float readPosition =
+            fmodf ((float)localWritePosition - currentDelayTime + (float)delayBufferSamples, delayBufferSamples);
+        int localReadPosition = floorf (readPosition);
 
-            if (localReadPosition != localWritePosition) {
-                float fraction = readPosition - (float)localReadPosition;
-                float delayed1 = delayData[(localReadPosition + 0)];
-                float delayed2 = delayData[(localReadPosition + 1) % delayBufferSamples];
-                out = delayed1 + fraction * (delayed2 - delayed1);
+        if (localReadPosition != localWritePosition) {
+            float fraction = readPosition - (float)localReadPosition;
+            float delayed1L = delayDataL[(localReadPosition + 0)];
+            float delayed1R = delayDataR[(localReadPosition + 0)];
+            float delayed2L = delayDataL[(localReadPosition + 1) % delayBufferSamples];
+            float delayed2R = delayDataR[(localReadPosition + 1) % delayBufferSamples];
+            outL = delayed1L + fraction * (delayed2L - delayed1L);
+            outR = delayed1R + fraction * (delayed2R - delayed1R);
 
-                channelData[sample] = in + currentMix * (out - in);
-                delayData[localWritePosition] = in + out * currentFeedback;
-            }
-
-            if (++localWritePosition >= delayBufferSamples)
-                localWritePosition -= delayBufferSamples;
+            channelDataL[sample] = inL + currentMix * (outL - inL);
+            channelDataR[sample] = inR + currentMix * (outR - inR);
+            delayDataL[localWritePosition] = inL + outR * currentFeedback;
+            delayDataR[localWritePosition] = inR + outL * currentFeedback;
         }
+
+        if (++localWritePosition >= delayBufferSamples)
+            localWritePosition -= delayBufferSamples;
     }
 
     delayWritePosition = localWritePosition;
