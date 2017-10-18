@@ -41,10 +41,14 @@ ParametricEQAudioProcessor::ParametricEQAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , parameter1 (parameters, "Parameter 1", "", 0.0f, 1.0f, 0.5f, [](float value){ return value * 127.0f; })
-    , parameter2 (parameters, "Parameter 2", "", 0.0f, 1.0f, 0.5f)
-    , parameter3 (parameters, "Parameter 3", false, [](float value){ return value * (-2.0f) + 1.0f; })
-    , parameter4 (parameters, "Parameter 4", {"Option A", "Option B"}, 1)
+    , paramFrequency (parameters, "Frequency", "Hz", 10.0f, 20000.0f, 1500.0f,
+                      [this](float value){ paramFrequency.setValue (value); updateFilters(); return value; })
+    , paramQfactor (parameters, "Q Factor", "", 0.1f, 20.0f, sqrt (2.0f),
+                    [this](float value){ paramQfactor.setValue (value); updateFilters(); return value; })
+    , paramGain (parameters, "Gain", "dB", -12.0f, 12.0f, 12.0f,
+                 [this](float value){ paramGain.setValue (value); updateFilters(); return value; })
+    , paramFilterType (parameters, "Filter type", filterTypeItemsUI, filterTypePeakingNotch,
+                       [this](float value){ paramFilterType.setValue (value); updateFilters(); return value; })
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -58,10 +62,19 @@ ParametricEQAudioProcessor::~ParametricEQAudioProcessor()
 void ParametricEQAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
-    parameter1.reset (sampleRate, smoothTime);
-    parameter2.reset (sampleRate, smoothTime);
-    parameter3.reset (sampleRate, smoothTime);
-    parameter4.reset (sampleRate, smoothTime);
+    paramFrequency.reset (sampleRate, smoothTime);
+    paramQfactor.reset (sampleRate, smoothTime);
+    paramGain.reset (sampleRate, smoothTime);
+    paramFilterType.reset (sampleRate, smoothTime);
+
+    //======================================
+
+    filters.clear();
+    for (int i = 0; i < getTotalNumInputChannels(); ++i) {
+        Filter* filter;
+        filters.add (filter = new Filter());
+    }
+    updateFilters();
 }
 
 void ParametricEQAudioProcessor::releaseResources()
@@ -78,41 +91,26 @@ void ParametricEQAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBu
 
     //======================================
 
-    float currentParameter2 = parameter2.getNextValue();
-    float currentParameter3 = parameter3.getNextValue();
-    float currentParameter4 = parameter4.getNextValue();
-
-    float factor = currentParameter2 * currentParameter3 * currentParameter4;
-
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
-
-        for (int sample = 0; sample < numSamples; ++sample) {
-            const float in = channelData[sample];
-            float out = in * factor;
-
-            channelData[sample] = out;
-        }
+        filters[channel]->processSamples (channelData, numSamples);
     }
 
     for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
         buffer.clear (channel, 0, numSamples);
+}
 
-    //======================================
+//==============================================================================
 
-    MidiBuffer processedMidi;
-    MidiMessage message;
-    int time;
+void ParametricEQAudioProcessor::updateFilters()
+{
+    double discreteFrequency = 2.0 * M_PI * (double)paramFrequency.getTargetValue() / getSampleRate();
+    double qFactor = (double)paramQfactor.getTargetValue();
+    double gain = pow (10.0, (double)paramGain.getTargetValue() * 0.05);
+    int type = (int)paramFilterType.getTargetValue();
 
-    for (MidiBuffer::Iterator iter (midiMessages); iter.getNextEvent (message, time);) {
-        if (message.isNoteOn()) {
-            uint8 newVel = (uint8)(parameter1.getTargetValue());
-            message = MidiMessage::noteOn (message.getChannel(), message.getNoteNumber(), newVel);
-        }
-        processedMidi.addEvent (message, time);
-    }
-
-    midiMessages.swapWith (processedMidi);
+    for (int i = 0; i < filters.size(); ++i)
+        filters[i]->updateCoefficients (discreteFrequency, qFactor, gain, type);
 }
 
 //==============================================================================
