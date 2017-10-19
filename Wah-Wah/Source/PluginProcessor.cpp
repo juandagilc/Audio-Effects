@@ -41,13 +41,15 @@ WahWahAudioProcessor::WahWahAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , paramFrequency (parameters, "Frequency", "Hz", 10.0f, 20000.0f, 1500.0f,
+    , paramMode (parameters, "Mode", modeItemsUI, modeManual)
+    , paramMix (parameters, "Mix", "", 0.0f, 1.0f, 0.5f)
+    , paramFrequency (parameters, "Frequency", "Hz", 200.0f, 1300.0f, 300.0f,
                       [this](float value){ paramFrequency.setValue (value); updateFilters(); return value; })
-    , paramQfactor (parameters, "Q Factor", "", 0.1f, 20.0f, sqrt (2.0f),
+    , paramQfactor (parameters, "Q Factor", "", 0.1f, 20.0f, 10.0f,
                     [this](float value){ paramQfactor.setValue (value); updateFilters(); return value; })
-    , paramGain (parameters, "Gain", "dB", -12.0f, 12.0f, 12.0f,
+    , paramGain (parameters, "Gain", "dB", 0.0f, 20.0f, 20.0f,
                  [this](float value){ paramGain.setValue (value); updateFilters(); return value; })
-    , paramFilterType (parameters, "Filter type", filterTypeItemsUI, filterTypePeakingNotch,
+    , paramFilterType (parameters, "Filter type", filterTypeItemsUI, filterTypeResonantLowPass,
                        [this](float value){ paramFilterType.setValue (value); updateFilters(); return value; })
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
@@ -62,6 +64,8 @@ WahWahAudioProcessor::~WahWahAudioProcessor()
 void WahWahAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
+    paramMode.reset (sampleRate, smoothTime);
+    paramMix.reset (sampleRate, smoothTime);
     paramFrequency.reset (sampleRate, smoothTime);
     paramQfactor.reset (sampleRate, smoothTime);
     paramGain.reset (sampleRate, smoothTime);
@@ -93,7 +97,13 @@ void WahWahAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
 
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
-        filters[channel]->processSamples (channelData, numSamples);
+
+        for (int sample = 0; sample < numSamples; ++sample) {
+            float in = channelData[sample];
+            float filtered = filters[channel]->processSingleSampleRaw (in);
+            float out = in + paramMix.getNextValue() * (filtered - in);
+            channelData[sample] = out;
+        }
     }
 
     for (int channel = numInputChannels; channel < numOutputChannels; ++channel)

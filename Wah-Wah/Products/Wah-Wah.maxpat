@@ -49,8 +49,8 @@
 					"numoutlets" : 8,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
-					"patching_rect" : [ 15.0, 135.0, 405.0, 150.0 ],
-					"presentation_linecount" : 4,
+					"patching_rect" : [ 15.0, 135.0, 435.0, 210.0 ],
+					"presentation_linecount" : 3,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
 					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Wah-Wah/Products/Wah-Wah.vst", ";" ],
 					"saved_attribute_attributes" : 					{
@@ -85,9 +85,9 @@
 							"version" : 1,
 							"isbank" : 0,
 							"isbase64" : 1,
-							"sliderorder" : [ 0, 1, 2, 3 ],
-							"slidervisibility" : [ 1, 1, 1, 1 ],
-							"blob" : "248.CMlaKA....fQPMDZ....A.WXkEG....Y....A..........................................uVMjLgLK....OPElbg0VYzIWZiUTT9vCTAIUPMARZj0iHlIWYwUWYtMVdh.hcgwVck0iHwTCLvHxK9vCTAIUPMARZj0iHwYVXiQ2axIBH1EFa0UVOhDiKzDCMxDyL0LCNwXSN3XCL3LSN3HxK9vCTAIUPMARZj0iHmEVZtIBH1EFa0UVOhDiLh7hO7.UPRETSfjFY8HhYowFckIGc4AWYh.hcgwVck0iH1HxK9vyKPElbg0VYzIWZiUTT9.."
+							"sliderorder" : [ 0, 1, 2, 3, 4, 5 ],
+							"slidervisibility" : [ 1, 1, 1, 1, 1, 1 ],
+							"blob" : "273.CMlaKA....fQPMDZ....AbWX2EF....Y....A.........................................P0VMjLgvL....OWEFZWEFZ9vCTAIUPMARZj0iHs8FYkIBH1EFa0UVOh.iHu3COPEjTA0DHoQVOhzVZ3IBH1EFa0UVOh.iK0HxK9vCTAIUPMARZj0iHlIWYwUWYtMVdh.hcgwVck0iHy.CLh7hO7.UPRETSfjFY8HRblE1Xz8lbh.hcgwVck0iHw.iHu3COPEjTA0DHoQVOhbVXo4lHfXWXrUWY8HhLvHxK9vCTAIUPMARZj0iHlkFazUlbzkGbkIBH1EFa0UVOh.iHu3COubUXncUXn4C."
 						}
 ,
 						"snapshotlist" : 						{
@@ -109,9 +109,9 @@
 										"version" : 1,
 										"isbank" : 0,
 										"isbase64" : 1,
-										"sliderorder" : [ 0, 1, 2, 3 ],
-										"slidervisibility" : [ 1, 1, 1, 1 ],
-										"blob" : "248.CMlaKA....fQPMDZ....A.WXkEG....Y....A..........................................uVMjLgLK....OPElbg0VYzIWZiUTT9vCTAIUPMARZj0iHlIWYwUWYtMVdh.hcgwVck0iHwTCLvHxK9vCTAIUPMARZj0iHwYVXiQ2axIBH1EFa0UVOhDiKzDCMxDyL0LCNwXSN3XCL3LSN3HxK9vCTAIUPMARZj0iHmEVZtIBH1EFa0UVOhDiLh7hO7.UPRETSfjFY8HhYowFckIGc4AWYh.hcgwVck0iH1HxK9vyKPElbg0VYzIWZiUTT9.."
+										"sliderorder" : [ 0, 1, 2, 3, 4, 5 ],
+										"slidervisibility" : [ 1, 1, 1, 1, 1, 1 ],
+										"blob" : "273.CMlaKA....fQPMDZ....AbWX2EF....Y....A.........................................P0VMjLgvL....OWEFZWEFZ9vCTAIUPMARZj0iHs8FYkIBH1EFa0UVOh.iHu3COPEjTA0DHoQVOhzVZ3IBH1EFa0UVOh.iK0HxK9vCTAIUPMARZj0iHlIWYwUWYtMVdh.hcgwVck0iHy.CLh7hO7.UPRETSfjFY8HRblE1Xz8lbh.hcgwVck0iHw.iHu3COPEjTA0DHoQVOhbVXo4lHfXWXrUWY8HhLvHxK9vCTAIUPMARZj0iHlkFazUlbzkGbkIBH1EFa0UVOh.iHu3COubUXncUXn4C."
 									}
 ,
 									"fileref" : 									{
@@ -119,7 +119,7 @@
 										"filename" : "Wah-Wah.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "168c01f88f51f4593d641a411f44885b"
+										"snapshotfileid" : "33de36fce1080ee597cfb8dadb289831"
 									}
 
 								}
@@ -141,7 +141,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.0, 300.0, 45.0, 45.0 ],
+					"patching_rect" : [ 15.0, 360.0, 45.0, 45.0 ],
 					"style" : ""
 				}
 
@@ -193,21 +193,21 @@
 								"filekind" : "audiofile",
 								"loop" : 1,
 								"content_state" : 								{
-									"formant" : [ 1.0 ],
-									"timestretch" : [ 0 ],
-									"formantcorrection" : [ 0 ],
-									"followglobaltempo" : [ 0 ],
-									"basictuning" : [ 440 ],
-									"mode" : [ "basic" ],
-									"pitchcorrection" : [ 0 ],
-									"originallength" : [ 0.0, "ticks" ],
-									"pitchshift" : [ 1.0 ],
-									"originaltempo" : [ 120.0 ],
-									"play" : [ 0 ],
-									"quality" : [ "basic" ],
-									"originallengthms" : [ 0.0 ],
 									"speed" : [ 1.0 ],
-									"slurtime" : [ 0.0 ]
+									"timestretch" : [ 0 ],
+									"formant" : [ 1.0 ],
+									"followglobaltempo" : [ 0 ],
+									"play" : [ 0 ],
+									"slurtime" : [ 0.0 ],
+									"originallength" : [ 0.0, "ticks" ],
+									"pitchcorrection" : [ 0 ],
+									"quality" : [ "basic" ],
+									"originaltempo" : [ 120.0 ],
+									"formantcorrection" : [ 0 ],
+									"pitchshift" : [ 1.0 ],
+									"mode" : [ "basic" ],
+									"basictuning" : [ 440 ],
+									"originallengthms" : [ 0.0 ]
 								}
 
 							}
