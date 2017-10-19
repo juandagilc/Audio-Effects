@@ -172,6 +172,11 @@ public:
     OwnedArray<Filter> filters;
     void updateFilters();
 
+    float centreFrequency;
+    float lfoPhase;
+    float inverseSampleRate;
+    float twoPi;
+
     //======================================
 
     PluginParametersManager parameters;
@@ -182,6 +187,7 @@ public:
     PluginParameterLinSlider paramQfactor;
     PluginParameterLinSlider paramGain;
     PluginParameterComboBox paramFilterType;
+    PluginParameterLinSlider paramLFOfrequency;
 
 private:
     //==============================================================================

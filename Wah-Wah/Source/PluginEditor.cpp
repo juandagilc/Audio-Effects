@@ -102,6 +102,7 @@ WahWahAudioProcessorEditor::WahWahAudioProcessorEditor (WahWahAudioProcessor& p)
 
     editorHeight += components.size() * editorPadding;
     setSize (editorWidth, editorHeight);
+    startTimer (50);
 }
 
 WahWahAudioProcessorEditor::~WahWahAudioProcessorEditor()
@@ -131,6 +132,26 @@ void WahWahAudioProcessorEditor::resized()
             components[i]->setBounds (r.removeFromTop (comboBoxHeight));
 
         r = r.removeFromBottom (r.getHeight() - editorPadding);
+    }
+}
+
+//==============================================================================
+
+void WahWahAudioProcessorEditor::timerCallback()
+{
+    updateUIcomponents();
+}
+
+void WahWahAudioProcessorEditor::updateUIcomponents()
+{
+    if (processor.paramMode.getTargetValue() == processor.modeAutomatic) {
+        if (Slider* aSlider = dynamic_cast<Slider*> (findChildWithID (processor.paramFrequency.paramID)))
+            aSlider->setValue (processor.centreFrequency);
+        findChildWithID (processor.paramFrequency.paramID)->setEnabled (false);
+        findChildWithID (processor.paramLFOfrequency.paramID)->setEnabled (true);
+    } else {
+        findChildWithID (processor.paramFrequency.paramID)->setEnabled (true);
+        findChildWithID (processor.paramLFOfrequency.paramID)->setEnabled (false);
     }
 }
 

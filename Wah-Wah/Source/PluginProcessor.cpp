@@ -51,7 +51,9 @@ WahWahAudioProcessor::WahWahAudioProcessor():
                  [this](float value){ paramGain.setValue (value); updateFilters(); return value; })
     , paramFilterType (parameters, "Filter type", filterTypeItemsUI, filterTypeResonantLowPass,
                        [this](float value){ paramFilterType.setValue (value); updateFilters(); return value; })
+    , paramLFOfrequency (parameters, "LFO Frequency", "Hz", 0.0f, 5.0f, 2.0f)
 {
+    centreFrequency = paramFrequency.getTargetValue();
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
@@ -70,6 +72,7 @@ void WahWahAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     paramQfactor.reset (sampleRate, smoothTime);
     paramGain.reset (sampleRate, smoothTime);
     paramFilterType.reset (sampleRate, smoothTime);
+    paramLFOfrequency.reset (sampleRate, smoothTime);
 
     //======================================
 
@@ -79,6 +82,10 @@ void WahWahAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
         filters.add (filter = new Filter());
     }
     updateFilters();
+
+    lfoPhase = 0.0f;
+    inverseSampleRate = 1.0f / (float)sampleRate;
+    twoPi = 2.0f * M_PI;
 }
 
 void WahWahAudioProcessor::releaseResources()
@@ -95,16 +102,35 @@ void WahWahAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
 
     //======================================
 
+    float phase;
+
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
+        phase = lfoPhase;
 
         for (int sample = 0; sample < numSamples; ++sample) {
             float in = channelData[sample];
+
+            if (paramMode.getTargetValue() == modeAutomatic) {
+                centreFrequency = 0.5f + 0.5f * sinf (twoPi * phase);
+                centreFrequency *= paramFrequency.maxValue - paramFrequency.minValue;
+                centreFrequency += paramFrequency.minValue;
+
+                phase += paramLFOfrequency.getNextValue() * inverseSampleRate;
+                if (phase >= 1.0f)
+                    phase -= 1.0f;
+
+                paramFrequency.setValue (centreFrequency);
+                updateFilters();
+            }
+
             float filtered = filters[channel]->processSingleSampleRaw (in);
             float out = in + paramMix.getNextValue() * (filtered - in);
             channelData[sample] = out;
         }
     }
+
+    lfoPhase = phase;
 
     for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
         buffer.clear (channel, 0, numSamples);

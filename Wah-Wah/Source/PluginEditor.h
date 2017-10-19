@@ -27,7 +27,7 @@
 
 //==============================================================================
 
-class WahWahAudioProcessorEditor : public AudioProcessorEditor
+class WahWahAudioProcessorEditor : public AudioProcessorEditor, private Timer
 {
 public:
     //==============================================================================
@@ -74,6 +74,11 @@ private:
 
     OwnedArray<Label> labels;
     Array<Component*> components;
+
+    //======================================
+
+    void timerCallback() override;
+    void updateUIcomponents();
 
     //==============================================================================
 
