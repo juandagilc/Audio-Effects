@@ -98,14 +98,10 @@ WahWahAudioProcessorEditor::WahWahAudioProcessorEditor (WahWahAudioProcessor& p)
         }
     }
 
-    addAndMakeVisible (&bandwidthLabel);
-    editorHeight += 20;
-
     //======================================
 
     editorHeight += components.size() * editorPadding;
     setSize (editorWidth, editorHeight);
-    startTimer (50);
 }
 
 WahWahAudioProcessorEditor::~WahWahAudioProcessorEditor()
@@ -136,50 +132,6 @@ void WahWahAudioProcessorEditor::resized()
 
         r = r.removeFromBottom (r.getHeight() - editorPadding);
     }
-
-    bandwidthLabel.setBounds (0, getBottom() - 20, getWidth(), 20);
-}
-
-//==============================================================================
-
-void WahWahAudioProcessorEditor::timerCallback()
-{
-    updateUIcomponents();
-}
-
-void WahWahAudioProcessorEditor::updateUIcomponents()
-{
-    String bandwidthText = String::formatted ("Bandwidth: %.1fHz",
-                                              processor.paramFrequency.getTargetValue() /
-                                              processor.paramQfactor.getTargetValue());
-
-    bandwidthLabel.setText (bandwidthText, dontSendNotification);
-
-    //======================================
-
-    bool filterTypeDoesNotHaveQfactor =
-        processor.paramFilterType.getTargetValue() == processor.filterTypeLowPass ||
-        processor.paramFilterType.getTargetValue() == processor.filterTypeHighPass ||
-        processor.paramFilterType.getTargetValue() == processor.filterTypeLowShelf ||
-        processor.paramFilterType.getTargetValue() == processor.filterTypeHighShelf;
-    bool filterTypeDoesNotHaveGain =
-        processor.paramFilterType.getTargetValue() == processor.filterTypeLowPass ||
-        processor.paramFilterType.getTargetValue() == processor.filterTypeHighPass ||
-        processor.paramFilterType.getTargetValue() == processor.filterTypeBandPass ||
-        processor.paramFilterType.getTargetValue() == processor.filterTypeBandStop;
-
-    if (filterTypeDoesNotHaveQfactor) {
-        findChildWithID (processor.paramQfactor.paramID)->setEnabled (false);
-        bandwidthLabel.setVisible (false);
-    } else {
-        findChildWithID (processor.paramQfactor.paramID)->setEnabled (true);
-        bandwidthLabel.setVisible (true);
-    }
-
-    if (filterTypeDoesNotHaveGain)
-        findChildWithID (processor.paramGain.paramID)->setEnabled (false);
-    else
-        findChildWithID (processor.paramGain.paramID)->setEnabled (true);
 }
 
 //==============================================================================
