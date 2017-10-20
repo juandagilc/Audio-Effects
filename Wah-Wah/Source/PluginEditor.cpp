@@ -149,9 +149,15 @@ void WahWahAudioProcessorEditor::updateUIcomponents()
             aSlider->setValue (processor.centreFrequency);
         findChildWithID (processor.paramFrequency.paramID)->setEnabled (false);
         findChildWithID (processor.paramLFOfrequency.paramID)->setEnabled (true);
+        findChildWithID (processor.paramMixLFOandEnvelope.paramID)->setEnabled (true);
+        findChildWithID (processor.paramEnvelopeAttack.paramID)->setEnabled (true);
+        findChildWithID (processor.paramEnvelopeRelease.paramID)->setEnabled (true);
     } else {
         findChildWithID (processor.paramFrequency.paramID)->setEnabled (true);
         findChildWithID (processor.paramLFOfrequency.paramID)->setEnabled (false);
+        findChildWithID (processor.paramMixLFOandEnvelope.paramID)->setEnabled (false);
+        findChildWithID (processor.paramEnvelopeAttack.paramID)->setEnabled (false);
+        findChildWithID (processor.paramEnvelopeRelease.paramID)->setEnabled (false);
     }
 }
 

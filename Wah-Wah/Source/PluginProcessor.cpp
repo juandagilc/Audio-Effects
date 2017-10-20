@@ -52,6 +52,9 @@ WahWahAudioProcessor::WahWahAudioProcessor():
     , paramFilterType (parameters, "Filter type", filterTypeItemsUI, filterTypeResonantLowPass,
                        [this](float value){ paramFilterType.setValue (value); updateFilters(); return value; })
     , paramLFOfrequency (parameters, "LFO Frequency", "Hz", 0.0f, 5.0f, 2.0f)
+    , paramMixLFOandEnvelope (parameters, "LFO/Env", "", 0.0f, 1.0f, 0.8f)
+    , paramEnvelopeAttack (parameters, "Env. Attack", "ms", 0.1f, 100.0f, 2.0f, [](float value){ return value * 0.001f; })
+    , paramEnvelopeRelease (parameters, "Env. Release", "ms", 10.0f, 1000.0f, 300.0f, [](float value){ return value * 0.001f; })
 {
     centreFrequency = paramFrequency.getTargetValue();
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
@@ -73,6 +76,9 @@ void WahWahAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     paramGain.reset (sampleRate, smoothTime);
     paramFilterType.reset (sampleRate, smoothTime);
     paramLFOfrequency.reset (sampleRate, smoothTime);
+    paramMixLFOandEnvelope.reset (sampleRate, smoothTime);
+    paramEnvelopeAttack.reset (sampleRate, smoothTime);
+    paramEnvelopeRelease.reset (sampleRate, smoothTime);
 
     //======================================
 
@@ -86,6 +92,10 @@ void WahWahAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     lfoPhase = 0.0f;
     inverseSampleRate = 1.0f / (float)sampleRate;
     twoPi = 2.0f * M_PI;
+
+    for (int i = 0; i < getTotalNumInputChannels(); ++i)
+        envelopes.add (0.0f);
+    inverseE = 1.0f / M_E;
 }
 
 void WahWahAudioProcessor::releaseResources()
@@ -111,8 +121,24 @@ void WahWahAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
         for (int sample = 0; sample < numSamples; ++sample) {
             float in = channelData[sample];
 
+            float absIn = fabs (in);
+            float envelope;
+            float attack = calculateAttackOrRelease (paramEnvelopeAttack.getNextValue());
+            float release = calculateAttackOrRelease (paramEnvelopeRelease.getNextValue());
+
+            if (absIn > envelopes[channel])
+                envelope = attack * envelopes[channel] + (1.0f - attack) * absIn;
+            else
+                envelope = release * envelopes[channel] + (1.0f - release) * absIn;
+                
+            envelopes.set (channel, envelope);
+
             if (paramMode.getTargetValue() == modeAutomatic) {
-                centreFrequency = 0.5f + 0.5f * sinf (twoPi * phase);
+                float centreFrequencyLFO = 0.5f + 0.5f * sinf (twoPi * phase);
+                float centreFrequencyEnv = envelopes[channel];
+                centreFrequency =
+                    centreFrequencyLFO + paramMixLFOandEnvelope.getNextValue() * (centreFrequencyEnv - centreFrequencyLFO);
+                
                 centreFrequency *= paramFrequency.maxValue - paramFrequency.minValue;
                 centreFrequency += paramFrequency.minValue;
 
@@ -147,6 +173,14 @@ void WahWahAudioProcessor::updateFilters()
 
     for (int i = 0; i < filters.size(); ++i)
         filters[i]->updateCoefficients (discreteFrequency, qFactor, gain, type);
+}
+
+float WahWahAudioProcessor::calculateAttackOrRelease (float value)
+{
+    if (value == 0.0f)
+        return 0.0f;
+    else
+        return pow (inverseE, inverseSampleRate / value);
 }
 
 //==============================================================================

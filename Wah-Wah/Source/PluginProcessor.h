@@ -177,6 +177,10 @@ public:
     float inverseSampleRate;
     float twoPi;
 
+    Array<float> envelopes;
+    float inverseE;
+    float calculateAttackOrRelease (float value);
+
     //======================================
 
     PluginParametersManager parameters;
@@ -188,6 +192,9 @@ public:
     PluginParameterLinSlider paramGain;
     PluginParameterComboBox paramFilterType;
     PluginParameterLinSlider paramLFOfrequency;
+    PluginParameterLinSlider paramMixLFOandEnvelope;
+    PluginParameterLinSlider paramEnvelopeAttack;
+    PluginParameterLinSlider paramEnvelopeRelease;
 
 private:
     //==============================================================================
