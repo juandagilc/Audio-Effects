@@ -49,8 +49,8 @@
 					"numoutlets" : 8,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
-					"patching_rect" : [ 15.0, 135.0, 405.0, 150.0 ],
-					"presentation_linecount" : 4,
+					"patching_rect" : [ 15.0, 135.0, 405.0, 255.0 ],
+					"presentation_linecount" : 3,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
 					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Phaser/Products/Phaser.vst", ";" ],
 					"saved_attribute_attributes" : 					{
@@ -85,9 +85,9 @@
 							"version" : 1,
 							"isbank" : 0,
 							"isbase64" : 1,
-							"sliderorder" : [ 0, 1, 2, 3 ],
-							"slidervisibility" : [ 1, 1, 1, 1 ],
-							"blob" : "248.CMlaKA....fQPMDZ....A.WXkEG....Y....A..........................................uVMjLgLK....OPElbg0VYzIWZiUTT9vCTAIUPMARZj0iHlIWYwUWYtMVdh.hcgwVck0iHwTCLvHxK9vCTAIUPMARZj0iHwYVXiQ2axIBH1EFa0UVOhDiKzDCMxDyL0LCNwXSN3XCL3LSN3HxK9vCTAIUPMARZj0iHmEVZtIBH1EFa0UVOhDiLh7hO7.UPRETSfjFY8HhYowFckIGc4AWYh.hcgwVck0iH1HxK9vyKPElbg0VYzIWZiUTT9.."
+							"sliderorder" : [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+							"slidervisibility" : [ 1, 1, 1, 1, 1, 1, 1, 1 ],
+							"blob" : "405.CMlaKA....fQPMDZ....A.GZyIG....Y....A........................................DPVVMjLg.U....OPgVXyUlb9vCTAIUPMARZj0iHjUFbzglHfXWXrUWY8HRLh7hO7.UPRETSfjFY8HhYkUFYhE1XqIBH1EFa0UVOh.iK1jSN4jSN4fCNvbSNvbSLvPCM4HiHu3COPEjTA0DHoQVOh3VcsIVYx8lYlkFazUlbyIBH1EFa0UVOhDiHu3COPEjTA0DHoQVOhzVZt4hYxUVb0UlaikmHfXWXrUWY8HBNvHxK9vCTAIUPMARZj0iHycWYkA2coQFcnIBH1EFa0UVOhDCLv.iHu3COPEjTA0DHoQVOhvlYuYlbkEWck41X4IBH1EFa0UVOh.iKvTCLv.CLv.CL2PSMvTCNvTSN1jiLh7hO7.UPRETSfjFY8HBal81cgYWYl8lbsIBH1EFa0UVOh.iHu3COPEjTA0DHoQVOhLGckIWYuIBH1EFa0UVOhDiHu3COu.EZgMWYx4C."
 						}
 ,
 						"snapshotlist" : 						{
@@ -109,9 +109,9 @@
 										"version" : 1,
 										"isbank" : 0,
 										"isbase64" : 1,
-										"sliderorder" : [ 0, 1, 2, 3 ],
-										"slidervisibility" : [ 1, 1, 1, 1 ],
-										"blob" : "248.CMlaKA....fQPMDZ....A.WXkEG....Y....A..........................................uVMjLgLK....OPElbg0VYzIWZiUTT9vCTAIUPMARZj0iHlIWYwUWYtMVdh.hcgwVck0iHwTCLvHxK9vCTAIUPMARZj0iHwYVXiQ2axIBH1EFa0UVOhDiKzDCMxDyL0LCNwXSN3XCL3LSN3HxK9vCTAIUPMARZj0iHmEVZtIBH1EFa0UVOhDiLh7hO7.UPRETSfjFY8HhYowFckIGc4AWYh.hcgwVck0iH1HxK9vyKPElbg0VYzIWZiUTT9.."
+										"sliderorder" : [ 0, 1, 2, 3, 4, 5, 6, 7 ],
+										"slidervisibility" : [ 1, 1, 1, 1, 1, 1, 1, 1 ],
+										"blob" : "405.CMlaKA....fQPMDZ....A.GZyIG....Y....A........................................DPVVMjLg.U....OPgVXyUlb9vCTAIUPMARZj0iHjUFbzglHfXWXrUWY8HRLh7hO7.UPRETSfjFY8HhYkUFYhE1XqIBH1EFa0UVOh.iK1jSN4jSN4fCNvbSNvbSLvPCM4HiHu3COPEjTA0DHoQVOh3VcsIVYx8lYlkFazUlbyIBH1EFa0UVOhDiHu3COPEjTA0DHoQVOhzVZt4hYxUVb0UlaikmHfXWXrUWY8HBNvHxK9vCTAIUPMARZj0iHycWYkA2coQFcnIBH1EFa0UVOhDCLv.iHu3COPEjTA0DHoQVOhvlYuYlbkEWck41X4IBH1EFa0UVOh.iKvTCLv.CLv.CL2PSMvTCNvTSN1jiLh7hO7.UPRETSfjFY8HBal81cgYWYl8lbsIBH1EFa0UVOh.iHu3COPEjTA0DHoQVOhLGckIWYuIBH1EFa0UVOhDiHu3COu.EZgMWYx4C."
 									}
 ,
 									"fileref" : 									{
@@ -119,7 +119,7 @@
 										"filename" : "Phaser.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "168c01f88f51f4593d641a411f44885b"
+										"snapshotfileid" : "a31a6244e79c5a32e643a9a80ac97097"
 									}
 
 								}
@@ -141,7 +141,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.0, 300.0, 45.0, 45.0 ],
+					"patching_rect" : [ 15.0, 405.0, 45.0, 45.0 ],
 					"style" : ""
 				}
 
@@ -193,21 +193,21 @@
 								"filekind" : "audiofile",
 								"loop" : 1,
 								"content_state" : 								{
+									"followglobaltempo" : [ 0 ],
 									"formant" : [ 1.0 ],
 									"timestretch" : [ 0 ],
-									"formantcorrection" : [ 0 ],
-									"followglobaltempo" : [ 0 ],
 									"basictuning" : [ 440 ],
-									"mode" : [ "basic" ],
-									"pitchcorrection" : [ 0 ],
-									"originallength" : [ 0.0, "ticks" ],
-									"pitchshift" : [ 1.0 ],
-									"originaltempo" : [ 120.0 ],
-									"play" : [ 0 ],
-									"quality" : [ "basic" ],
 									"originallengthms" : [ 0.0 ],
+									"play" : [ 0 ],
+									"formantcorrection" : [ 0 ],
+									"mode" : [ "basic" ],
+									"originaltempo" : [ 120.0 ],
+									"pitchshift" : [ 1.0 ],
+									"originallength" : [ 0.0, "ticks" ],
 									"speed" : [ 1.0 ],
-									"slurtime" : [ 0.0 ]
+									"pitchcorrection" : [ 0 ],
+									"slurtime" : [ 0.0 ],
+									"quality" : [ "basic" ]
 								}
 
 							}

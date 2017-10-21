@@ -93,24 +93,18 @@ public:
 
     //==============================================================================
 
-    StringArray filterTypeItemsUI = {
-        "Low-pass",
-        "High-pass",
-        "Low-shelf",
-        "High-shelf",
-        "Band-pass",
-        "Band-stop",
-        "Peaking/Notch"
+    StringArray waveformItemsUI = {
+        "Sine",
+        "Triangle",
+        "Square",
+        "Sawtooth"
     };
 
-    enum filterTypeIndex {
-        filterTypeLowPass = 0,
-        filterTypeHighPass,
-        filterTypeLowShelf,
-        filterTypeHighShelf,
-        filterTypeBandPass,
-        filterTypeBandStop,
-        filterTypePeakingNotch,
+    enum waveformIndex {
+        waveformSine = 0,
+        waveformTriangle,
+        waveformSquare,
+        waveformSawtooth,
     };
 
     //======================================
@@ -118,101 +112,49 @@ public:
     class Filter : public IIRFilter
     {
     public:
-        void updateCoefficients (const double discreteFrequency,
-                                 const double qFactor,
-                                 const double gain,
-                                 const int filterType) noexcept
+        void updateCoefficients (const double discreteFrequency) noexcept
         {
             jassert (discreteFrequency > 0);
-            jassert (qFactor > 0);
 
-            const double bandwidth = jmin (discreteFrequency / qFactor, M_PI * 0.99);
-            const double two_cos_wc = -2.0 * cos (discreteFrequency);
-            const double tan_half_bw = tan (bandwidth / 2.0);
-            const double tan_half_wc = tan (discreteFrequency / 2.0);
-            const double sqrt_gain = sqrt (gain);
+            const double wc = jmin (discreteFrequency, M_PI * 0.99);
+            const double tan_half_wc = tan (wc / 2.0);
 
-            switch (filterType) {
-                case filterTypeLowPass: {
-                    coefficients = IIRCoefficients (/* b0 */ tan_half_wc,
-                                                    /* b1 */ tan_half_wc,
-                                                    /* b2 */ 0.0,
-                                                    /* a0 */ tan_half_wc + 1.0,
-                                                    /* a1 */ tan_half_wc - 1.0,
-                                                    /* a2 */ 0.0);
-                    break;
-                }
-                case filterTypeHighPass: {
-                    coefficients = IIRCoefficients (/* b0 */ 1.0,
-                                                    /* b1 */ -1.0,
-                                                    /* b2 */ 0.0,
-                                                    /* a0 */ tan_half_wc + 1.0,
-                                                    /* a1 */ tan_half_wc - 1.0,
-                                                    /* a2 */ 0.0);
-                    break;
-                }
-                case filterTypeLowShelf: {
-                    coefficients = IIRCoefficients (/* b0 */ gain * tan_half_wc + sqrt_gain,
-                                                    /* b1 */ gain * tan_half_wc - sqrt_gain,
-                                                    /* b2 */ 0.0,
-                                                    /* a0 */ tan_half_wc + sqrt_gain,
-                                                    /* a1 */ tan_half_wc - sqrt_gain,
-                                                    /* a2 */ 0.0);
-                    break;
-                }
-                case filterTypeHighShelf: {
-                    coefficients = IIRCoefficients (/* b0 */ sqrt_gain * tan_half_wc + gain,
-                                                    /* b1 */ sqrt_gain * tan_half_wc - gain,
-                                                    /* b2 */ 0.0,
-                                                    /* a0 */ sqrt_gain * tan_half_wc + 1.0,
-                                                    /* a1 */ sqrt_gain * tan_half_wc - 1.0,
-                                                    /* a2 */ 0.0);
-                    break;
-                }
-                case filterTypeBandPass: {
-                    coefficients = IIRCoefficients (/* b0 */ tan_half_bw,
-                                                    /* b1 */ 0.0,
-                                                    /* b2 */ -tan_half_bw,
-                                                    /* a0 */ 1.0 + tan_half_bw,
-                                                    /* a1 */ two_cos_wc,
-                                                    /* a2 */ 1.0 - tan_half_bw);
-                    break;
-                }
-                case filterTypeBandStop: {
-                    coefficients = IIRCoefficients (/* b0 */ 1.0,
-                                                    /* b1 */ two_cos_wc,
-                                                    /* b2 */ 1.0,
-                                                    /* a0 */ 1.0 + tan_half_bw,
-                                                    /* a1 */ two_cos_wc,
-                                                    /* a2 */ 1.0 - tan_half_bw);
-                    break;
-                }
-                case filterTypePeakingNotch: {
-                    coefficients = IIRCoefficients (/* b0 */ sqrt_gain + gain * tan_half_bw,
-                                                    /* b1 */ sqrt_gain * two_cos_wc,
-                                                    /* b2 */ sqrt_gain - gain * tan_half_bw,
-                                                    /* a0 */ sqrt_gain + tan_half_bw,
-                                                    /* a1 */ sqrt_gain * two_cos_wc,
-                                                    /* a2 */ sqrt_gain - tan_half_bw);
-                    break;
-                }
-            }
+            coefficients = IIRCoefficients (/* b0 */ tan_half_wc - 1.0,
+                                            /* b1 */ tan_half_wc + 1.0,
+                                            /* b2 */ 0.0,
+                                            /* a0 */ tan_half_wc + 1.0,
+                                            /* a1 */ tan_half_wc - 1.0,
+                                            /* a2 */ 0.0);
 
             setCoefficients (coefficients);
         }
     };
 
     OwnedArray<Filter> filters;
-    void updateFilters();
+    Array<float> filteredOutputs;
+    void updateFilters (double centreFrequency);
+    int numFiltersPerChannel;
+    unsigned int sampleCountToUpdateFilters;
+    unsigned int updateFiltersInterval;
+
+    float lfoPhase;
+    float inverseSampleRate;
+    float twoPi;
+
+    float lfo (float phase, int waveform);
 
     //======================================
 
     PluginParametersManager parameters;
 
-    PluginParameterLogSlider paramFrequency;
-    PluginParameterLinSlider paramQfactor;
-    PluginParameterLinSlider paramGain;
-    PluginParameterComboBox paramFilterType;
+    PluginParameterLinSlider paramDepth;
+    PluginParameterLinSlider paramFeedback;
+    PluginParameterComboBox paramNumFilters;
+    PluginParameterLogSlider paramMinFrequency;
+    PluginParameterLogSlider paramSweepWidth;
+    PluginParameterLinSlider paramLFOfrequency;
+    PluginParameterComboBox paramLFOwaveform;
+    PluginParameterToggle paramStereo;
 
 private:
     //==============================================================================

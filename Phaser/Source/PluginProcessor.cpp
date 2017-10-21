@@ -41,14 +41,15 @@ PhaserAudioProcessor::PhaserAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , paramFrequency (parameters, "Frequency", "Hz", 10.0f, 20000.0f, 1500.0f,
-                      [this](float value){ paramFrequency.setValue (value); updateFilters(); return value; })
-    , paramQfactor (parameters, "Q Factor", "", 0.1f, 20.0f, sqrt (2.0f),
-                    [this](float value){ paramQfactor.setValue (value); updateFilters(); return value; })
-    , paramGain (parameters, "Gain", "dB", -12.0f, 12.0f, 12.0f,
-                 [this](float value){ paramGain.setValue (value); updateFilters(); return value; })
-    , paramFilterType (parameters, "Filter type", filterTypeItemsUI, filterTypePeakingNotch,
-                       [this](float value){ paramFilterType.setValue (value); updateFilters(); return value; })
+    , paramDepth (parameters, "Depth", "", 0.0f, 1.0f, 1.0f)
+    , paramFeedback (parameters, "Feedback", "", 0.0f, 0.9f, 0.7f)
+    , paramNumFilters (parameters, "Number of filters", {"2", "4", "6", "8", "10"}, 1,
+                       [this](float value){ return paramNumFilters.items[(int)value].getFloatValue(); })
+    , paramMinFrequency (parameters, "Min. Frequency", "Hz", 50.0f, 1000.0f, 80.0f)
+    , paramSweepWidth (parameters, "Sweep width", "Hz", 50.0f, 3000.0f, 1000.0f)
+    , paramLFOfrequency (parameters, "LFO Frequency", "Hz", 0.0f, 2.0f, 0.05f)
+    , paramLFOwaveform (parameters, "LFO Waveform", waveformItemsUI, waveformSine)
+    , paramStereo (parameters, "Stereo", true)
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -62,19 +63,35 @@ PhaserAudioProcessor::~PhaserAudioProcessor()
 void PhaserAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
-    paramFrequency.reset (sampleRate, smoothTime);
-    paramQfactor.reset (sampleRate, smoothTime);
-    paramGain.reset (sampleRate, smoothTime);
-    paramFilterType.reset (sampleRate, smoothTime);
+    paramDepth.reset (sampleRate, smoothTime);
+    paramFeedback.reset (sampleRate, smoothTime);
+    paramNumFilters.reset (sampleRate, smoothTime);
+    paramMinFrequency.reset (sampleRate, smoothTime);
+    paramSweepWidth.reset (sampleRate, smoothTime);
+    paramLFOfrequency.reset (sampleRate, smoothTime);
+    paramLFOwaveform.reset (sampleRate, smoothTime);
+    paramStereo.reset (sampleRate, smoothTime);
 
     //======================================
 
+    numFiltersPerChannel = paramNumFilters.callback (paramNumFilters.items.size() - 1);
+
     filters.clear();
-    for (int i = 0; i < getTotalNumInputChannels(); ++i) {
+    for (int i = 0; i < getTotalNumInputChannels() * numFiltersPerChannel; ++i) {
         Filter* filter;
         filters.add (filter = new Filter());
     }
-    updateFilters();
+
+    filteredOutputs.clear();
+    for (int i = 0; i < getTotalNumInputChannels(); ++i)
+        filteredOutputs.add (0.0f);
+
+    sampleCountToUpdateFilters = 0;
+    updateFiltersInterval = 32;
+
+    lfoPhase = 0.0f;
+    inverseSampleRate = 1.0f / (float)sampleRate;
+    twoPi = 2.0f * M_PI;
 }
 
 void PhaserAudioProcessor::releaseResources()
@@ -91,10 +108,46 @@ void PhaserAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
 
     //======================================
 
+    float phase;
+    float phaseMain;
+    unsigned int sampleCount;
+
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
-        filters[channel]->processSamples (channelData, numSamples);
+        sampleCount = sampleCountToUpdateFilters;
+        phase = lfoPhase;
+        if ((bool)paramStereo.getTargetValue() && channel != 0)
+            phase = fmodf (phase + 0.25f, 1.0f);
+
+        for (int sample = 0; sample < numSamples; ++sample) {
+            float in = channelData[sample];
+
+            float centreFrequency = lfo (phase, (int)paramLFOwaveform.getTargetValue());
+            centreFrequency *= paramSweepWidth.getNextValue();
+            centreFrequency += paramMinFrequency.getNextValue();
+
+            phase += paramLFOfrequency.getNextValue() * inverseSampleRate;
+            if (phase >= 1.0f)
+                phase -= 1.0f;
+
+            if (sampleCount++ % updateFiltersInterval == 0)
+                updateFilters (centreFrequency);
+
+            float filtered = in + paramFeedback.getNextValue() * filteredOutputs[channel];
+            for (int i = 0; i < paramNumFilters.getTargetValue(); ++i)
+                filtered = filters[channel * paramNumFilters.getTargetValue() + i]->processSingleSampleRaw (filtered);
+
+            filteredOutputs.set (channel, filtered);
+            float out = in + paramDepth.getNextValue() * (filtered - in) * 0.5f;
+            channelData[sample] = out;
+        }
+
+        if (channel == 0)
+            phaseMain = phase;
     }
+
+    sampleCountToUpdateFilters = sampleCount;
+    lfoPhase = phaseMain;
 
     for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
         buffer.clear (channel, 0, numSamples);
@@ -102,15 +155,51 @@ void PhaserAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
 
 //==============================================================================
 
-void PhaserAudioProcessor::updateFilters()
+void PhaserAudioProcessor::updateFilters (double centreFrequency)
 {
-    double discreteFrequency = 2.0 * M_PI * (double)paramFrequency.getTargetValue() / getSampleRate();
-    double qFactor = (double)paramQfactor.getTargetValue();
-    double gain = pow (10.0, (double)paramGain.getTargetValue() * 0.05);
-    int type = (int)paramFilterType.getTargetValue();
+    double discreteFrequency = twoPi * centreFrequency * inverseSampleRate;
 
     for (int i = 0; i < filters.size(); ++i)
-        filters[i]->updateCoefficients (discreteFrequency, qFactor, gain, type);
+        filters[i]->updateCoefficients (discreteFrequency);
+}
+
+//==============================================================================
+
+float PhaserAudioProcessor::lfo (float phase, int waveform)
+{
+    float out = 0.0f;
+
+    switch (waveform) {
+        case waveformSine: {
+            out = 0.5f + 0.5f * sinf (twoPi * phase);
+            break;
+        }
+        case waveformTriangle: {
+            if (phase < 0.25f)
+                out = 0.5f + 2.0f * phase;
+            else if (phase < 0.75f)
+                out = 1.0f - 2.0f * (phase - 0.25f);
+            else
+                out = 2.0f * (phase - 0.75f);
+            break;
+        }
+        case waveformSquare: {
+            if (phase < 0.5f)
+                out = 1.0f;
+            else
+                out = 0.0f;
+            break;
+        }
+        case waveformSawtooth: {
+            if (phase < 0.5f)
+                out = 0.5f + phase;
+            else
+                out = phase - 0.5f;
+            break;
+        }
+    }
+
+    return out;
 }
 
 //==============================================================================
