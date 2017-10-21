@@ -27,7 +27,7 @@
 
 //==============================================================================
 
-class PhaserAudioProcessorEditor : public AudioProcessorEditor, private Timer
+class PhaserAudioProcessorEditor : public AudioProcessorEditor
 {
 public:
     //==============================================================================
@@ -74,12 +74,6 @@ private:
 
     OwnedArray<Label> labels;
     Array<Component*> components;
-
-    //======================================
-
-    void timerCallback() override;
-    void updateUIcomponents();
-    Label bandwidthLabel;
 
     //==============================================================================
 
