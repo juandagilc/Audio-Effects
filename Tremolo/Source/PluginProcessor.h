@@ -93,12 +93,39 @@ public:
 
     //==============================================================================
 
+    StringArray waveformItemsUI = {
+        "Sine",
+        "Triangle",
+        "Sawtooth (rising)",
+        "Sawtooth (falling)",
+        "Square",
+        "Square with sloped edges"
+    };
+
+    enum waveformIndex {
+        waveformSine = 0,
+        waveformTriangle,
+        waveformSawtooth,
+        waveformInverseSawtooth,
+        waveformSquare,
+        waveformSquareSlopedEdges,
+    };
+
+    //======================================
+
+    float lfoPhase;
+    float inverseSampleRate;
+    float twoPi;
+
+    float lfo (float phase, int waveform);
+
+    //======================================
+
     PluginParametersManager parameters;
 
-    PluginParameterLinSlider parameter1;
-    PluginParameterLinSlider parameter2;
-    PluginParameterToggle parameter3;
-    PluginParameterComboBox parameter4;
+    PluginParameterLinSlider paramDepth;
+    PluginParameterLinSlider paramFrequency;
+    PluginParameterComboBox paramWaveform;
 
 private:
     //==============================================================================
