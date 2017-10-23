@@ -42,8 +42,8 @@ RingModulationAudioProcessor::RingModulationAudioProcessor():
 #endif
     parameters (*this)
     , paramDepth (parameters, "Depth", "", 0.0f, 1.0f, 0.5f)
-    , paramFrequency (parameters, "LFO Frequency", "Hz", 0.0f, 10.0f, 2.0f)
-    , paramWaveform (parameters, "LFO Waveform", waveformItemsUI, waveformSine)
+    , paramFrequency (parameters, "Carrier frequency", "Hz", 10.0f, 1000.0f, 200.0f)
+    , paramWaveform (parameters, "Carrier waveform", waveformItemsUI, waveformSine)
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -92,8 +92,8 @@ void RingModulationAudioProcessor::processBlock (AudioSampleBuffer& buffer, Midi
 
         for (int sample = 0; sample < numSamples; ++sample) {
             const float in = channelData[sample];
-            float modulation = lfo (phase, (int)paramWaveform.getTargetValue());
-            float out = in * (1 - currentDepth + currentDepth * modulation);
+            float carrier = 2.0f * lfo (phase, (int)paramWaveform.getTargetValue()) - 1.0f;
+            float out = in * (1 - currentDepth + currentDepth * carrier);
 
             channelData[sample] = out;
 

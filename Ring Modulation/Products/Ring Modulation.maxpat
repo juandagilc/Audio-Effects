@@ -49,8 +49,8 @@
 					"numoutlets" : 8,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
-					"patching_rect" : [ 15.0, 135.0, 390.0, 120.0 ],
-					"presentation_linecount" : 3,
+					"patching_rect" : [ 15.0, 135.0, 435.0, 135.0 ],
+					"presentation_linecount" : 4,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
 					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Ring Modulation/Products/Ring Modulation.vst", ";" ],
 					"saved_attribute_attributes" : 					{
@@ -87,7 +87,7 @@
 							"isbase64" : 1,
 							"sliderorder" : [ 0, 1, 2 ],
 							"slidervisibility" : [ 1, 1, 1 ],
-							"blob" : "190.CMlaKA....fQPMDZ....APmbswF....Y....A.........................................ffVMjLgjG....OTIWYs8Fau4COPEjTA0DHoQVOhPVYvQGZh.hcgwVck0iHv3RMh7hO7.UPRETSfjFY8HBal8lYxUVb0UlaikmHfXWXrUWY8HhLh7hO7.UPRETSfjFY8HBal81cgYWYl8lbsIBH1EFa0UVOh.iHu3COuPkbk01ar8lO.."
+							"blob" : "214.CMlaKA....fQPMDZ....AHWauQF....Y....A.........................................flVMjLgDI....ORklam0zajUGagQWZu4lO7.UPRETSfjFY8HBYkAGcnIBH1EFa0UVOh.iK0HxK9vCTAIUPMARZj0iHiElbxkVYxYlbkEWck41X4IBH1EFa0UVOhHCLvHxK9vCTAIUPMARZj0iHiElbxkVYxcWX1UlYuIWah.hcgwVck0iHvHxK9vyKRklam0zajUGagQWZu4lO.."
 						}
 ,
 						"snapshotlist" : 						{
@@ -111,7 +111,7 @@
 										"isbase64" : 1,
 										"sliderorder" : [ 0, 1, 2 ],
 										"slidervisibility" : [ 1, 1, 1 ],
-										"blob" : "190.CMlaKA....fQPMDZ....APmbswF....Y....A.........................................ffVMjLgjG....OTIWYs8Fau4COPEjTA0DHoQVOhPVYvQGZh.hcgwVck0iHv3RMh7hO7.UPRETSfjFY8HBal8lYxUVb0UlaikmHfXWXrUWY8HhLh7hO7.UPRETSfjFY8HBal81cgYWYl8lbsIBH1EFa0UVOh.iHu3COuPkbk01ar8lO.."
+										"blob" : "214.CMlaKA....fQPMDZ....AHWauQF....Y....A.........................................flVMjLgDI....ORklam0zajUGagQWZu4lO7.UPRETSfjFY8HBYkAGcnIBH1EFa0UVOh.iK0HxK9vCTAIUPMARZj0iHiElbxkVYxYlbkEWck41X4IBH1EFa0UVOhHCLvHxK9vCTAIUPMARZj0iHiElbxkVYxcWX1UlYuIWah.hcgwVck0iHvHxK9vyKRklam0zajUGagQWZu4lO.."
 									}
 ,
 									"fileref" : 									{
@@ -119,7 +119,7 @@
 										"filename" : "Ring Modulation.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "f251d3ff0801b1b8ddd5881d049b488b"
+										"snapshotfileid" : "e4e4d90c94ee086042500891aad146ab"
 									}
 
 								}
@@ -141,7 +141,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.0, 270.0, 45.0, 45.0 ],
+					"patching_rect" : [ 15.0, 285.0, 45.0, 45.0 ],
 					"style" : ""
 				}
 
@@ -189,25 +189,25 @@
 				"box" : 				{
 					"data" : 					{
 						"clips" : [ 							{
-								"filename" : "brushes.aif",
+								"filename" : "prim.loop.aif",
 								"filekind" : "audiofile",
 								"loop" : 1,
 								"content_state" : 								{
+									"originallengthms" : [ 0.0 ],
+									"pitchshift" : [ 1.0 ],
+									"formantcorrection" : [ 0 ],
+									"basictuning" : [ 440 ],
+									"speed" : [ 1.0 ],
+									"slurtime" : [ 0.0 ],
+									"quality" : [ "basic" ],
 									"pitchcorrection" : [ 0 ],
-									"timestretch" : [ 0 ],
-									"followglobaltempo" : [ 0 ],
-									"originallength" : [ 0.0, "ticks" ],
-									"formant" : [ 1.0 ],
 									"play" : [ 0 ],
 									"mode" : [ "basic" ],
-									"pitchshift" : [ 1.0 ],
-									"originaltempo" : [ 120.0 ],
-									"basictuning" : [ 440 ],
-									"slurtime" : [ 0.0 ],
-									"originallengthms" : [ 0.0 ],
-									"quality" : [ "basic" ],
-									"speed" : [ 1.0 ],
-									"formantcorrection" : [ 0 ]
+									"formant" : [ 1.0 ],
+									"originallength" : [ 0.0, "ticks" ],
+									"followglobaltempo" : [ 0 ],
+									"timestretch" : [ 0 ],
+									"originaltempo" : [ 120.0 ]
 								}
 
 							}
@@ -300,8 +300,8 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "brushes.aif",
-				"bootpath" : "C74:/media/msp",
+				"name" : "prim.loop.aif",
+				"bootpath" : "C74:/packages/max-mxj/examples",
 				"type" : "AIFF",
 				"implicit" : 1
 			}
