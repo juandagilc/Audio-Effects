@@ -93,12 +93,31 @@ public:
 
     //==============================================================================
 
+    AudioSampleBuffer mixedDownInput;
+    float xl;
+    float yl;
+    float xg;
+    float yg;
+    float control;
+
+    float inputLevel;
+    float ylPrev;
+
+    float inverseSampleRate;
+    float inverseE;
+    float calculateAttackOrRelease (float value);
+
+    //======================================
+
     PluginParametersManager parameters;
 
-    PluginParameterLinSlider parameter1;
-    PluginParameterLinSlider parameter2;
-    PluginParameterToggle parameter3;
-    PluginParameterComboBox parameter4;
+    PluginParameterComboBox paramMode;
+    PluginParameterLinSlider paramThreshold;
+    PluginParameterLinSlider paramRatio;
+    PluginParameterLinSlider paramAttack;
+    PluginParameterLinSlider paramRelease;
+    PluginParameterLinSlider paramMakeupGain;
+    PluginParameterToggle paramBypass;
 
 private:
     //==============================================================================

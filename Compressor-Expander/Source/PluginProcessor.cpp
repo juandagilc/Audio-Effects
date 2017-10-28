@@ -41,10 +41,13 @@ CompressorExpanderAudioProcessor::CompressorExpanderAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , parameter1 (parameters, "Parameter 1", "", 0.0f, 1.0f, 0.5f, [](float value){ return value * 127.0f; })
-    , parameter2 (parameters, "Parameter 2", "", 0.0f, 1.0f, 0.5f)
-    , parameter3 (parameters, "Parameter 3", false, [](float value){ return value * (-2.0f) + 1.0f; })
-    , parameter4 (parameters, "Parameter 4", {"Option A", "Option B"}, 1)
+    , paramMode (parameters, "Mode", {"Compressor / Limiter", "Expander / Noise gate"}, 1)
+    , paramThreshold (parameters, "Threshold", "dB", -60.0f, 0.0f, -24.0f)
+    , paramRatio (parameters, "Ratio", ":1", 1.0f, 100.0f, 50.0f)
+    , paramAttack (parameters, "Attack", "ms", 0.1f, 100.0f, 2.0f, [](float value){ return value * 0.001f; })
+    , paramRelease (parameters, "Release", "ms", 10.0f, 1000.0f, 300.0f, [](float value){ return value * 0.001f; })
+    , paramMakeupGain (parameters, "Makeup gain", "dB", -12.0f, 12.0f, 0.0f)
+    , paramBypass (parameters, "Bypass")
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -58,10 +61,22 @@ CompressorExpanderAudioProcessor::~CompressorExpanderAudioProcessor()
 void CompressorExpanderAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
-    parameter1.reset (sampleRate, smoothTime);
-    parameter2.reset (sampleRate, smoothTime);
-    parameter3.reset (sampleRate, smoothTime);
-    parameter4.reset (sampleRate, smoothTime);
+    paramThreshold.reset (sampleRate, smoothTime);
+    paramRatio.reset (sampleRate, smoothTime);
+    paramAttack.reset (sampleRate, smoothTime);
+    paramRelease.reset (sampleRate, smoothTime);
+    paramMakeupGain.reset (sampleRate, smoothTime);
+    paramBypass.reset (sampleRate, smoothTime);
+
+    //======================================
+
+    mixedDownInput.setSize (1, samplesPerBlock);
+
+    inputLevel = 0.0f;
+    ylPrev = 0.0f;
+
+    inverseSampleRate = 1.0f / (float)getSampleRate();
+    inverseE = 1.0f / M_E;
 }
 
 void CompressorExpanderAudioProcessor::releaseResources()
@@ -78,41 +93,84 @@ void CompressorExpanderAudioProcessor::processBlock (AudioSampleBuffer& buffer, 
 
     //======================================
 
-    float currentParameter2 = parameter2.getNextValue();
-    float currentParameter3 = parameter3.getNextValue();
-    float currentParameter4 = parameter4.getNextValue();
-
-    float factor = currentParameter2 * currentParameter3 * currentParameter4;
-
-    for (int channel = 0; channel < numInputChannels; ++channel) {
-        float* channelData = buffer.getWritePointer (channel);
-
-        for (int sample = 0; sample < numSamples; ++sample) {
-            const float in = channelData[sample];
-            float out = in * factor;
-
-            channelData[sample] = out;
-        }
-    }
-
-    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
-        buffer.clear (channel, 0, numSamples);
+    if ((bool)paramBypass.getTargetValue())
+        return;
 
     //======================================
 
-    MidiBuffer processedMidi;
-    MidiMessage message;
-    int time;
+    mixedDownInput.clear();
+    for (int channel = 0; channel < numInputChannels; ++channel)
+        mixedDownInput.addFrom (0, 0, buffer, channel, 0, numSamples, 1.0f / numInputChannels);
 
-    for (MidiBuffer::Iterator iter (midiMessages); iter.getNextEvent (message, time);) {
-        if (message.isNoteOn()) {
-            uint8 newVel = (uint8)(parameter1.getTargetValue());
-            message = MidiMessage::noteOn (message.getChannel(), message.getNoteNumber(), newVel);
+    for (int sample = 0; sample < numSamples; ++sample) {
+        bool expander = (bool)paramMode.getTargetValue();
+        float T = paramThreshold.getNextValue();
+        float R = paramRatio.getNextValue();
+        float alphaA = calculateAttackOrRelease (paramAttack.getNextValue());
+        float alphaR = calculateAttackOrRelease (paramRelease.getNextValue());
+        float makeupGain = paramMakeupGain.getNextValue();
+
+        float inputSquared = powf (mixedDownInput.getSample (0, sample), 2.0f);
+        if (expander) {
+            const float averageFactor = 0.9999f;
+            inputLevel = averageFactor * inputLevel + (1.0f - averageFactor) * inputSquared;
+        } else {
+            inputLevel = inputSquared;
         }
-        processedMidi.addEvent (message, time);
+        xg = (inputLevel <= 1e-6f) ? -60.0f : 10.0f * log10f (inputLevel);
+
+        // Expander
+        if (expander) {
+            if (xg > T)
+                yg = xg;
+            else
+                yg = T + (xg - T) * R;
+
+            xl = xg - yg;
+
+            if (xl < ylPrev)
+                yl = alphaA * ylPrev + (1.0f - alphaA) * xl;
+            else
+                yl = alphaR * ylPrev + (1.0f - alphaR) * xl;
+
+        // Compressor
+        } else {
+            if (xg < T)
+                yg = xg;
+            else
+                yg = T + (xg - T) / R;
+
+            xl = xg - yg;
+
+            if (xl > ylPrev)
+                yl = alphaA * ylPrev + (1.0f - alphaA) * xl;
+            else
+                yl = alphaR * ylPrev + (1.0f - alphaR) * xl;
+        }
+
+        control = powf (10.0f, (makeupGain - yl) * 0.05f);
+        ylPrev = yl;
+
+        for (int channel = 0; channel < numInputChannels; ++channel) {
+            float newValue = buffer.getSample (channel, sample) * control;
+            buffer.setSample (channel, sample, newValue);
+        }
     }
 
-    midiMessages.swapWith (processedMidi);
+    //======================================
+
+    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
+        buffer.clear (channel, 0, numSamples);
+}
+
+//==============================================================================
+
+float CompressorExpanderAudioProcessor::calculateAttackOrRelease (float value)
+{
+    if (value == 0.0f)
+        return 0.0f;
+    else
+        return pow (inverseE, inverseSampleRate / value);
 }
 
 //==============================================================================
