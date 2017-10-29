@@ -93,12 +93,57 @@ public:
 
     //==============================================================================
 
+    StringArray distortionTypeItemsUI = {
+        "Hard clipping",
+        "Soft clipping",
+        "Exponential",
+        "Full-wave rectifier",
+        "Half-wave rectifier"
+    };
+
+    enum distortionTypeIndex {
+        distortionTypeHardClipping = 0,
+        distortionTypeSoftClipping,
+        distortionTypeExponential,
+        distortionTypeFullWaveRectifier,
+        distortionTypeHalfWaveRectifier,
+    };
+
+    //======================================
+
+    class Filter : public IIRFilter
+    {
+    public:
+        void updateCoefficients (const double discreteFrequency,
+                                 const double gain) noexcept
+        {
+            jassert (discreteFrequency > 0);
+
+            const double tan_half_wc = tan (discreteFrequency / 2.0);
+            const double sqrt_gain = sqrt (gain);
+
+            coefficients = IIRCoefficients (/* b0 */ sqrt_gain * tan_half_wc + gain,
+                                            /* b1 */ sqrt_gain * tan_half_wc - gain,
+                                            /* b2 */ 0.0,
+                                            /* a0 */ sqrt_gain * tan_half_wc + 1.0,
+                                            /* a1 */ sqrt_gain * tan_half_wc - 1.0,
+                                            /* a2 */ 0.0);
+
+            setCoefficients (coefficients);
+        }
+    };
+
+    OwnedArray<Filter> filters;
+    void updateFilters();
+
+    //======================================
+
     PluginParametersManager parameters;
 
-    PluginParameterLinSlider parameter1;
-    PluginParameterLinSlider parameter2;
-    PluginParameterToggle parameter3;
-    PluginParameterComboBox parameter4;
+    PluginParameterComboBox paramDistortionType;
+    PluginParameterLinSlider paramInputGain;
+    PluginParameterLinSlider paramOutputGain;
+    PluginParameterLinSlider paramTone;
 
 private:
     //==============================================================================

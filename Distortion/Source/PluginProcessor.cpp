@@ -41,10 +41,13 @@ DistortionAudioProcessor::DistortionAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , parameter1 (parameters, "Parameter 1", "", 0.0f, 1.0f, 0.5f, [](float value){ return value * 127.0f; })
-    , parameter2 (parameters, "Parameter 2", "", 0.0f, 1.0f, 0.5f)
-    , parameter3 (parameters, "Parameter 3", false, [](float value){ return value * (-2.0f) + 1.0f; })
-    , parameter4 (parameters, "Parameter 4", {"Option A", "Option B"}, 1)
+    , paramDistortionType (parameters, "Distortion type", distortionTypeItemsUI, distortionTypeFullWaveRectifier)
+    , paramInputGain (parameters, "Input gain", "dB", -24.0f, 24.0f, 12.0f,
+                      [](float value){ return powf (10.0f, value * 0.05f); })
+    , paramOutputGain (parameters, "Output gain", "dB", -24.0f, 24.0f, -24.0f,
+                       [](float value){ return powf (10.0f, value * 0.05f); })
+    , paramTone (parameters, "Tone", "dB", -24.0f, 24.0f, 12.0f,
+                 [this](float value){ paramTone.setValue (value); updateFilters(); return value; })
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -58,10 +61,19 @@ DistortionAudioProcessor::~DistortionAudioProcessor()
 void DistortionAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
-    parameter1.reset (sampleRate, smoothTime);
-    parameter2.reset (sampleRate, smoothTime);
-    parameter3.reset (sampleRate, smoothTime);
-    parameter4.reset (sampleRate, smoothTime);
+    paramDistortionType.reset (sampleRate, smoothTime);
+    paramInputGain.reset (sampleRate, smoothTime);
+    paramOutputGain.reset (sampleRate, smoothTime);
+    paramTone.reset (sampleRate, smoothTime);
+
+    //======================================
+
+    filters.clear();
+    for (int i = 0; i < getTotalNumInputChannels(); ++i) {
+        Filter* filter;
+        filters.add (filter = new Filter());
+    }
+    updateFilters();
 }
 
 void DistortionAudioProcessor::releaseResources()
@@ -78,41 +90,80 @@ void DistortionAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
 
     //======================================
 
-    float currentParameter2 = parameter2.getNextValue();
-    float currentParameter3 = parameter3.getNextValue();
-    float currentParameter4 = parameter4.getNextValue();
-
-    float factor = currentParameter2 * currentParameter3 * currentParameter4;
-
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
 
+        float out;
         for (int sample = 0; sample < numSamples; ++sample) {
-            const float in = channelData[sample];
-            float out = in * factor;
+            const float in = channelData[sample] * paramInputGain.getNextValue();
 
-            channelData[sample] = out;
+            switch ((int)paramDistortionType.getTargetValue()) {
+                case distortionTypeHardClipping: {
+                    float threshold = 0.5f;
+                    if (in > threshold)
+                        out = threshold;
+                    else if (in < -threshold)
+                        out = -threshold;
+                    else
+                        out = in;
+                    break;
+                }
+                case distortionTypeSoftClipping: {
+                    float threshold1 = 1.0f / 3.0f;
+                    float threshold2 = 2.0f / 3.0f;
+                    if (in > threshold2)
+                        out = 1.0f;
+                    else if (in > threshold1)
+                        out = 1.0f - powf (2.0f - 3.0f * in, 2.0f) / 3.0f;
+                    else if (in < -threshold2)
+                        out = -1.0f;
+                    else if (in < -threshold1)
+                        out = -1.0f + powf (2.0f + 3.0f * in, 2.0f) / 3.0f;
+                    else
+                        out = 2.0f * in;
+                    out *= 0.5f;
+                    break;
+                }
+                case distortionTypeExponential: {
+                    if (in > 0.0f)
+                        out = 1.0f - expf (-in);
+                    else
+                        out = -1.0f + expf (in);
+                    break;
+                }
+                case distortionTypeFullWaveRectifier: {
+                    out = fabsf (in);
+                    break;
+                }
+                case distortionTypeHalfWaveRectifier: {
+                    if (in > 0.0f)
+                        out = in;
+                    else
+                        out = 0.0f;
+                    break;
+                }
+            }
+
+            float filtered = filters[channel]->processSingleSampleRaw (out);
+            channelData[sample] = filtered * paramOutputGain.getNextValue();
         }
     }
-
-    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
-        buffer.clear (channel, 0, numSamples);
 
     //======================================
 
-    MidiBuffer processedMidi;
-    MidiMessage message;
-    int time;
+    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
+        buffer.clear (channel, 0, numSamples);
+}
 
-    for (MidiBuffer::Iterator iter (midiMessages); iter.getNextEvent (message, time);) {
-        if (message.isNoteOn()) {
-            uint8 newVel = (uint8)(parameter1.getTargetValue());
-            message = MidiMessage::noteOn (message.getChannel(), message.getNoteNumber(), newVel);
-        }
-        processedMidi.addEvent (message, time);
-    }
+//==============================================================================
 
-    midiMessages.swapWith (processedMidi);
+void DistortionAudioProcessor::updateFilters()
+{
+    double discreteFrequency = M_PI * 0.01;
+    double gain = pow (10.0, (double)paramTone.getTargetValue() * 0.05);
+
+    for (int i = 0; i < filters.size(); ++i)
+        filters[i]->updateCoefficients (discreteFrequency, gain);
 }
 
 //==============================================================================

@@ -9,7 +9,7 @@
 			"modernui" : 1
 		}
 ,
-		"rect" : [ 754.0, 78.0, 652.0, 783.0 ],
+		"rect" : [ 754.0, 78.0, 652.0, 784.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -49,8 +49,8 @@
 					"numoutlets" : 8,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
-					"patching_rect" : [ 15.0, 195.0, 390.0, 150.0 ],
-					"presentation_linecount" : 4,
+					"patching_rect" : [ 15.0, 135.0, 420.0, 150.0 ],
+					"presentation_linecount" : 3,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
 					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Distortion/Products/Distortion.vst", ";" ],
 					"saved_attribute_attributes" : 					{
@@ -87,7 +87,7 @@
 							"isbase64" : 1,
 							"sliderorder" : [ 0, 1, 2, 3 ],
 							"slidervisibility" : [ 1, 1, 1, 1 ],
-							"blob" : "242.CMlaKA....fQPMDZ....A.Ga0cF....Y....A.........................................fsVMjLgzJ....OTUVavwVXzUFTrU2Yo4lO7.UPRETSfjFY8HBbgIWXsUFckIWLh.hcgwVck0iHv3RMh7hO7.UPRETSfjFY8HBbgIWXsUFckImLh.hcgwVck0iHv3RMh7hO7.UPRETSfjFY8HBbgIWXsUFckI2Lh.hcgwVck0iHvHxK9vCTAIUPMARZj0iHvElbg0VYzUlbzHBH1EFa0UVOhDiHu3COuPUYsAGagQWYPwVcmkla9.."
+							"blob" : "231.CMlaKA....fQPMDZ....APVZyQG....Y....A.........................................vpVMjLgHJ....ODk1bz8lbzk1at4COPEjTA0DHoQVOhPVZyQ2axQWZu4Fc4AWYh.hcgwVck0iHyHxK9vCTAIUPMARZj0iHo4Fb0Q2Ygklah.hcgwVck0iHwHiHu3COPEjTA0DHoQVOh7VczAWczcVXo4lHfXWXrUWY8HRKwHiHu3COPEjTA0DHoQVOhP2atUlHfXWXrUWY8HRLxHxK9vyKDk1bz8lbzk1at4C."
 						}
 ,
 						"snapshotlist" : 						{
@@ -111,7 +111,7 @@
 										"isbase64" : 1,
 										"sliderorder" : [ 0, 1, 2, 3 ],
 										"slidervisibility" : [ 1, 1, 1, 1 ],
-										"blob" : "242.CMlaKA....fQPMDZ....A.Ga0cF....Y....A.........................................fsVMjLgzJ....OTUVavwVXzUFTrU2Yo4lO7.UPRETSfjFY8HBbgIWXsUFckIWLh.hcgwVck0iHv3RMh7hO7.UPRETSfjFY8HBbgIWXsUFckImLh.hcgwVck0iHv3RMh7hO7.UPRETSfjFY8HBbgIWXsUFckI2Lh.hcgwVck0iHvHxK9vCTAIUPMARZj0iHvElbg0VYzUlbzHBH1EFa0UVOhDiHu3COuPUYsAGagQWYPwVcmkla9.."
+										"blob" : "231.CMlaKA....fQPMDZ....APVZyQG....Y....A.........................................vpVMjLgHJ....ODk1bz8lbzk1at4COPEjTA0DHoQVOhPVZyQ2axQWZu4Fc4AWYh.hcgwVck0iHyHxK9vCTAIUPMARZj0iHo4Fb0Q2Ygklah.hcgwVck0iHwHiHu3COPEjTA0DHoQVOh7VczAWczcVXo4lHfXWXrUWY8HRKwHiHu3COPEjTA0DHoQVOhP2atUlHfXWXrUWY8HRLxHxK9vyKDk1bz8lbzk1at4C."
 									}
 ,
 									"fileref" : 									{
@@ -119,7 +119,25 @@
 										"filename" : "Distortion.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "850d3827a68538a6c8cccc0e2b40aed9"
+										"snapshotfileid" : "58c8fbb186cb0bb09d3e22babaf5e744"
+									}
+
+								}
+, 								{
+									"filetype" : "C74Snapshot",
+									"version" : 2,
+									"minorversion" : 0,
+									"name" : "Distortion",
+									"origin" : "Distortion.vst",
+									"type" : "VST",
+									"subtype" : "MidiEffect",
+									"embed" : 0,
+									"fileref" : 									{
+										"name" : "Distortion",
+										"filename" : "distortion.maxsnap",
+										"filepath" : "~/Documents/Max 7/Snapshots",
+										"filepos" : -1,
+										"snapshotfileid" : "c33f0e8361d1151ebfdcc517675809ab"
 									}
 
 								}
@@ -137,23 +155,11 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-8",
-					"maxclass" : "newobj",
-					"numinlets" : 1,
-					"numoutlets" : 0,
-					"patching_rect" : [ 227.0, 360.0, 49.0, 22.0 ],
-					"style" : "",
-					"text" : "midiout"
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"id" : "obj-6",
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.0, 360.0, 45.0, 45.0 ],
+					"patching_rect" : [ 15.0, 300.0, 45.0, 45.0 ],
 					"style" : ""
 				}
 
@@ -165,7 +171,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 30.0, 150.0, 33.0, 22.0 ],
+					"patching_rect" : [ 30.0, 90.0, 33.0, 22.0 ],
 					"style" : "",
 					"text" : "plug"
 				}
@@ -178,7 +184,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 65.0, 150.0, 37.0, 22.0 ],
+					"patching_rect" : [ 65.0, 90.0, 37.0, 22.0 ],
 					"style" : "",
 					"text" : "open"
 				}
@@ -191,7 +197,7 @@
 					"numinlets" : 2,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 105.0, 150.0, 47.0, 22.0 ],
+					"patching_rect" : [ 105.0, 90.0, 47.0, 22.0 ],
 					"style" : "",
 					"text" : "wclose"
 				}
@@ -201,25 +207,25 @@
 				"box" : 				{
 					"data" : 					{
 						"clips" : [ 							{
-								"filename" : "brushes.aif",
+								"filename" : "sho0630.aif",
 								"filekind" : "audiofile",
 								"loop" : 1,
 								"content_state" : 								{
-									"quality" : [ "basic" ],
-									"basictuning" : [ 440 ],
+									"play" : [ 0 ],
+									"pitchcorrection" : [ 0 ],
+									"formantcorrection" : [ 0 ],
 									"pitchshift" : [ 1.0 ],
-									"followglobaltempo" : [ 0 ],
+									"basictuning" : [ 440 ],
+									"timestretch" : [ 0 ],
 									"speed" : [ 1.0 ],
+									"mode" : [ "basic" ],
+									"followglobaltempo" : [ 0 ],
 									"originallength" : [ 0.0, "ticks" ],
 									"formant" : [ 1.0 ],
-									"play" : [ 0 ],
-									"timestretch" : [ 0 ],
-									"originaltempo" : [ 120.0 ],
 									"slurtime" : [ 0.0 ],
 									"originallengthms" : [ 0.0 ],
-									"formantcorrection" : [ 0 ],
-									"pitchcorrection" : [ 0 ],
-									"mode" : [ "basic" ]
+									"quality" : [ "basic" ],
+									"originaltempo" : [ 120.0 ]
 								}
 
 							}
@@ -238,66 +244,13 @@
 			}
 , 			{
 				"box" : 				{
-					"id" : "obj-38",
-					"maxclass" : "newobj",
-					"numinlets" : 7,
-					"numoutlets" : 2,
-					"outlettype" : [ "int", "" ],
-					"patching_rect" : [ 195.0, 150.0, 82.0, 22.0 ],
-					"style" : "",
-					"text" : "midiformat"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-37",
-					"maxclass" : "newobj",
-					"numinlets" : 2,
-					"numoutlets" : 1,
-					"outlettype" : [ "" ],
-					"patching_rect" : [ 195.0, 120.0, 56.0, 22.0 ],
-					"style" : "",
-					"text" : "pack 1 2"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-36",
-					"maxclass" : "newobj",
-					"numinlets" : 3,
-					"numoutlets" : 2,
-					"outlettype" : [ "float", "float" ],
-					"patching_rect" : [ 195.0, 90.0, 103.0, 22.0 ],
-					"style" : "",
-					"text" : "makenote 80 500"
-				}
-
-			}
-, 			{
-				"box" : 				{
-					"id" : "obj-35",
-					"maxclass" : "kslider",
-					"numinlets" : 2,
-					"numoutlets" : 2,
-					"outlettype" : [ "int", "int" ],
-					"parameter_enable" : 0,
-					"patching_rect" : [ 195.0, 15.0, 336.0, 53.0 ],
-					"presentation_rect" : [ 0.0, 0.0, 336.0, 53.0 ],
-					"style" : ""
-				}
-
-			}
-, 			{
-				"box" : 				{
 					"attr" : "bypass",
 					"id" : "obj-2",
 					"maxclass" : "attrui",
 					"numinlets" : 1,
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
-					"patching_rect" : [ 30.0, 120.0, 150.0, 22.0 ],
+					"patching_rect" : [ 30.0, 60.0, 150.0, 22.0 ],
 					"style" : ""
 				}
 
@@ -319,13 +272,6 @@
 			}
 , 			{
 				"patchline" : 				{
-					"destination" : [ "obj-8", 0 ],
-					"source" : [ "obj-1", 4 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-2", 0 ]
 				}
@@ -342,48 +288,6 @@
 				"patchline" : 				{
 					"destination" : [ "obj-1", 0 ],
 					"source" : [ "obj-3", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-36", 1 ],
-					"source" : [ "obj-35", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-36", 0 ],
-					"source" : [ "obj-35", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-37", 1 ],
-					"source" : [ "obj-36", 1 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-37", 0 ],
-					"source" : [ "obj-36", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-38", 0 ],
-					"source" : [ "obj-37", 0 ]
-				}
-
-			}
-, 			{
-				"patchline" : 				{
-					"destination" : [ "obj-1", 0 ],
-					"source" : [ "obj-38", 1 ]
 				}
 
 			}
@@ -414,9 +318,23 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "brushes.aif",
+				"name" : "sho0630.aif",
 				"bootpath" : "C74:/media/msp",
 				"type" : "AIFF",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "Distortion.maxsnap",
+				"bootpath" : "~/Documents/Max 7/Snapshots",
+				"patcherrelativepath" : "../../../../../../Max 7/Snapshots",
+				"type" : "mx@s",
+				"implicit" : 1
+			}
+, 			{
+				"name" : "distortion.maxsnap",
+				"bootpath" : "~/Documents/Max 7/Snapshots",
+				"patcherrelativepath" : "../../../../../../Max 7/Snapshots",
+				"type" : "mx@s",
 				"implicit" : 1
 			}
  ],
