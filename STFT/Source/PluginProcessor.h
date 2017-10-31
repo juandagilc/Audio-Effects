@@ -93,12 +93,100 @@ public:
 
     //==============================================================================
 
+    StringArray fftSizeItemsUI = {
+        "32",
+        "64",
+        "128",
+        "256",
+        "512",
+        "1024",
+        "2048",
+        "4096",
+        "8192"
+    };
+
+    enum fftSizeIndex {
+        fftSize32 = 0,
+        fftSize64,
+        fftSize128,
+        fftSize256,
+        fftSize512,
+        fftSize1024,
+        fftSize2048,
+        fftSize4096,
+        fftSize8192,
+    };
+
+    //======================================
+
+    StringArray hopSizeItemsUI = {
+        "1/2 Window",
+        "1/4 Window",
+        "1/8 Window",
+    };
+
+    enum hopSizeIndex {
+        hopSize2 = 0,
+        hopSize4,
+        hopSize8,
+    };
+
+    //======================================
+
+    StringArray windowTypeItemsUI = {
+        "Rectangular",
+        "Bartlett",
+        "Hann",
+        "Hamming",
+    };
+
+    enum windowTypeIndex {
+        windowTypeRectangular = 0,
+        windowTypeBartlett,
+        windowTypeHann,
+        windowTypeHamming,
+    };
+
+    //======================================
+
+    void updateFftSize();
+    void updateHopSize();
+    void updateWindow();
+    void updateWindowScaleFactor();
+
+    //======================================
+
+    CriticalSection lock;
+
+    int fftSize;
+    ScopedPointer<dsp::FFT> fft;
+
+    int inputBufferLength;
+    int inputBufferWritePosition;
+    AudioSampleBuffer inputBuffer;
+
+    int outputBufferLength;
+    int outputBufferWritePosition;
+    int outputBufferReadPosition;
+    AudioSampleBuffer outputBuffer;
+
+    HeapBlock<float> fftWindow;
+    HeapBlock<dsp::Complex<float>> fftTimeDomain;
+    HeapBlock<dsp::Complex<float>> fftFrequencyDomain;
+
+    int samplesSinceLastFFT;
+
+    int overlap;
+    int hopSize;
+    float windowScaleFactor;
+
+    //======================================
+
     PluginParametersManager parameters;
 
-    PluginParameterLinSlider parameter1;
-    PluginParameterLinSlider parameter2;
-    PluginParameterToggle parameter3;
-    PluginParameterComboBox parameter4;
+    PluginParameterComboBox paramFftSize;
+    PluginParameterComboBox paramHopSize;
+    PluginParameterComboBox paramWindowType;
 
 private:
     //==============================================================================

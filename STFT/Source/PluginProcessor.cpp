@@ -41,10 +41,38 @@ STFTAudioProcessor::STFTAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , parameter1 (parameters, "Parameter 1", "", 0.0f, 1.0f, 0.5f, [](float value){ return value * 127.0f; })
-    , parameter2 (parameters, "Parameter 2", "", 0.0f, 1.0f, 0.5f)
-    , parameter3 (parameters, "Parameter 3", false, [](float value){ return value * (-2.0f) + 1.0f; })
-    , parameter4 (parameters, "Parameter 4", {"Option A", "Option B"}, 1)
+    , paramFftSize (parameters, "FFT size", fftSizeItemsUI, fftSize512,
+                    [this](float value){
+                        const ScopedLock sl (lock);
+                        value = (float)(1 << ((int)value + 5));
+                        paramFftSize.setValue (value);
+                        updateFftSize();
+                        updateHopSize();
+                        updateWindow();
+                        updateWindowScaleFactor();
+                        return value;
+                    })
+    , paramHopSize (parameters, "Hop size", hopSizeItemsUI, hopSize8,
+                    [this](float value){
+                        const ScopedLock sl (lock);
+                        value = (float)(1 << ((int)value + 1));
+                        paramHopSize.setValue (value);
+                        updateFftSize();
+                        updateHopSize();
+                        updateWindow();
+                        updateWindowScaleFactor();
+                        return value;
+                    })
+    , paramWindowType (parameters, "Window type", windowTypeItemsUI, windowTypeHann,
+                       [this](float value){
+                           const ScopedLock sl (lock);
+                           paramWindowType.setValue (value);
+                           updateFftSize();
+                           updateHopSize();
+                           updateWindow();
+                           updateWindowScaleFactor();
+                           return value;
+                       })
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -58,10 +86,9 @@ STFTAudioProcessor::~STFTAudioProcessor()
 void STFTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
-    parameter1.reset (sampleRate, smoothTime);
-    parameter2.reset (sampleRate, smoothTime);
-    parameter3.reset (sampleRate, smoothTime);
-    parameter4.reset (sampleRate, smoothTime);
+    paramFftSize.reset (sampleRate, smoothTime);
+    paramHopSize.reset (sampleRate, smoothTime);
+    paramWindowType.reset (sampleRate, smoothTime);
 }
 
 void STFTAudioProcessor::releaseResources()
@@ -70,6 +97,8 @@ void STFTAudioProcessor::releaseResources()
 
 void STFTAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
+    const ScopedLock sl (lock);
+
     ScopedNoDenormals noDenormals;
 
     const int numInputChannels = getTotalNumInputChannels();
@@ -78,41 +107,180 @@ void STFTAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& mi
 
     //======================================
 
-    float currentParameter2 = parameter2.getNextValue();
-    float currentParameter3 = parameter3.getNextValue();
-    float currentParameter4 = parameter4.getNextValue();
-
-    float factor = currentParameter2 * currentParameter3 * currentParameter4;
+    int currentInputBufferWritePosition;
+    int currentOutputBufferWritePosition;
+    int currentOutputBufferReadPosition;
+    int currentSamplesSinceLastFFT;
 
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
 
-        for (int sample = 0; sample < numSamples; ++sample) {
-            const float in = channelData[sample];
-            float out = in * factor;
+        currentInputBufferWritePosition = inputBufferWritePosition;
+        currentOutputBufferWritePosition = outputBufferWritePosition;
+        currentOutputBufferReadPosition = outputBufferReadPosition;
+        currentSamplesSinceLastFFT = samplesSinceLastFFT;
 
-            channelData[sample] = out;
+        for (int sample = 0; sample < numSamples; ++sample) {
+
+            //======================================
+
+            const float in = channelData[sample];
+            channelData[sample] = outputBuffer.getSample (channel, currentOutputBufferReadPosition);
+
+            //======================================
+
+            outputBuffer.setSample (channel, currentOutputBufferReadPosition, 0.0f);
+            if (++currentOutputBufferReadPosition >= outputBufferLength)
+                currentOutputBufferReadPosition = 0;
+
+            //======================================
+
+            inputBuffer.setSample (channel, currentInputBufferWritePosition, in);
+            if (++currentInputBufferWritePosition >= inputBufferLength)
+                currentInputBufferWritePosition = 0;
+
+            //======================================
+
+            if (++currentSamplesSinceLastFFT >= hopSize) {
+                currentSamplesSinceLastFFT = 0;
+
+                //======================================
+
+                int inputBufferIndex = currentInputBufferWritePosition;
+                for (int index = 0; index < fftSize; ++index) {
+                    fftTimeDomain[index].real (fftWindow[index] * inputBuffer.getSample (channel, inputBufferIndex));
+                    fftTimeDomain[index].imag (0.0f);
+
+                    if (++inputBufferIndex >= inputBufferLength)
+                        inputBufferIndex = 0;
+                }
+
+                //======================================
+
+                fft->perform (fftTimeDomain, fftFrequencyDomain, false);
+
+                for (int index = 0; index < fftSize / 2 + 1; ++index) {
+                    float magnitude = abs (fftFrequencyDomain[index]);
+                    float phase = arg (fftFrequencyDomain[index]);
+
+                    fftFrequencyDomain[index].real (magnitude * cosf (phase));
+                    fftFrequencyDomain[index].imag (magnitude * sinf (phase));
+                    if (index > 0 && index < fftSize / 2) {
+                        fftFrequencyDomain[fftSize - index].real (magnitude * cosf (phase));
+                        fftFrequencyDomain[fftSize - index].imag (magnitude * sinf (-phase));
+                    }
+                }
+
+                fft->perform (fftFrequencyDomain, fftTimeDomain, true);
+
+                //======================================
+
+                int outputBufferIndex = currentOutputBufferWritePosition;
+                for (int index = 0; index < fftSize; ++index) {
+                    float out = outputBuffer.getSample (channel, outputBufferIndex);
+                    out += fftTimeDomain[index].real() * windowScaleFactor;
+                    outputBuffer.setSample (channel, outputBufferIndex, out);
+
+                    if (++outputBufferIndex >= outputBufferLength)
+                        outputBufferIndex = 0;
+                }
+
+                //======================================
+
+                currentOutputBufferWritePosition += hopSize;
+                if (currentOutputBufferWritePosition >= outputBufferLength)
+                    currentOutputBufferWritePosition = 0;
+            }
+
+            //======================================
         }
     }
 
-    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
-        buffer.clear (channel, 0, numSamples);
+    inputBufferWritePosition = currentInputBufferWritePosition;
+    outputBufferWritePosition = currentOutputBufferWritePosition;
+    outputBufferReadPosition = currentOutputBufferReadPosition;
+    samplesSinceLastFFT = currentSamplesSinceLastFFT;
 
     //======================================
 
-    MidiBuffer processedMidi;
-    MidiMessage message;
-    int time;
+    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
+        buffer.clear (channel, 0, numSamples);
+}
 
-    for (MidiBuffer::Iterator iter (midiMessages); iter.getNextEvent (message, time);) {
-        if (message.isNoteOn()) {
-            uint8 newVel = (uint8)(parameter1.getTargetValue());
-            message = MidiMessage::noteOn (message.getChannel(), message.getNoteNumber(), newVel);
-        }
-        processedMidi.addEvent (message, time);
+//==============================================================================
+
+void STFTAudioProcessor::updateFftSize()
+{
+    fftSize = (int)paramFftSize.getTargetValue();
+    fft = new dsp::FFT (log2 (fftSize));
+
+    inputBufferLength = fftSize;
+    inputBufferWritePosition = 0;
+    inputBuffer.clear();
+    inputBuffer.setSize (getTotalNumInputChannels(), inputBufferLength);
+
+    outputBufferLength = fftSize;
+    outputBufferWritePosition = 0;
+    outputBufferReadPosition = 0;
+    outputBuffer.clear();
+    outputBuffer.setSize (getTotalNumInputChannels(), outputBufferLength);
+
+    fftWindow.realloc (fftSize);
+    fftWindow.clear (fftSize);
+
+    fftTimeDomain.realloc (fftSize);
+    fftTimeDomain.clear (fftSize);
+
+    fftFrequencyDomain.realloc (fftSize);
+    fftFrequencyDomain.clear (fftSize);
+
+    samplesSinceLastFFT = 0;
+}
+
+void STFTAudioProcessor::updateHopSize()
+{
+    overlap = (int)paramHopSize.getTargetValue();
+    if (overlap != 0) {
+        hopSize = fftSize / overlap;
+        outputBufferWritePosition = hopSize % outputBufferLength;
     }
+}
 
-    midiMessages.swapWith (processedMidi);
+void STFTAudioProcessor::updateWindow()
+{
+    switch ((int)paramWindowType.getTargetValue()) {
+        case windowTypeRectangular: {
+            for (int sample = 0; sample < fftSize; ++sample)
+                fftWindow[sample] = 1.0f;
+            break;
+        }
+        case windowTypeBartlett: {
+            for (int sample = 0; sample < fftSize; ++sample)
+                fftWindow[sample] = 1.0f - fabs (2.0f * (float)sample / (float)(fftSize - 1) - 1.0f);
+            break;
+        }
+        case windowTypeHann: {
+            for (int sample = 0; sample < fftSize; ++sample)
+                fftWindow[sample] = 0.5f - 0.5f * cosf (2.0f * M_PI * (float)sample / (float)(fftSize - 1));
+            break;
+        }
+        case windowTypeHamming: {
+            for (int sample = 0; sample < fftSize; ++sample)
+                fftWindow[sample] = 0.54f - 0.46f * cosf (2.0f * M_PI * (float)sample / (float)(fftSize - 1));
+            break;
+        }
+    }
+}
+
+void STFTAudioProcessor::updateWindowScaleFactor()
+{
+    float windowSum = 0.0f;
+    for (int sample = 0; sample < fftSize; ++sample)
+        windowSum += fftWindow[sample];
+
+    windowScaleFactor = 0.0f;
+    if (overlap != 0 && windowSum != 0.0f)
+        windowScaleFactor = 1.0f / (float)overlap / windowSum * (float)fftSize;
 }
 
 //==============================================================================
