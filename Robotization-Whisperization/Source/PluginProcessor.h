@@ -93,6 +93,20 @@ public:
 
     //==============================================================================
 
+    StringArray effectItemsUI = {
+        "Pass-through",
+        "Robotization",
+        "Whisperization"
+    };
+
+    enum effectIndex {
+        effectPassThrough = 0,
+        effectRobotization,
+        effectWhisperization,
+    };
+
+    //======================================
+
     StringArray fftSizeItemsUI = {
         "32",
         "64",
@@ -184,6 +198,7 @@ public:
 
     PluginParametersManager parameters;
 
+    PluginParameterComboBox paramEffect;
     PluginParameterComboBox paramFftSize;
     PluginParameterComboBox paramHopSize;
     PluginParameterComboBox paramWindowType;

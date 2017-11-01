@@ -41,6 +41,7 @@ RobotizationWhisperizationAudioProcessor::RobotizationWhisperizationAudioProcess
                    ),
 #endif
     parameters (*this)
+    , paramEffect (parameters, "Effect", effectItemsUI, effectPassThrough)
     , paramFftSize (parameters, "FFT size", fftSizeItemsUI, fftSize512,
                     [this](float value){
                         const ScopedLock sl (lock);
@@ -86,6 +87,7 @@ RobotizationWhisperizationAudioProcessor::~RobotizationWhisperizationAudioProces
 void RobotizationWhisperizationAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
+    paramEffect.reset (sampleRate, smoothTime);
     paramFftSize.reset (sampleRate, smoothTime);
     paramHopSize.reset (sampleRate, smoothTime);
     paramWindowType.reset (sampleRate, smoothTime);
@@ -159,15 +161,33 @@ void RobotizationWhisperizationAudioProcessor::processBlock (AudioSampleBuffer& 
 
                 fft->perform (fftTimeDomain, fftFrequencyDomain, false);
 
-                for (int index = 0; index < fftSize / 2 + 1; ++index) {
-                    float magnitude = abs (fftFrequencyDomain[index]);
-                    float phase = arg (fftFrequencyDomain[index]);
+                switch ((int)paramEffect.getTargetValue()) {
+                    case effectPassThrough: {
+                        // nothing
+                        break;
+                    }
+                    case effectRobotization: {
+                        for (int index = 0; index < fftSize; ++index) {
+                            float magnitude = abs (fftFrequencyDomain[index]);
 
-                    fftFrequencyDomain[index].real (magnitude * cosf (phase));
-                    fftFrequencyDomain[index].imag (magnitude * sinf (phase));
-                    if (index > 0 && index < fftSize / 2) {
-                        fftFrequencyDomain[fftSize - index].real (magnitude * cosf (phase));
-                        fftFrequencyDomain[fftSize - index].imag (magnitude * sinf (-phase));
+                            fftFrequencyDomain[index].real (magnitude);
+                            fftFrequencyDomain[index].imag (0.0f);
+                        }
+                        break;
+                    }
+                    case effectWhisperization: {
+                        for (int index = 0; index < fftSize / 2 + 1; ++index) {
+                            float magnitude = abs (fftFrequencyDomain[index]);
+                            float phase = 2.0f * M_PI * (float)rand() / (float)RAND_MAX;
+
+                            fftFrequencyDomain[index].real (magnitude * cosf (phase));
+                            fftFrequencyDomain[index].imag (magnitude * sinf (phase));
+                            if (index > 0 && index < fftSize / 2) {
+                                fftFrequencyDomain[fftSize - index].real (magnitude * cosf (phase));
+                                fftFrequencyDomain[fftSize - index].imag (magnitude * sinf (-phase));
+                            }
+                        }
+                        break;
                     }
                 }
 

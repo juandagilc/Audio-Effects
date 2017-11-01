@@ -43,14 +43,14 @@
 					"border" : 0,
 					"clickthrough" : 0,
 					"id" : "obj-1",
-					"linecount" : 2,
+					"linecount" : 3,
 					"maxclass" : "newobj",
 					"numinlets" : 2,
 					"numoutlets" : 8,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
-					"patching_rect" : [ 15.0, 135.0, 390.0, 120.0 ],
-					"presentation_linecount" : 3,
+					"patching_rect" : [ 15.0, 135.0, 405.0, 150.0 ],
+					"presentation_linecount" : 5,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
 					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Robotization-Whisperization/Products/Robotization-Whisperization.vst", ";" ],
 					"saved_attribute_attributes" : 					{
@@ -85,9 +85,9 @@
 							"version" : 1,
 							"isbank" : 0,
 							"isbase64" : 1,
-							"sliderorder" : [ 0, 1, 2 ],
-							"slidervisibility" : [ 1, 1, 1 ],
-							"blob" : "178.CMlaKA....fQPMDZ....ALGclQG....Y....A.........................................fcVMjLgzF....OSQkQT4COPEjTA0DHoQVOhXlYzMWZ5UlHfXWXrUWY8HBMh7hO7.UPRETSfjFY8HBZuA2booWYh.hcgwVck0iHxHxK9vCTAIUPMARZj0iH2klaj81czkGbkIBH1EFa0UVOhHiHu3COuLEUFQkO.."
+							"sliderorder" : [ 0, 1, 2, 3 ],
+							"slidervisibility" : [ 1, 1, 1, 1 ],
+							"blob" : "252.CMlaKA....fQPMDZ....AH2a2gF....Y....A..........................................vVMjLgbK....OR8lXuQWZ5EFco8laWgVZyAWYxkldgQWZu4lO7.UPRETSfjFY8HRYlYVYiQmHfXWXrUWY8HBLh7hO7.UPRETSfjFY8HhYlQ2booWYh.hcgwVck0iHzHxK9vCTAIUPMARZj0iHn8FbykldkIBH1EFa0UVOhHiHu3COPEjTA0DHoQVOhbWZtQ1a2QWdvUlHfXWXrUWY8HhLh7hO77hTuI1azkldgQWZu41Unk1bvUlbooWXzk1at4C."
 						}
 ,
 						"snapshotlist" : 						{
@@ -109,9 +109,9 @@
 										"version" : 1,
 										"isbank" : 0,
 										"isbase64" : 1,
-										"sliderorder" : [ 0, 1, 2 ],
-										"slidervisibility" : [ 1, 1, 1 ],
-										"blob" : "178.CMlaKA....fQPMDZ....ALGclQG....Y....A.........................................fcVMjLgzF....OSQkQT4COPEjTA0DHoQVOhXlYzMWZ5UlHfXWXrUWY8HBMh7hO7.UPRETSfjFY8HBZuA2booWYh.hcgwVck0iHxHxK9vCTAIUPMARZj0iH2klaj81czkGbkIBH1EFa0UVOhHiHu3COuLEUFQkO.."
+										"sliderorder" : [ 0, 1, 2, 3 ],
+										"slidervisibility" : [ 1, 1, 1, 1 ],
+										"blob" : "252.CMlaKA....fQPMDZ....AH2a2gF....Y....A..........................................vVMjLgbK....OR8lXuQWZ5EFco8laWgVZyAWYxkldgQWZu4lO7.UPRETSfjFY8HRYlYVYiQmHfXWXrUWY8HBLh7hO7.UPRETSfjFY8HhYlQ2booWYh.hcgwVck0iHzHxK9vCTAIUPMARZj0iHn8FbykldkIBH1EFa0UVOhHiHu3COPEjTA0DHoQVOhbWZtQ1a2QWdvUlHfXWXrUWY8HhLh7hO77hTuI1azkldgQWZu41Unk1bvUlbooWXzk1at4C."
 									}
 ,
 									"fileref" : 									{
@@ -119,7 +119,7 @@
 										"filename" : "Robotization-Whisperization.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "0b41a63a8552a7c1a7a66e338fe72a75"
+										"snapshotfileid" : "ffc4527ebdd34b874e569058fd4ef94c"
 									}
 
 								}
@@ -141,7 +141,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.0, 270.0, 45.0, 45.0 ],
+					"patching_rect" : [ 15.0, 300.0, 45.0, 45.0 ],
 					"style" : ""
 				}
 
@@ -189,25 +189,25 @@
 				"box" : 				{
 					"data" : 					{
 						"clips" : [ 							{
-								"filename" : "brushes.aif",
+								"filename" : "huge.aiff",
 								"filekind" : "audiofile",
 								"loop" : 1,
 								"content_state" : 								{
-									"quality" : [ "basic" ],
-									"play" : [ 0 ],
-									"formantcorrection" : [ 0 ],
-									"originallength" : [ 0.0, "ticks" ],
-									"speed" : [ 1.0 ],
+									"originaltempo" : [ 120.0 ],
 									"slurtime" : [ 0.0 ],
-									"mode" : [ "basic" ],
-									"basictuning" : [ 440 ],
-									"timestretch" : [ 0 ],
+									"originallengthms" : [ 0.0 ],
+									"formantcorrection" : [ 0 ],
 									"pitchshift" : [ 1.0 ],
 									"pitchcorrection" : [ 0 ],
-									"formant" : [ 1.0 ],
-									"originallengthms" : [ 0.0 ],
+									"quality" : [ "basic" ],
+									"speed" : [ 1.0 ],
+									"mode" : [ "basic" ],
+									"basictuning" : [ 440 ],
 									"followglobaltempo" : [ 0 ],
-									"originaltempo" : [ 120.0 ]
+									"originallength" : [ 0.0, "ticks" ],
+									"formant" : [ 1.0 ],
+									"play" : [ 0 ],
+									"timestretch" : [ 0 ]
 								}
 
 							}
@@ -300,8 +300,8 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "brushes.aif",
-				"bootpath" : "C74:/media/msp",
+				"name" : "huge.aiff",
+				"bootpath" : "C74:/docs/tutorial-patchers/msp-tut",
 				"type" : "AIFF",
 				"implicit" : 1
 			}
