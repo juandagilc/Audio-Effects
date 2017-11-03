@@ -49,7 +49,7 @@
 					"numoutlets" : 8,
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
-					"patching_rect" : [ 15.0, 135.0, 390.0, 120.0 ],
+					"patching_rect" : [ 15.0, 135.0, 420.0, 150.0 ],
 					"presentation_linecount" : 3,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
 					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Pitch Shift/Products/Pitch Shift.vst", ";" ],
@@ -85,9 +85,9 @@
 							"version" : 1,
 							"isbank" : 0,
 							"isbase64" : 1,
-							"sliderorder" : [ 0, 1, 2 ],
-							"slidervisibility" : [ 1, 1, 1 ],
-							"blob" : "178.CMlaKA....fQPMDZ....ALGclQG....Y....A.........................................fcVMjLgzF....OSQkQT4COPEjTA0DHoQVOhXlYzMWZ5UlHfXWXrUWY8HBMh7hO7.UPRETSfjFY8HBZuA2booWYh.hcgwVck0iHxHxK9vCTAIUPMARZj0iH2klaj81czkGbkIBH1EFa0UVOhHiHu3COuLEUFQkO.."
+							"sliderorder" : [ 0, 1, 2, 3 ],
+							"slidervisibility" : [ 1, 1, 1, 1 ],
+							"blob" : "219.CMlaKA....fQPMDZ....A.GcigF....Y....A.........................................vmVMjLgXI....OPkFcig1TnklYz4COPEjTA0DHoQVOhLGZoYFch.hcgwVck0iHvHxK9vCTAIUPMARZj0iHlYFcykldkIBH1EFa0UVOhPiHu3COPEjTA0DHoQVOhf1avMWZ5UlHfXWXrUWY8HhLh7hO7.UPRETSfjFY8Hxco4FYucGc4AWYh.hcgwVck0iHwHxK9vyKPkFcig1TnklYz4C."
 						}
 ,
 						"snapshotlist" : 						{
@@ -109,9 +109,9 @@
 										"version" : 1,
 										"isbank" : 0,
 										"isbase64" : 1,
-										"sliderorder" : [ 0, 1, 2 ],
-										"slidervisibility" : [ 1, 1, 1 ],
-										"blob" : "178.CMlaKA....fQPMDZ....ALGclQG....Y....A.........................................fcVMjLgzF....OSQkQT4COPEjTA0DHoQVOhXlYzMWZ5UlHfXWXrUWY8HBMh7hO7.UPRETSfjFY8HBZuA2booWYh.hcgwVck0iHxHxK9vCTAIUPMARZj0iH2klaj81czkGbkIBH1EFa0UVOhHiHu3COuLEUFQkO.."
+										"sliderorder" : [ 0, 1, 2, 3 ],
+										"slidervisibility" : [ 1, 1, 1, 1 ],
+										"blob" : "219.CMlaKA....fQPMDZ....A.GcigF....Y....A.........................................vmVMjLgXI....OPkFcig1TnklYz4COPEjTA0DHoQVOhLGZoYFch.hcgwVck0iHvHxK9vCTAIUPMARZj0iHlYFcykldkIBH1EFa0UVOhPiHu3COPEjTA0DHoQVOhf1avMWZ5UlHfXWXrUWY8HhLh7hO7.UPRETSfjFY8Hxco4FYucGc4AWYh.hcgwVck0iHwHxK9vyKPkFcig1TnklYz4C."
 									}
 ,
 									"fileref" : 									{
@@ -119,7 +119,7 @@
 										"filename" : "Pitch Shift.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "0b41a63a8552a7c1a7a66e338fe72a75"
+										"snapshotfileid" : "6a207ffd8aa2b62e457b810418ec3ffc"
 									}
 
 								}
@@ -141,7 +141,7 @@
 					"maxclass" : "ezdac~",
 					"numinlets" : 2,
 					"numoutlets" : 0,
-					"patching_rect" : [ 15.0, 270.0, 45.0, 45.0 ],
+					"patching_rect" : [ 15.0, 300.0, 45.0, 45.0 ],
 					"style" : ""
 				}
 
@@ -189,25 +189,25 @@
 				"box" : 				{
 					"data" : 					{
 						"clips" : [ 							{
-								"filename" : "brushes.aif",
+								"filename" : "prim.loop.aif",
 								"filekind" : "audiofile",
 								"loop" : 1,
 								"content_state" : 								{
-									"quality" : [ "basic" ],
-									"play" : [ 0 ],
-									"formantcorrection" : [ 0 ],
-									"originallength" : [ 0.0, "ticks" ],
+									"pitchshift" : [ 1.0 ],
+									"followglobaltempo" : [ 0 ],
 									"speed" : [ 1.0 ],
+									"play" : [ 0 ],
+									"originallength" : [ 0.0, "ticks" ],
+									"originallengthms" : [ 0.0 ],
 									"slurtime" : [ 0.0 ],
+									"pitchcorrection" : [ 0 ],
 									"mode" : [ "basic" ],
 									"basictuning" : [ 440 ],
-									"timestretch" : [ 0 ],
-									"pitchshift" : [ 1.0 ],
-									"pitchcorrection" : [ 0 ],
+									"originaltempo" : [ 120.0 ],
+									"quality" : [ "basic" ],
 									"formant" : [ 1.0 ],
-									"originallengthms" : [ 0.0 ],
-									"followglobaltempo" : [ 0 ],
-									"originaltempo" : [ 120.0 ]
+									"timestretch" : [ 0 ],
+									"formantcorrection" : [ 0 ]
 								}
 
 							}
@@ -300,8 +300,8 @@
 		}
 ,
 		"dependency_cache" : [ 			{
-				"name" : "brushes.aif",
-				"bootpath" : "C74:/media/msp",
+				"name" : "prim.loop.aif",
+				"bootpath" : "C74:/packages/max-mxj/examples",
 				"type" : "AIFF",
 				"implicit" : 1
 			}

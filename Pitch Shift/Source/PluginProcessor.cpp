@@ -41,6 +41,8 @@ PitchShiftAudioProcessor::PitchShiftAudioProcessor():
                    ),
 #endif
     parameters (*this)
+    , paramShift (parameters, "Shift", " Semitone(s)", -12.0f, 12.0f, 0.0f,
+                  [this](float value){ return powf (2.0f, value / 12.0f); })
     , paramFftSize (parameters, "FFT size", fftSizeItemsUI, fftSize512,
                     [this](float value){
                         const ScopedLock sl (lock);
@@ -48,7 +50,7 @@ PitchShiftAudioProcessor::PitchShiftAudioProcessor():
                         paramFftSize.setValue (value);
                         updateFftSize();
                         updateHopSize();
-                        updateWindow();
+                        updateAnalysisWindow();
                         updateWindowScaleFactor();
                         return value;
                     })
@@ -59,7 +61,7 @@ PitchShiftAudioProcessor::PitchShiftAudioProcessor():
                         paramHopSize.setValue (value);
                         updateFftSize();
                         updateHopSize();
-                        updateWindow();
+                        updateAnalysisWindow();
                         updateWindowScaleFactor();
                         return value;
                     })
@@ -69,7 +71,7 @@ PitchShiftAudioProcessor::PitchShiftAudioProcessor():
                            paramWindowType.setValue (value);
                            updateFftSize();
                            updateHopSize();
-                           updateWindow();
+                           updateAnalysisWindow();
                            updateWindowScaleFactor();
                            return value;
                        })
@@ -86,9 +88,14 @@ PitchShiftAudioProcessor::~PitchShiftAudioProcessor()
 void PitchShiftAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
+    paramShift.reset (sampleRate, smoothTime);
     paramFftSize.reset (sampleRate, smoothTime);
     paramHopSize.reset (sampleRate, smoothTime);
     paramWindowType.reset (sampleRate, smoothTime);
+
+    //======================================
+
+    needToResetPhases = true;
 }
 
 void PitchShiftAudioProcessor::releaseResources()
@@ -111,6 +118,13 @@ void PitchShiftAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
     int currentOutputBufferWritePosition;
     int currentOutputBufferReadPosition;
     int currentSamplesSinceLastFFT;
+
+    float shift = paramShift.getNextValue();
+    float ratio = roundf (shift * (float)hopSize) / (float)hopSize;
+    int resampledLength = floorf ((float)fftSize / ratio);
+    HeapBlock<float> resampledOutput (resampledLength, true);
+    HeapBlock<float> synthesisWindow (resampledLength, true);
+    updateWindow (synthesisWindow, resampledLength);
 
     for (int channel = 0; channel < numInputChannels; ++channel) {
         float* channelData = buffer.getWritePointer (channel);
@@ -148,7 +162,7 @@ void PitchShiftAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
 
                 int inputBufferIndex = currentInputBufferWritePosition;
                 for (int index = 0; index < fftSize; ++index) {
-                    fftTimeDomain[index].real (fftWindow[index] * inputBuffer.getSample (channel, inputBufferIndex));
+                    fftTimeDomain[index].real (sqrtf (fftWindow[index]) * inputBuffer.getSample (channel, inputBufferIndex));
                     fftTimeDomain[index].imag (0.0f);
 
                     if (++inputBufferIndex >= inputBufferLength)
@@ -159,26 +173,46 @@ void PitchShiftAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
 
                 fft->perform (fftTimeDomain, fftFrequencyDomain, false);
 
-                for (int index = 0; index < fftSize / 2 + 1; ++index) {
+                if (paramShift.isSmoothing())
+                    needToResetPhases = true;
+                if (shift == paramShift.getTargetValue() && needToResetPhases) {
+                    inputPhase.clear();
+                    outputPhase.clear();
+                    needToResetPhases = false;
+                }
+                
+                for (int index = 0; index < fftSize; ++index) {
                     float magnitude = abs (fftFrequencyDomain[index]);
                     float phase = arg (fftFrequencyDomain[index]);
-
-                    fftFrequencyDomain[index].real (magnitude * cosf (phase));
-                    fftFrequencyDomain[index].imag (magnitude * sinf (phase));
-                    if (index > 0 && index < fftSize / 2) {
-                        fftFrequencyDomain[fftSize - index].real (magnitude * cosf (phase));
-                        fftFrequencyDomain[fftSize - index].imag (magnitude * sinf (-phase));
-                    }
+                    
+                    float phaseDeviation = phase - inputPhase.getSample (channel, index) - omega[index] * (float)hopSize;
+                    float deltaPhi = omega[index] * hopSize + princArg (phaseDeviation);
+                    float newPhase = princArg (outputPhase.getSample (channel, index) + deltaPhi * ratio);
+                    
+                    inputPhase.setSample (channel, index, phase);
+                    outputPhase.setSample (channel, index, newPhase);
+                    fftFrequencyDomain[index] = std::polar (magnitude, newPhase);
                 }
 
                 fft->perform (fftFrequencyDomain, fftTimeDomain, true);
 
+                for (int index = 0; index < resampledLength; ++index) {
+                    float x = (float)index * (float)fftSize / (float)resampledLength;
+                    int ix = (int)floorf (x);
+                    float dx = x - (float)ix;
+
+                    float sample1 = fftTimeDomain[ix].real();
+                    float sample2 = fftTimeDomain[(ix + 1) % fftSize].real();
+                    resampledOutput[index] = sample1 + dx * (sample2 - sample1);
+                    resampledOutput[index] *= sqrtf (synthesisWindow[index]);
+                }
+
                 //======================================
 
                 int outputBufferIndex = currentOutputBufferWritePosition;
-                for (int index = 0; index < fftSize; ++index) {
+                for (int index = 0; index < resampledLength; ++index) {
                     float out = outputBuffer.getSample (channel, outputBufferIndex);
-                    out += fftTimeDomain[index].real() * windowScaleFactor;
+                    out += resampledOutput[index] * windowScaleFactor;
                     outputBuffer.setSample (channel, outputBufferIndex, out);
 
                     if (++outputBufferIndex >= outputBufferLength)
@@ -219,7 +253,8 @@ void PitchShiftAudioProcessor::updateFftSize()
     inputBuffer.clear();
     inputBuffer.setSize (getTotalNumInputChannels(), inputBufferLength);
 
-    outputBufferLength = fftSize;
+    float maxRatio = powf (2.0f, paramShift.minValue / 12.0f);
+    outputBufferLength = (int)floorf ((float)fftSize / maxRatio);
     outputBufferWritePosition = 0;
     outputBufferReadPosition = 0;
     outputBuffer.clear();
@@ -235,6 +270,18 @@ void PitchShiftAudioProcessor::updateFftSize()
     fftFrequencyDomain.clear (fftSize);
 
     samplesSinceLastFFT = 0;
+
+    //======================================
+
+    omega.realloc (fftSize);
+    for (int index = 0; index < fftSize; ++index)
+        omega[index] = 2.0f * M_PI * index / (float)fftSize;
+
+    inputPhase.clear();
+    inputPhase.setSize (getTotalNumInputChannels(), outputBufferLength);
+
+    outputPhase.clear();
+    outputPhase.setSize (getTotalNumInputChannels(), outputBufferLength);
 }
 
 void PitchShiftAudioProcessor::updateHopSize()
@@ -246,27 +293,27 @@ void PitchShiftAudioProcessor::updateHopSize()
     }
 }
 
-void PitchShiftAudioProcessor::updateWindow()
+void PitchShiftAudioProcessor::updateAnalysisWindow()
+{
+    updateWindow (fftWindow, fftSize);
+}
+
+void PitchShiftAudioProcessor::updateWindow (const HeapBlock<float>& window, const int windowLength)
 {
     switch ((int)paramWindowType.getTargetValue()) {
-        case windowTypeRectangular: {
-            for (int sample = 0; sample < fftSize; ++sample)
-                fftWindow[sample] = 1.0f;
-            break;
-        }
         case windowTypeBartlett: {
-            for (int sample = 0; sample < fftSize; ++sample)
-                fftWindow[sample] = 1.0f - fabs (2.0f * (float)sample / (float)(fftSize - 1) - 1.0f);
+            for (int sample = 0; sample < windowLength; ++sample)
+                window[sample] = 1.0f - fabs (2.0f * (float)sample / (float)(windowLength - 1) - 1.0f);
             break;
         }
         case windowTypeHann: {
-            for (int sample = 0; sample < fftSize; ++sample)
-                fftWindow[sample] = 0.5f - 0.5f * cosf (2.0f * M_PI * (float)sample / (float)(fftSize - 1));
+            for (int sample = 0; sample < windowLength; ++sample)
+                window[sample] = 0.5f - 0.5f * cosf (2.0f * M_PI * (float)sample / (float)(windowLength - 1));
             break;
         }
         case windowTypeHamming: {
-            for (int sample = 0; sample < fftSize; ++sample)
-                fftWindow[sample] = 0.54f - 0.46f * cosf (2.0f * M_PI * (float)sample / (float)(fftSize - 1));
+            for (int sample = 0; sample < windowLength; ++sample)
+                window[sample] = 0.54f - 0.46f * cosf (2.0f * M_PI * (float)sample / (float)(windowLength - 1));
             break;
         }
     }
@@ -281,6 +328,14 @@ void PitchShiftAudioProcessor::updateWindowScaleFactor()
     windowScaleFactor = 0.0f;
     if (overlap != 0 && windowSum != 0.0f)
         windowScaleFactor = 1.0f / (float)overlap / windowSum * (float)fftSize;
+}
+
+float PitchShiftAudioProcessor::princArg (const float phase)
+{
+    if (phase >= 0.0f)
+        return fmod (phase + M_PI,  2.0f * M_PI) - M_PI;
+    else
+        return fmod (phase + M_PI, -2.0f * M_PI) + M_PI;
 }
 
 //==============================================================================

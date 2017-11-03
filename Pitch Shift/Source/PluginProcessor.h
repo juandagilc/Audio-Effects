@@ -134,15 +134,13 @@ public:
     //======================================
 
     StringArray windowTypeItemsUI = {
-        "Rectangular",
         "Bartlett",
         "Hann",
         "Hamming",
     };
 
     enum windowTypeIndex {
-        windowTypeRectangular = 0,
-        windowTypeBartlett,
+        windowTypeBartlett = 0,
         windowTypeHann,
         windowTypeHamming,
     };
@@ -151,8 +149,11 @@ public:
 
     void updateFftSize();
     void updateHopSize();
-    void updateWindow();
+    void updateAnalysisWindow();
+    void updateWindow (const HeapBlock<float>& window, const int windowLength);
     void updateWindowScaleFactor();
+
+    float princArg (const float phase);
 
     //======================================
 
@@ -182,8 +183,16 @@ public:
 
     //======================================
 
+    HeapBlock<float> omega;
+    AudioSampleBuffer inputPhase;
+    AudioSampleBuffer outputPhase;
+    bool needToResetPhases;
+
+    //======================================
+
     PluginParametersManager parameters;
 
+    PluginParameterLinSlider paramShift;
     PluginParameterComboBox paramFftSize;
     PluginParameterComboBox paramHopSize;
     PluginParameterComboBox paramWindowType;
