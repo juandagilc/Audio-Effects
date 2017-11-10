@@ -93,12 +93,92 @@ public:
 
     //==============================================================================
 
+    StringArray methodItemsUI = {
+        "Panorama + Precedence",
+        "ITD + ILD",
+    };
+
+    enum methodIndex {
+        methodPanoramaPrecedence = 0,
+        methodItdIld,
+    };
+
+    //======================================
+
+    class DelayLine
+    {
+    public:
+        void setup (const int maxDelayTimeInSamples)
+        {
+            delayBufferSamples = maxDelayTimeInSamples + 2;
+            if (delayBufferSamples < 1)
+                delayBufferSamples = 1;
+
+            delayBuffer.setSize (1, delayBufferSamples);
+            delayBuffer.clear();
+
+            delayWritePosition = 0;
+        }
+
+        void writeSample (const float sampleToWrite)
+        {
+            delayBuffer.setSample (0, delayWritePosition, sampleToWrite);
+
+            if (++delayWritePosition >= delayBufferSamples)
+                delayWritePosition -= delayBufferSamples;
+        }
+
+        float readSample (const float delayTime){
+            float readPosition =
+                fmodf ((float)(delayWritePosition - 1) - delayTime + (float)delayBufferSamples, delayBufferSamples);
+            int localReadPosition = floorf (readPosition);
+
+            float fraction = readPosition - (float)localReadPosition;
+            float delayed1 = delayBuffer.getSample (0, (localReadPosition + 0));
+            float delayed2 = delayBuffer.getSample (0, (localReadPosition + 1) % delayBufferSamples);
+
+            return delayed1 + fraction * (delayed2 - delayed1);
+        }
+
+    private:
+        AudioSampleBuffer delayBuffer;
+        int delayBufferSamples;
+        int delayWritePosition;
+    };
+
+    DelayLine delayLineL;
+    DelayLine delayLineR;
+    int maximumDelayInSamples;
+
+    //======================================
+
+    class Filter : public IIRFilter
+    {
+    public:
+        void updateCoefficients (const double angle, const double headFactor) noexcept
+        {
+            double alpha = 1.0 + cos (angle);
+
+            coefficients = IIRCoefficients (/* b0 */ headFactor + alpha,
+                                            /* b1 */ headFactor - alpha,
+                                            /* b2 */ 0.0,
+                                            /* a0 */ headFactor + 1.0,
+                                            /* a1 */ headFactor - 1.0,
+                                            /* a2 */ 0.0);
+
+            setCoefficients (coefficients);
+        }
+    };
+
+    Filter filterL;
+    Filter filterR;
+
+    //======================================
+
     PluginParametersManager parameters;
 
-    PluginParameterLinSlider parameter1;
-    PluginParameterLinSlider parameter2;
-    PluginParameterToggle parameter3;
-    PluginParameterComboBox parameter4;
+    PluginParameterComboBox paramMethod;
+    PluginParameterLinSlider paramPanning;
 
 private:
     //==============================================================================

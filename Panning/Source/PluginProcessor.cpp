@@ -41,10 +41,8 @@ PanningAudioProcessor::PanningAudioProcessor():
                    ),
 #endif
     parameters (*this)
-    , parameter1 (parameters, "Parameter 1", "", 0.0f, 1.0f, 0.5f, [](float value){ return value * 127.0f; })
-    , parameter2 (parameters, "Parameter 2", "", 0.0f, 1.0f, 0.5f)
-    , parameter3 (parameters, "Parameter 3", false, [](float value){ return value * (-2.0f) + 1.0f; })
-    , parameter4 (parameters, "Parameter 4", {"Option A", "Option B"}, 1)
+    , paramMethod (parameters, "Method", methodItemsUI, methodItdIld)
+    , paramPanning (parameters, "Panning", "", -1.0f, 1.0f, 0.5f)
 {
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
@@ -58,10 +56,14 @@ PanningAudioProcessor::~PanningAudioProcessor()
 void PanningAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
-    parameter1.reset (sampleRate, smoothTime);
-    parameter2.reset (sampleRate, smoothTime);
-    parameter3.reset (sampleRate, smoothTime);
-    parameter4.reset (sampleRate, smoothTime);
+    paramMethod.reset (sampleRate, smoothTime);
+    paramPanning.reset (sampleRate, smoothTime);
+
+    //======================================
+
+    maximumDelayInSamples = (int)(1e-3f * (float)getSampleRate());
+    delayLineL.setup (maximumDelayInSamples);
+    delayLineR.setup (maximumDelayInSamples);
 }
 
 void PanningAudioProcessor::releaseResources()
@@ -78,41 +80,80 @@ void PanningAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer&
 
     //======================================
 
-    float currentParameter2 = parameter2.getNextValue();
-    float currentParameter3 = parameter3.getNextValue();
-    float currentParameter4 = parameter4.getNextValue();
+    float currentPanning = paramPanning.getNextValue();
 
-    float factor = currentParameter2 * currentParameter3 * currentParameter4;
+    float* channelDataL = buffer.getWritePointer (0);
+    float* channelDataR = buffer.getWritePointer (1);
 
-    for (int channel = 0; channel < numInputChannels; ++channel) {
-        float* channelData = buffer.getWritePointer (channel);
+    switch ((int)paramMethod.getTargetValue()) {
 
-        for (int sample = 0; sample < numSamples; ++sample) {
-            const float in = channelData[sample];
-            float out = in * factor;
+        //======================================
 
-            channelData[sample] = out;
+        case methodPanoramaPrecedence: {
+            // Panorama
+            float theta = degreesToRadians (30.0f);
+            float phi = -currentPanning * theta;
+            float cos_theta = cosf (theta);
+            float cos_phi = cosf (phi);
+            float sin_theta = sinf (theta);
+            float sin_phi = sinf (phi);
+            float gainL = (cos_phi * sin_theta + sin_phi * cos_theta);
+            float gainR = (cos_phi * sin_theta - sin_phi * cos_theta);
+            float norm = 1.0f / sqrtf (gainL * gainL + gainR * gainR);
+
+            // Precedence
+            float delayFactor = (currentPanning + 1.0f) / 2.0f;
+            float delayTimeL = (float)maximumDelayInSamples * (delayFactor);
+            float delayTimeR = (float)maximumDelayInSamples * (1.0f - delayFactor);
+            for (int sample = 0; sample < numSamples; ++sample) {
+                const float in = channelDataL[sample];
+                delayLineL.writeSample (in);
+                delayLineR.writeSample (in);
+                channelDataL[sample] = delayLineL.readSample (delayTimeL) * gainL * norm;
+                channelDataR[sample] = delayLineR.readSample (delayTimeR) * gainR * norm;
+            }
+            break;
+        }
+
+        //======================================
+
+        case methodItdIld: {
+            float headRadius = 8.5e-2f;
+            float speedOfSound = 340.0f;
+            float headFactor = (float)getSampleRate() * headRadius / speedOfSound;
+
+            // Interaural Time Difference (ITD)
+            auto Td = [headFactor](const float angle){
+                if (abs (angle) < (float)M_PI_2)
+                    return headFactor * (1.0f - cosf (angle));
+                else
+                    return headFactor * (abs (angle) + 1.0f - (float)M_PI_2);
+            };
+            float theta = degreesToRadians (90.0f);
+            float phi = currentPanning * theta;
+            float currentDelayTimeL = Td (phi + (float)M_PI_2);
+            float currentDelayTimeR = Td (phi - (float)M_PI_2);
+            for (int sample = 0; sample < numSamples; ++sample) {
+                const float in = channelDataL[sample];
+                delayLineL.writeSample (in);
+                delayLineR.writeSample (in);
+                channelDataL[sample] = delayLineL.readSample (currentDelayTimeL);
+                channelDataR[sample] = delayLineR.readSample (currentDelayTimeR);
+            }
+
+            // Interaural Level Difference (ILD)
+            filterL.updateCoefficients ((double)phi + M_PI_2, (double)(headRadius / speedOfSound));
+            filterR.updateCoefficients ((double)phi - M_PI_2, (double)(headRadius / speedOfSound));
+            filterL.processSamples (channelDataL, numSamples);
+            filterR.processSamples (channelDataR, numSamples);
+            break;
         }
     }
-
-    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
-        buffer.clear (channel, 0, numSamples);
 
     //======================================
 
-    MidiBuffer processedMidi;
-    MidiMessage message;
-    int time;
-
-    for (MidiBuffer::Iterator iter (midiMessages); iter.getNextEvent (message, time);) {
-        if (message.isNoteOn()) {
-            uint8 newVel = (uint8)(parameter1.getTargetValue());
-            message = MidiMessage::noteOn (message.getChannel(), message.getNoteNumber(), newVel);
-        }
-        processedMidi.addEvent (message, time);
-    }
-
-    midiMessages.swapWith (processedMidi);
+    for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
+        buffer.clear (channel, 0, numSamples);
 }
 
 //==============================================================================
