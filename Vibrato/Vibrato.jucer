@@ -10,8 +10,8 @@
               pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
               pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0" pluginAUExportPrefix="VibratoAU"
               pluginRTASCategory="" aaxIdentifier="com.JuanGil.Vibrato" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.1.2" companyName="Juan Gil" companyWebsite="http://juangil.com/"
-              companyEmail="juan@juangil.com">
+              jucerVersion="5.2.0" companyName="Juan Gil" companyWebsite="http://juangil.com/"
+              companyEmail="juan@juangil.com" companyCopyright="Juan Gil">
   <MAINGROUP id="NfrEue" name="Vibrato">
     <GROUP id="{B020AB17-7C95-5FEE-2B96-B21A0256861B}" name="Source">
       <FILE id="wYh23x" name="PluginParameter.h" compile="0" resource="0"
@@ -30,10 +30,12 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Vibrato"
                        xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
-                       osxArchitecture="64BitUniversal"/>
+                       osxArchitecture="64BitUniversal" enablePluginBinaryCopyStep="1"
+                       vstBinaryLocation="$(PROJECT_DIR)/../../Products" auBinaryLocation="$(PROJECT_DIR)/../../Products"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Vibrato"
                        xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
-                       osxArchitecture="64BitUniversal"/>
+                       osxArchitecture="64BitUniversal" enablePluginBinaryCopyStep="1"
+                       vstBinaryLocation="$(PROJECT_DIR)/../../Products" auBinaryLocation="$(PROJECT_DIR)/../../Products"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../JUCE/modules"/>
