@@ -1,5 +1,5 @@
 # Summary
-This repository is a collection of audio effects plugins implemented from the explanations in the book *"Audio Effects: Theory, Implementation and Application"* by Joshua D. Reiss and Andrew P. McPherson.
+This repository is a collection of audio effects plugins implemented from the explanations in the book *"Audio Effects: Theory, Implementation and Application"* by Joshua D. Reiss and Andrew P. McPherson, and takes as example the code provided with the book which has contributions and implementations by Brecht De Man, and others.
 
 The audio effects implemented are:
 
@@ -9,7 +9,7 @@ The audio effects implemented are:
 - [**Delay**](Delay) implements a basic delay with feedback and mix controls using a circular delay line. It uses simple linear interpolation to achieve fractional delay times.  
 ![Delay](Screenshots/Delay.png)
 
-- [**Vibrato**](Vibrato) uses a Low Frequency Oscilator (LFO) to modulate the delay of the input signal to simulate periodic variations of pitch. Various types of sample interpolation are introduced in this plugin.  
+- [**Vibrato**](Vibrato) uses a Low Frequency Oscilator (LFO) to modulate the delay of the input signal and simulate periodic variations of pitch. Various types of sample interpolation are introduced in this plugin.  
 ![Vibrato](Screenshots/Vibrato.png)
 
 - [**Flanger**](Flanger) simulates a delay-based audio effect where a copy of the input signal is delayed with a variable delay time, and mixed with the original sound, thus producing the characteristic "swooshing" sound of this classic audio effect.  
@@ -55,7 +55,7 @@ The audio effects implemented are:
 ![Panning](Screenshots/Panning.png)
 
 # Clone and build
-These plugins are implemented using [JUCE](https://juce.com/), which provides a framework for building audio plugins for various platforms (Windows and macOS), and in multiple formats (VST, AU, RTAS, and AAX). You can  run the following commands in the terminal to clone this repository and to checkout the version of JUCE that was used to build all the projects:  
+These plugins are implemented using [JUCE](https://juce.com/), which provides a framework for building audio plugins for various platforms (Windows and macOS), and in multiple formats (VST, AU, RTAS, and AAX), as well as standalone applications. You can  run the following commands in the terminal to clone this repository and to checkout the version of JUCE that was used to build all the projects:  
 ```
 git clone https://github.com/juandagilc/Audio-Effects.git
 cd Audio-Effects/
