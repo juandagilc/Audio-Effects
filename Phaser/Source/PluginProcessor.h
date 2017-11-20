@@ -119,8 +119,8 @@ public:
         {
             jassert (discreteFrequency > 0);
 
-            const double wc = jmin (discreteFrequency, M_PI * 0.99);
-            const double tan_half_wc = tan (wc / 2.0);
+            double wc = jmin (discreteFrequency, M_PI * 0.99);
+            double tan_half_wc = tan (wc / 2.0);
 
             coefficients = IIRCoefficients (/* b0 */ tan_half_wc - 1.0,
                                             /* b1 */ tan_half_wc + 1.0,

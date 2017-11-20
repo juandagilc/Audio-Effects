@@ -122,8 +122,8 @@ public:
         {
             jassert (discreteFrequency > 0);
 
-            const double tan_half_wc = tan (discreteFrequency / 2.0);
-            const double sqrt_gain = sqrt (gain);
+            double tan_half_wc = tan (discreteFrequency / 2.0);
+            double sqrt_gain = sqrt (gain);
 
             coefficients = IIRCoefficients (/* b0 */ sqrt_gain * tan_half_wc + gain,
                                             /* b1 */ sqrt_gain * tan_half_wc - gain,

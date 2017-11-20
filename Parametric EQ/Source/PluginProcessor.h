@@ -129,11 +129,11 @@ public:
             jassert (discreteFrequency > 0);
             jassert (qFactor > 0);
 
-            const double bandwidth = jmin (discreteFrequency / qFactor, M_PI * 0.99);
-            const double two_cos_wc = -2.0 * cos (discreteFrequency);
-            const double tan_half_bw = tan (bandwidth / 2.0);
-            const double tan_half_wc = tan (discreteFrequency / 2.0);
-            const double sqrt_gain = sqrt (gain);
+            double bandwidth = jmin (discreteFrequency / qFactor, M_PI * 0.99);
+            double two_cos_wc = -2.0 * cos (discreteFrequency);
+            double tan_half_bw = tan (bandwidth / 2.0);
+            double tan_half_wc = tan (discreteFrequency / 2.0);
+            double sqrt_gain = sqrt (gain);
 
             switch (filterType) {
                 case filterTypeLowPass: {
