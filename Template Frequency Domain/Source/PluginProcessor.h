@@ -33,13 +33,13 @@
 
 //==============================================================================
 
-class STFTAudioProcessor : public AudioProcessor
+class TemplateFrequencyDomainAudioProcessor : public AudioProcessor
 {
 public:
     //==============================================================================
 
-    STFTAudioProcessor();
-    ~STFTAudioProcessor();
+    TemplateFrequencyDomainAudioProcessor();
+    ~TemplateFrequencyDomainAudioProcessor();
 
     //==============================================================================
 
@@ -194,5 +194,5 @@ public:
 private:
     //==============================================================================
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (STFTAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TemplateFrequencyDomainAudioProcessor)
 };

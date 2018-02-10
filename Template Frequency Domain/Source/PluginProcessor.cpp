@@ -29,7 +29,7 @@
 
 //==============================================================================
 
-STFTAudioProcessor::STFTAudioProcessor():
+TemplateFrequencyDomainAudioProcessor::TemplateFrequencyDomainAudioProcessor():
 #ifndef JucePlugin_PreferredChannelConfigurations
     AudioProcessor (BusesProperties()
                     #if ! JucePlugin_IsMidiEffect
@@ -77,13 +77,13 @@ STFTAudioProcessor::STFTAudioProcessor():
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
-STFTAudioProcessor::~STFTAudioProcessor()
+TemplateFrequencyDomainAudioProcessor::~TemplateFrequencyDomainAudioProcessor()
 {
 }
 
 //==============================================================================
 
-void STFTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void TemplateFrequencyDomainAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
     paramFftSize.reset (sampleRate, smoothTime);
@@ -91,11 +91,11 @@ void STFTAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
     paramWindowType.reset (sampleRate, smoothTime);
 }
 
-void STFTAudioProcessor::releaseResources()
+void TemplateFrequencyDomainAudioProcessor::releaseResources()
 {
 }
 
-void STFTAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+void TemplateFrequencyDomainAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
     const ScopedLock sl (lock);
 
@@ -209,7 +209,7 @@ void STFTAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& mi
 
 //==============================================================================
 
-void STFTAudioProcessor::updateFftSize()
+void TemplateFrequencyDomainAudioProcessor::updateFftSize()
 {
     fftSize = (int)paramFftSize.getTargetValue();
     fft = new dsp::FFT (log2 (fftSize));
@@ -237,7 +237,7 @@ void STFTAudioProcessor::updateFftSize()
     samplesSinceLastFFT = 0;
 }
 
-void STFTAudioProcessor::updateHopSize()
+void TemplateFrequencyDomainAudioProcessor::updateHopSize()
 {
     overlap = (int)paramHopSize.getTargetValue();
     if (overlap != 0) {
@@ -246,7 +246,7 @@ void STFTAudioProcessor::updateHopSize()
     }
 }
 
-void STFTAudioProcessor::updateWindow()
+void TemplateFrequencyDomainAudioProcessor::updateWindow()
 {
     switch ((int)paramWindowType.getTargetValue()) {
         case windowTypeRectangular: {
@@ -272,7 +272,7 @@ void STFTAudioProcessor::updateWindow()
     }
 }
 
-void STFTAudioProcessor::updateWindowScaleFactor()
+void TemplateFrequencyDomainAudioProcessor::updateWindowScaleFactor()
 {
     float windowSum = 0.0f;
     for (int sample = 0; sample < fftSize; ++sample)
@@ -292,13 +292,13 @@ void STFTAudioProcessor::updateWindowScaleFactor()
 
 //==============================================================================
 
-void STFTAudioProcessor::getStateInformation (MemoryBlock& destData)
+void TemplateFrequencyDomainAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml());
     copyXmlToBinary (*xml, destData);
 }
 
-void STFTAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void TemplateFrequencyDomainAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
     if (xmlState != nullptr)
@@ -308,20 +308,20 @@ void STFTAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 
 //==============================================================================
 
-bool STFTAudioProcessor::hasEditor() const
+bool TemplateFrequencyDomainAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* STFTAudioProcessor::createEditor()
+AudioProcessorEditor* TemplateFrequencyDomainAudioProcessor::createEditor()
 {
-    return new STFTAudioProcessorEditor (*this);
+    return new TemplateFrequencyDomainAudioProcessorEditor (*this);
 }
 
 //==============================================================================
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool STFTAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool TemplateFrequencyDomainAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     ignoreUnused (layouts);
@@ -346,12 +346,12 @@ bool STFTAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) con
 
 //==============================================================================
 
-const String STFTAudioProcessor::getName() const
+const String TemplateFrequencyDomainAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool STFTAudioProcessor::acceptsMidi() const
+bool TemplateFrequencyDomainAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -360,7 +360,7 @@ bool STFTAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool STFTAudioProcessor::producesMidi() const
+bool TemplateFrequencyDomainAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -369,7 +369,7 @@ bool STFTAudioProcessor::producesMidi() const
    #endif
 }
 
-bool STFTAudioProcessor::isMidiEffect() const
+bool TemplateFrequencyDomainAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -378,32 +378,32 @@ bool STFTAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double STFTAudioProcessor::getTailLengthSeconds() const
+double TemplateFrequencyDomainAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int STFTAudioProcessor::getNumPrograms()
+int TemplateFrequencyDomainAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int STFTAudioProcessor::getCurrentProgram()
+int TemplateFrequencyDomainAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void STFTAudioProcessor::setCurrentProgram (int index)
+void TemplateFrequencyDomainAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const String STFTAudioProcessor::getProgramName (int index)
+const String TemplateFrequencyDomainAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void STFTAudioProcessor::changeProgramName (int index, const String& newName)
+void TemplateFrequencyDomainAudioProcessor::changeProgramName (int index, const String& newName)
 {
 }
 
@@ -412,7 +412,7 @@ void STFTAudioProcessor::changeProgramName (int index, const String& newName)
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new STFTAudioProcessor();
+    return new TemplateFrequencyDomainAudioProcessor();
 }
 
 //==============================================================================

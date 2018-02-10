@@ -27,13 +27,13 @@
 
 //==============================================================================
 
-class STFTAudioProcessorEditor : public AudioProcessorEditor
+class TemplateFrequencyDomainAudioProcessorEditor : public AudioProcessorEditor
 {
 public:
     //==============================================================================
 
-    STFTAudioProcessorEditor (STFTAudioProcessor&);
-    ~STFTAudioProcessorEditor();
+    TemplateFrequencyDomainAudioProcessorEditor (TemplateFrequencyDomainAudioProcessor&);
+    ~TemplateFrequencyDomainAudioProcessorEditor();
 
     //==============================================================================
 
@@ -43,7 +43,7 @@ public:
 private:
     //==============================================================================
 
-    STFTAudioProcessor& processor;
+    TemplateFrequencyDomainAudioProcessor& processor;
 
     enum {
         editorWidth = 500,
@@ -77,5 +77,5 @@ private:
 
     //==============================================================================
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (STFTAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TemplateFrequencyDomainAudioProcessorEditor)
 };

@@ -52,7 +52,7 @@
 					"patching_rect" : [ 15.0, 135.0, 390.0, 120.0 ],
 					"presentation_linecount" : 3,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
-					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/STFT/Products/STFT.vst", ";" ],
+					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Template Frequency Domain/Products/Template Frequency Domain.vst", ";" ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_invisible" : 1,
@@ -78,9 +78,9 @@
 						"subtype" : "Undefined",
 						"embed" : 1,
 						"snapshot" : 						{
-							"pluginname" : "STFT.vst",
-							"plugindisplayname" : "STFT",
-							"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/STFT/Products/STFT.vst",
+							"pluginname" : "Template Frequency Domain.vst",
+							"plugindisplayname" : "Template Frequency Domain",
+							"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Template Frequency Domain/Products/Template Frequency Domain.vst",
 							"pluginsaveduniqueid" : 0,
 							"version" : 1,
 							"isbank" : 0,
@@ -96,15 +96,15 @@
 									"filetype" : "C74Snapshot",
 									"version" : 2,
 									"minorversion" : 0,
-									"name" : "STFT",
-									"origin" : "STFT.vst",
+									"name" : "Template Frequency Domain",
+									"origin" : "Template Frequency Domain.vst",
 									"type" : "VST",
 									"subtype" : "MidiEffect",
 									"embed" : 1,
 									"snapshot" : 									{
-										"pluginname" : "STFT.vst",
-										"plugindisplayname" : "STFT",
-										"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/STFT/Products/STFT.vst",
+										"pluginname" : "Template Frequency Domain.vst",
+										"plugindisplayname" : "Template Frequency Domain",
+										"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Template Frequency Domain/Products/Template Frequency Domain.vst",
 										"pluginsaveduniqueid" : 0,
 										"version" : 1,
 										"isbank" : 0,
@@ -115,8 +115,8 @@
 									}
 ,
 									"fileref" : 									{
-										"name" : "STFT",
-										"filename" : "STFT.maxsnap",
+										"name" : "Template Frequency Domain",
+										"filename" : "Template Frequency Domain.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
 										"snapshotfileid" : "0b41a63a8552a7c1a7a66e338fe72a75"
@@ -129,7 +129,7 @@
 					}
 ,
 					"style" : "",
-					"text" : "vst~ \"/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/STFT/Products/STFT.vst\"",
+					"text" : "vst~ \"/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Template Frequency Domain/Products/Template Frequency Domain.vst\"",
 					"varname" : "vst~",
 					"viewvisibility" : 1
 				}

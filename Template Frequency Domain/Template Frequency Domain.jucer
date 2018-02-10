@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="sxag2f" name="STFT" displaySplashScreen="1" reportAppUsage="1"
-              splashScreenColour="Dark" projectType="audioplug" version="1.0.0"
-              bundleIdentifier="com.JuanGil.STFT" includeBinaryInAppConfig="1"
-              cppLanguageStandard="latest" buildVST="1" buildVST3="0" buildAU="1"
-              buildAUv3="0" buildRTAS="0" buildAAX="0" buildStandalone="1"
-              enableIAA="0" pluginName="STFT" pluginDesc="STFT" pluginManufacturer="Juan Gil"
-              pluginManufacturerCode="JGIL" pluginCode="stft" pluginChannelConfigs=""
+<JUCERPROJECT id="sxag2f" name="Template Frequency Domain" displaySplashScreen="1"
+              reportAppUsage="1" splashScreenColour="Dark" projectType="audioplug"
+              version="1.0.0" bundleIdentifier="com.JuanGil.TemplateFrequencyDomain"
+              includeBinaryInAppConfig="1" cppLanguageStandard="latest" buildVST="1"
+              buildVST3="0" buildAU="1" buildAUv3="0" buildRTAS="0" buildAAX="0"
+              buildStandalone="1" enableIAA="0" pluginName="Template Frequency Domain"
+              pluginDesc="Template Frequency Domain" pluginManufacturer="Juan Gil"
+              pluginManufacturerCode="JGIL" pluginCode="freq" pluginChannelConfigs=""
               pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
-              pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0" pluginAUExportPrefix="STFTAU"
-              pluginRTASCategory="" aaxIdentifier="com.JuanGil.STFT" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.2.0" companyName="Juan Gil" companyWebsite="http://juangil.com/"
-              companyEmail="juan@juangil.com" companyCopyright="Juan Gil">
-  <MAINGROUP id="NfrEue" name="STFT">
+              pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0" pluginAUExportPrefix="TemplateFrequencyDomainAU"
+              pluginRTASCategory="" aaxIdentifier="com.JuanGil.TemplateFrequencyDomain"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.2.1"
+              companyName="Juan Gil" companyWebsite="http://juangil.com/" companyEmail="juan@juangil.com"
+              companyCopyright="Juan Gil">
+  <MAINGROUP id="NfrEue" name="Template Frequency Domain">
     <GROUP id="{B020AB17-7C95-5FEE-2B96-B21A0256861B}" name="Source">
       <FILE id="wYh23x" name="PluginParameter.h" compile="0" resource="0"
             file="Source/PluginParameter.h"/>
@@ -28,11 +30,11 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="STFT" xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products"
-                       xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Template Frequency Domain"
+                       xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
                        osxArchitecture="64BitUniversal" enablePluginBinaryCopyStep="1"
                        vstBinaryLocation="$(PROJECT_DIR)/../../Products" auBinaryLocation="$(PROJECT_DIR)/../../Products"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="STFT"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Template Frequency Domain"
                        xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
                        osxArchitecture="64BitUniversal" enablePluginBinaryCopyStep="1"
                        vstBinaryLocation="$(PROJECT_DIR)/../../Products" auBinaryLocation="$(PROJECT_DIR)/../../Products"/>
@@ -60,11 +62,11 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="STFT"
+                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="Template Frequency Domain"
                        vstBinaryLocation="$(ProjectDir)/../../Products"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="STFT"
+                       linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="Template Frequency Domain"
                        vstBinaryLocation="$(ProjectDir)/../../Products"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
