@@ -40,17 +40,16 @@ RobotizationWhisperizationAudioProcessor::RobotizationWhisperizationAudioProcess
                     #endif
                    ),
 #endif
-    parameters (*this)
+    stft (*this), parameters (*this)
     , paramEffect (parameters, "Effect", effectItemsUI, effectPassThrough)
     , paramFftSize (parameters, "FFT size", fftSizeItemsUI, fftSize512,
                     [this](float value){
                         const ScopedLock sl (lock);
                         value = (float)(1 << ((int)value + 5));
                         paramFftSize.setValue (value);
-                        updateFftSize();
-                        updateHopSize();
-                        updateWindow();
-                        updateWindowScaleFactor();
+                        stft.updateParameters((int)paramFftSize.getTargetValue(),
+                                              (int)paramHopSize.getTargetValue(),
+                                              (int)paramWindowType.getTargetValue());
                         return value;
                     })
     , paramHopSize (parameters, "Hop size", hopSizeItemsUI, hopSize8,
@@ -58,20 +57,18 @@ RobotizationWhisperizationAudioProcessor::RobotizationWhisperizationAudioProcess
                         const ScopedLock sl (lock);
                         value = (float)(1 << ((int)value + 1));
                         paramHopSize.setValue (value);
-                        updateFftSize();
-                        updateHopSize();
-                        updateWindow();
-                        updateWindowScaleFactor();
+                        stft.updateParameters((int)paramFftSize.getTargetValue(),
+                                              (int)paramHopSize.getTargetValue(),
+                                              (int)paramWindowType.getTargetValue());
                         return value;
                     })
-    , paramWindowType (parameters, "Window type", windowTypeItemsUI, windowTypeHann,
+    , paramWindowType (parameters, "Window type", windowTypeItemsUI, STFT::windowTypeHann,
                        [this](float value){
                            const ScopedLock sl (lock);
                            paramWindowType.setValue (value);
-                           updateFftSize();
-                           updateHopSize();
-                           updateWindow();
-                           updateWindowScaleFactor();
+                           stft.updateParameters((int)paramFftSize.getTargetValue(),
+                                                 (int)paramHopSize.getTargetValue(),
+                                                 (int)paramWindowType.getTargetValue());
                            return value;
                        })
 {
@@ -91,6 +88,13 @@ void RobotizationWhisperizationAudioProcessor::prepareToPlay (double sampleRate,
     paramFftSize.reset (sampleRate, smoothTime);
     paramHopSize.reset (sampleRate, smoothTime);
     paramWindowType.reset (sampleRate, smoothTime);
+
+    //======================================
+    
+    stft.setup (getTotalNumInputChannels());
+    stft.updateParameters((int)paramFftSize.getTargetValue(),
+                          (int)paramHopSize.getTargetValue(),
+                          (int)paramWindowType.getTargetValue());
 }
 
 void RobotizationWhisperizationAudioProcessor::releaseResources()
@@ -109,198 +113,12 @@ void RobotizationWhisperizationAudioProcessor::processBlock (AudioSampleBuffer& 
 
     //======================================
 
-    int currentInputBufferWritePosition;
-    int currentOutputBufferWritePosition;
-    int currentOutputBufferReadPosition;
-    int currentSamplesSinceLastFFT;
-
-    for (int channel = 0; channel < numInputChannels; ++channel) {
-        float* channelData = buffer.getWritePointer (channel);
-
-        currentInputBufferWritePosition = inputBufferWritePosition;
-        currentOutputBufferWritePosition = outputBufferWritePosition;
-        currentOutputBufferReadPosition = outputBufferReadPosition;
-        currentSamplesSinceLastFFT = samplesSinceLastFFT;
-
-        for (int sample = 0; sample < numSamples; ++sample) {
-
-            //======================================
-
-            const float in = channelData[sample];
-            channelData[sample] = outputBuffer.getSample (channel, currentOutputBufferReadPosition);
-
-            //======================================
-
-            outputBuffer.setSample (channel, currentOutputBufferReadPosition, 0.0f);
-            if (++currentOutputBufferReadPosition >= outputBufferLength)
-                currentOutputBufferReadPosition = 0;
-
-            //======================================
-
-            inputBuffer.setSample (channel, currentInputBufferWritePosition, in);
-            if (++currentInputBufferWritePosition >= inputBufferLength)
-                currentInputBufferWritePosition = 0;
-
-            //======================================
-
-            if (++currentSamplesSinceLastFFT >= hopSize) {
-                currentSamplesSinceLastFFT = 0;
-
-                //======================================
-
-                int inputBufferIndex = currentInputBufferWritePosition;
-                for (int index = 0; index < fftSize; ++index) {
-                    fftTimeDomain[index].real (fftWindow[index] * inputBuffer.getSample (channel, inputBufferIndex));
-                    fftTimeDomain[index].imag (0.0f);
-
-                    if (++inputBufferIndex >= inputBufferLength)
-                        inputBufferIndex = 0;
-                }
-
-                //======================================
-
-                fft->perform (fftTimeDomain, fftFrequencyDomain, false);
-
-                switch ((int)paramEffect.getTargetValue()) {
-                    case effectPassThrough: {
-                        // nothing
-                        break;
-                    }
-                    case effectRobotization: {
-                        for (int index = 0; index < fftSize; ++index) {
-                            float magnitude = abs (fftFrequencyDomain[index]);
-
-                            fftFrequencyDomain[index].real (magnitude);
-                            fftFrequencyDomain[index].imag (0.0f);
-                        }
-                        break;
-                    }
-                    case effectWhisperization: {
-                        for (int index = 0; index < fftSize / 2 + 1; ++index) {
-                            float magnitude = abs (fftFrequencyDomain[index]);
-                            float phase = 2.0f * M_PI * (float)rand() / (float)RAND_MAX;
-
-                            fftFrequencyDomain[index].real (magnitude * cosf (phase));
-                            fftFrequencyDomain[index].imag (magnitude * sinf (phase));
-                            if (index > 0 && index < fftSize / 2) {
-                                fftFrequencyDomain[fftSize - index].real (magnitude * cosf (phase));
-                                fftFrequencyDomain[fftSize - index].imag (magnitude * sinf (-phase));
-                            }
-                        }
-                        break;
-                    }
-                }
-
-                fft->perform (fftFrequencyDomain, fftTimeDomain, true);
-
-                //======================================
-
-                int outputBufferIndex = currentOutputBufferWritePosition;
-                for (int index = 0; index < fftSize; ++index) {
-                    float out = outputBuffer.getSample (channel, outputBufferIndex);
-                    out += fftTimeDomain[index].real() * windowScaleFactor;
-                    outputBuffer.setSample (channel, outputBufferIndex, out);
-
-                    if (++outputBufferIndex >= outputBufferLength)
-                        outputBufferIndex = 0;
-                }
-
-                //======================================
-
-                currentOutputBufferWritePosition += hopSize;
-                if (currentOutputBufferWritePosition >= outputBufferLength)
-                    currentOutputBufferWritePosition = 0;
-            }
-
-            //======================================
-        }
-    }
-
-    inputBufferWritePosition = currentInputBufferWritePosition;
-    outputBufferWritePosition = currentOutputBufferWritePosition;
-    outputBufferReadPosition = currentOutputBufferReadPosition;
-    samplesSinceLastFFT = currentSamplesSinceLastFFT;
+    stft.processBlock (buffer);
 
     //======================================
 
     for (int channel = numInputChannels; channel < numOutputChannels; ++channel)
         buffer.clear (channel, 0, numSamples);
-}
-
-//==============================================================================
-
-void RobotizationWhisperizationAudioProcessor::updateFftSize()
-{
-    fftSize = (int)paramFftSize.getTargetValue();
-    fft = new dsp::FFT (log2 (fftSize));
-
-    inputBufferLength = fftSize;
-    inputBufferWritePosition = 0;
-    inputBuffer.clear();
-    inputBuffer.setSize (getTotalNumInputChannels(), inputBufferLength);
-
-    outputBufferLength = fftSize;
-    outputBufferWritePosition = 0;
-    outputBufferReadPosition = 0;
-    outputBuffer.clear();
-    outputBuffer.setSize (getTotalNumInputChannels(), outputBufferLength);
-
-    fftWindow.realloc (fftSize);
-    fftWindow.clear (fftSize);
-
-    fftTimeDomain.realloc (fftSize);
-    fftTimeDomain.clear (fftSize);
-
-    fftFrequencyDomain.realloc (fftSize);
-    fftFrequencyDomain.clear (fftSize);
-
-    samplesSinceLastFFT = 0;
-}
-
-void RobotizationWhisperizationAudioProcessor::updateHopSize()
-{
-    overlap = (int)paramHopSize.getTargetValue();
-    if (overlap != 0) {
-        hopSize = fftSize / overlap;
-        outputBufferWritePosition = hopSize % outputBufferLength;
-    }
-}
-
-void RobotizationWhisperizationAudioProcessor::updateWindow()
-{
-    switch ((int)paramWindowType.getTargetValue()) {
-        case windowTypeRectangular: {
-            for (int sample = 0; sample < fftSize; ++sample)
-                fftWindow[sample] = 1.0f;
-            break;
-        }
-        case windowTypeBartlett: {
-            for (int sample = 0; sample < fftSize; ++sample)
-                fftWindow[sample] = 1.0f - fabs (2.0f * (float)sample / (float)(fftSize - 1) - 1.0f);
-            break;
-        }
-        case windowTypeHann: {
-            for (int sample = 0; sample < fftSize; ++sample)
-                fftWindow[sample] = 0.5f - 0.5f * cosf (2.0f * M_PI * (float)sample / (float)(fftSize - 1));
-            break;
-        }
-        case windowTypeHamming: {
-            for (int sample = 0; sample < fftSize; ++sample)
-                fftWindow[sample] = 0.54f - 0.46f * cosf (2.0f * M_PI * (float)sample / (float)(fftSize - 1));
-            break;
-        }
-    }
-}
-
-void RobotizationWhisperizationAudioProcessor::updateWindowScaleFactor()
-{
-    float windowSum = 0.0f;
-    for (int sample = 0; sample < fftSize; ++sample)
-        windowSum += fftWindow[sample];
-
-    windowScaleFactor = 0.0f;
-    if (overlap != 0 && windowSum != 0.0f)
-        windowScaleFactor = 1.0f / (float)overlap / windowSum * (float)fftSize;
 }
 
 //==============================================================================

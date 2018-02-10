@@ -30,6 +30,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginParameter.h"
+#include "STFT.h"
 
 //==============================================================================
 
@@ -157,45 +158,59 @@ public:
         "Hamming",
     };
 
-    enum windowTypeIndex {
-        windowTypeRectangular = 0,
-        windowTypeBartlett,
-        windowTypeHann,
-        windowTypeHamming,
+    //======================================
+
+    class RobotizationWhisperization : public STFT
+    {
+    public:
+        RobotizationWhisperization (RobotizationWhisperizationAudioProcessor& p) : parent (p)
+        {
+        }
+
+    private:
+        void modification() override
+        {
+            fft->perform (timeDomainBuffer, frequencyDomainBuffer, false);
+
+            switch ((int)parent.paramEffect.getTargetValue()) {
+                case effectPassThrough: {
+                    // nothing
+                    break;
+                }
+                case effectRobotization: {
+                    for (int index = 0; index < fftSize; ++index) {
+                        float magnitude = abs (frequencyDomainBuffer[index]);
+                        frequencyDomainBuffer[index].real (magnitude);
+                        frequencyDomainBuffer[index].imag (0.0f);
+                    }
+                    break;
+                }
+                case effectWhisperization: {
+                    for (int index = 0; index < fftSize / 2 + 1; ++index) {
+                        float magnitude = abs (frequencyDomainBuffer[index]);
+                        float phase = 2.0f * M_PI * (float)rand() / (float)RAND_MAX;
+
+                        frequencyDomainBuffer[index].real (magnitude * cosf (phase));
+                        frequencyDomainBuffer[index].imag (magnitude * sinf (phase));
+                        if (index > 0 && index < fftSize / 2) {
+                            frequencyDomainBuffer[fftSize - index].real (magnitude * cosf (phase));
+                            frequencyDomainBuffer[fftSize - index].imag (magnitude * sinf (-phase));
+                        }
+                    }
+                    break;
+                }
+            }
+
+            fft->perform (frequencyDomainBuffer, timeDomainBuffer, true);
+        }
+
+        RobotizationWhisperizationAudioProcessor& parent;
     };
 
     //======================================
 
-    void updateFftSize();
-    void updateHopSize();
-    void updateWindow();
-    void updateWindowScaleFactor();
-
-    //======================================
-
     CriticalSection lock;
-
-    int fftSize;
-    ScopedPointer<dsp::FFT> fft;
-
-    int inputBufferLength;
-    int inputBufferWritePosition;
-    AudioSampleBuffer inputBuffer;
-
-    int outputBufferLength;
-    int outputBufferWritePosition;
-    int outputBufferReadPosition;
-    AudioSampleBuffer outputBuffer;
-
-    HeapBlock<float> fftWindow;
-    HeapBlock<dsp::Complex<float>> fftTimeDomain;
-    HeapBlock<dsp::Complex<float>> fftFrequencyDomain;
-
-    int samplesSinceLastFFT;
-
-    int overlap;
-    int hopSize;
-    float windowScaleFactor;
+    RobotizationWhisperization stft;
 
     //======================================
 
