@@ -52,7 +52,7 @@
 					"patching_rect" : [ 15.0, 195.0, 390.0, 150.0 ],
 					"presentation_linecount" : 4,
 					"presentation_rect" : [ 0.0, 0.0, 300.0, 100.0 ],
-					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Template Plugin/Products/Template Plugin.vst", ";" ],
+					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Template Time Domain/Products/Template Time Domain.vst", ";" ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_invisible" : 1,
@@ -78,9 +78,9 @@
 						"subtype" : "Undefined",
 						"embed" : 1,
 						"snapshot" : 						{
-							"pluginname" : "Template Plugin.vst",
-							"plugindisplayname" : "Template Plugin",
-							"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Template Plugin/Products/Template Plugin.vst",
+							"pluginname" : "Template Time Domain.vst",
+							"plugindisplayname" : "Template Time Domain",
+							"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Template Time Domain/Products/Template Time Domain.vst",
 							"pluginsaveduniqueid" : 0,
 							"version" : 1,
 							"isbank" : 0,
@@ -96,15 +96,15 @@
 									"filetype" : "C74Snapshot",
 									"version" : 2,
 									"minorversion" : 0,
-									"name" : "Template Plugin",
-									"origin" : "Template Plugin.vst",
+									"name" : "Template Time Domain",
+									"origin" : "Template Time Domain.vst",
 									"type" : "VST",
 									"subtype" : "MidiEffect",
 									"embed" : 1,
 									"snapshot" : 									{
-										"pluginname" : "Template Plugin.vst",
-										"plugindisplayname" : "Template Plugin",
-										"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Template Plugin/Products/Template Plugin.vst",
+										"pluginname" : "Template Time Domain.vst",
+										"plugindisplayname" : "Template Time Domain",
+										"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Template Time Domain/Products/Template Time Domain.vst",
 										"pluginsaveduniqueid" : 0,
 										"version" : 1,
 										"isbank" : 0,
@@ -115,8 +115,8 @@
 									}
 ,
 									"fileref" : 									{
-										"name" : "Template Plugin",
-										"filename" : "Template Plugin.maxsnap",
+										"name" : "Template Time Domain",
+										"filename" : "Template Time Domain.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
 										"snapshotfileid" : "850d3827a68538a6c8cccc0e2b40aed9"
@@ -129,7 +129,7 @@
 					}
 ,
 					"style" : "",
-					"text" : "vst~ \"/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Template Plugin/Products/Template Plugin.vst\"",
+					"text" : "vst~ \"/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Template Time Domain/Products/Template Time Domain.vst\"",
 					"varname" : "vst~",
 					"viewvisibility" : 1
 				}

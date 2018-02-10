@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="sxag2f" name="Template Plugin" displaySplashScreen="1" reportAppUsage="1"
-              splashScreenColour="Dark" projectType="audioplug" version="1.0.0"
-              bundleIdentifier="com.JuanGil.TemplatePlugin" includeBinaryInAppConfig="1"
-              cppLanguageStandard="latest" buildVST="1" buildVST3="0" buildAU="1"
-              buildAUv3="0" buildRTAS="0" buildAAX="0" buildStandalone="1"
-              enableIAA="0" pluginName="Template Plugin" pluginDesc="Template Plugin"
-              pluginManufacturer="Juan Gil" pluginManufacturerCode="JGIL" pluginCode="plug"
-              pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="1"
-              pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
-              pluginAUExportPrefix="TemplatePluginAU" pluginRTASCategory=""
-              aaxIdentifier="com.JuanGil.TemplatePlugin" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.2.0" companyName="Juan Gil" companyWebsite="http://juangil.com/"
-              companyEmail="juan@juangil.com" companyCopyright="Juan Gil">
-  <MAINGROUP id="NfrEue" name="Template Plugin">
+<JUCERPROJECT id="sxag2f" name="Template Time Domain" displaySplashScreen="1"
+              reportAppUsage="1" splashScreenColour="Dark" projectType="audioplug"
+              version="1.0.0" bundleIdentifier="com.JuanGil.TemplateTimeDomain"
+              includeBinaryInAppConfig="1" cppLanguageStandard="latest" buildVST="1"
+              buildVST3="0" buildAU="1" buildAUv3="0" buildRTAS="0" buildAAX="0"
+              buildStandalone="1" enableIAA="0" pluginName="Template Time Domain"
+              pluginDesc="Template Time Domain" pluginManufacturer="Juan Gil"
+              pluginManufacturerCode="JGIL" pluginCode="time" pluginChannelConfigs=""
+              pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
+              pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0" pluginAUExportPrefix="TemplateTimeDomainAU"
+              pluginRTASCategory="" aaxIdentifier="com.JuanGil.TemplateTimeDomain"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.2.1"
+              companyName="Juan Gil" companyWebsite="http://juangil.com/" companyEmail="juan@juangil.com"
+              companyCopyright="Juan Gil">
+  <MAINGROUP id="NfrEue" name="Template Time Domain">
     <GROUP id="{B020AB17-7C95-5FEE-2B96-B21A0256861B}" name="Source">
       <FILE id="wYh23x" name="PluginParameter.h" compile="0" resource="0"
             file="Source/PluginParameter.h"/>
@@ -29,11 +30,11 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Template Plugin"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Template Time Domain"
                        xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
                        osxArchitecture="64BitUniversal" enablePluginBinaryCopyStep="1"
                        vstBinaryLocation="$(PROJECT_DIR)/../../Products" auBinaryLocation="$(PROJECT_DIR)/../../Products"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Template Plugin"
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Template Time Domain"
                        xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
                        osxArchitecture="64BitUniversal" enablePluginBinaryCopyStep="1"
                        vstBinaryLocation="$(PROJECT_DIR)/../../Products" auBinaryLocation="$(PROJECT_DIR)/../../Products"/>
@@ -60,11 +61,11 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="Template Plugin"
+                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="Template Time Domain"
                        vstBinaryLocation="$(ProjectDir)/../../Products"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="Template Plugin"
+                       linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="Template Time Domain"
                        vstBinaryLocation="$(ProjectDir)/../../Products"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

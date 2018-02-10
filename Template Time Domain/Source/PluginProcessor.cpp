@@ -29,7 +29,7 @@
 
 //==============================================================================
 
-TemplatePluginAudioProcessor::TemplatePluginAudioProcessor():
+TemplateTimeDomainAudioProcessor::TemplateTimeDomainAudioProcessor():
 #ifndef JucePlugin_PreferredChannelConfigurations
     AudioProcessor (BusesProperties()
                     #if ! JucePlugin_IsMidiEffect
@@ -49,13 +49,13 @@ TemplatePluginAudioProcessor::TemplatePluginAudioProcessor():
     parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
-TemplatePluginAudioProcessor::~TemplatePluginAudioProcessor()
+TemplateTimeDomainAudioProcessor::~TemplateTimeDomainAudioProcessor()
 {
 }
 
 //==============================================================================
 
-void TemplatePluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
+void TemplateTimeDomainAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     const double smoothTime = 1e-3;
     parameter1.reset (sampleRate, smoothTime);
@@ -64,11 +64,11 @@ void TemplatePluginAudioProcessor::prepareToPlay (double sampleRate, int samples
     parameter4.reset (sampleRate, smoothTime);
 }
 
-void TemplatePluginAudioProcessor::releaseResources()
+void TemplateTimeDomainAudioProcessor::releaseResources()
 {
 }
 
-void TemplatePluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+void TemplateTimeDomainAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
 {
     ScopedNoDenormals noDenormals;
 
@@ -124,13 +124,13 @@ void TemplatePluginAudioProcessor::processBlock (AudioSampleBuffer& buffer, Midi
 
 //==============================================================================
 
-void TemplatePluginAudioProcessor::getStateInformation (MemoryBlock& destData)
+void TemplateTimeDomainAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml());
     copyXmlToBinary (*xml, destData);
 }
 
-void TemplatePluginAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void TemplateTimeDomainAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
     if (xmlState != nullptr)
@@ -140,20 +140,20 @@ void TemplatePluginAudioProcessor::setStateInformation (const void* data, int si
 
 //==============================================================================
 
-bool TemplatePluginAudioProcessor::hasEditor() const
+bool TemplateTimeDomainAudioProcessor::hasEditor() const
 {
     return true; // (change this to false if you choose to not supply an editor)
 }
 
-AudioProcessorEditor* TemplatePluginAudioProcessor::createEditor()
+AudioProcessorEditor* TemplateTimeDomainAudioProcessor::createEditor()
 {
-    return new TemplatePluginAudioProcessorEditor (*this);
+    return new TemplateTimeDomainAudioProcessorEditor (*this);
 }
 
 //==============================================================================
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool TemplatePluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool TemplateTimeDomainAudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     ignoreUnused (layouts);
@@ -178,12 +178,12 @@ bool TemplatePluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& la
 
 //==============================================================================
 
-const String TemplatePluginAudioProcessor::getName() const
+const String TemplateTimeDomainAudioProcessor::getName() const
 {
     return JucePlugin_Name;
 }
 
-bool TemplatePluginAudioProcessor::acceptsMidi() const
+bool TemplateTimeDomainAudioProcessor::acceptsMidi() const
 {
    #if JucePlugin_WantsMidiInput
     return true;
@@ -192,7 +192,7 @@ bool TemplatePluginAudioProcessor::acceptsMidi() const
    #endif
 }
 
-bool TemplatePluginAudioProcessor::producesMidi() const
+bool TemplateTimeDomainAudioProcessor::producesMidi() const
 {
    #if JucePlugin_ProducesMidiOutput
     return true;
@@ -201,7 +201,7 @@ bool TemplatePluginAudioProcessor::producesMidi() const
    #endif
 }
 
-bool TemplatePluginAudioProcessor::isMidiEffect() const
+bool TemplateTimeDomainAudioProcessor::isMidiEffect() const
 {
    #if JucePlugin_IsMidiEffect
     return true;
@@ -210,32 +210,32 @@ bool TemplatePluginAudioProcessor::isMidiEffect() const
    #endif
 }
 
-double TemplatePluginAudioProcessor::getTailLengthSeconds() const
+double TemplateTimeDomainAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
 
-int TemplatePluginAudioProcessor::getNumPrograms()
+int TemplateTimeDomainAudioProcessor::getNumPrograms()
 {
     return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
                 // so this should be at least 1, even if you're not really implementing programs.
 }
 
-int TemplatePluginAudioProcessor::getCurrentProgram()
+int TemplateTimeDomainAudioProcessor::getCurrentProgram()
 {
     return 0;
 }
 
-void TemplatePluginAudioProcessor::setCurrentProgram (int index)
+void TemplateTimeDomainAudioProcessor::setCurrentProgram (int index)
 {
 }
 
-const String TemplatePluginAudioProcessor::getProgramName (int index)
+const String TemplateTimeDomainAudioProcessor::getProgramName (int index)
 {
     return {};
 }
 
-void TemplatePluginAudioProcessor::changeProgramName (int index, const String& newName)
+void TemplateTimeDomainAudioProcessor::changeProgramName (int index, const String& newName)
 {
 }
 
@@ -244,7 +244,7 @@ void TemplatePluginAudioProcessor::changeProgramName (int index, const String& n
 // This creates new instances of the plugin..
 AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
-    return new TemplatePluginAudioProcessor();
+    return new TemplateTimeDomainAudioProcessor();
 }
 
 //==============================================================================

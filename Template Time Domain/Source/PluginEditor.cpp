@@ -25,7 +25,7 @@
 
 //==============================================================================
 
-TemplatePluginAudioProcessorEditor::TemplatePluginAudioProcessorEditor (TemplatePluginAudioProcessor& p)
+TemplateTimeDomainAudioProcessorEditor::TemplateTimeDomainAudioProcessorEditor (TemplateTimeDomainAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
     const OwnedArray<AudioProcessorParameter>& parameters = processor.getParameters();
@@ -104,18 +104,18 @@ TemplatePluginAudioProcessorEditor::TemplatePluginAudioProcessorEditor (Template
     setSize (editorWidth, editorHeight);
 }
 
-TemplatePluginAudioProcessorEditor::~TemplatePluginAudioProcessorEditor()
+TemplateTimeDomainAudioProcessorEditor::~TemplateTimeDomainAudioProcessorEditor()
 {
 }
 
 //==============================================================================
 
-void TemplatePluginAudioProcessorEditor::paint (Graphics& g)
+void TemplateTimeDomainAudioProcessorEditor::paint (Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 }
 
-void TemplatePluginAudioProcessorEditor::resized()
+void TemplateTimeDomainAudioProcessorEditor::resized()
 {
     Rectangle<int> r = getLocalBounds().reduced (editorMargin);
     r = r.removeFromRight (r.getWidth() - labelWidth);

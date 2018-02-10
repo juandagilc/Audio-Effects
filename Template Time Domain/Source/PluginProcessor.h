@@ -33,13 +33,13 @@
 
 //==============================================================================
 
-class TemplatePluginAudioProcessor : public AudioProcessor
+class TemplateTimeDomainAudioProcessor : public AudioProcessor
 {
 public:
     //==============================================================================
 
-    TemplatePluginAudioProcessor();
-    ~TemplatePluginAudioProcessor();
+    TemplateTimeDomainAudioProcessor();
+    ~TemplateTimeDomainAudioProcessor();
 
     //==============================================================================
 
@@ -106,5 +106,5 @@ public:
 private:
     //==============================================================================
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TemplatePluginAudioProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TemplateTimeDomainAudioProcessor)
 };

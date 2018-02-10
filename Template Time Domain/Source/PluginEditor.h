@@ -27,13 +27,13 @@
 
 //==============================================================================
 
-class TemplatePluginAudioProcessorEditor : public AudioProcessorEditor
+class TemplateTimeDomainAudioProcessorEditor : public AudioProcessorEditor
 {
 public:
     //==============================================================================
 
-    TemplatePluginAudioProcessorEditor (TemplatePluginAudioProcessor&);
-    ~TemplatePluginAudioProcessorEditor();
+    TemplateTimeDomainAudioProcessorEditor (TemplateTimeDomainAudioProcessor&);
+    ~TemplateTimeDomainAudioProcessorEditor();
 
     //==============================================================================
 
@@ -43,7 +43,7 @@ public:
 private:
     //==============================================================================
 
-    TemplatePluginAudioProcessor& processor;
+    TemplateTimeDomainAudioProcessor& processor;
 
     enum {
         editorWidth = 500,
@@ -77,5 +77,5 @@ private:
 
     //==============================================================================
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TemplatePluginAudioProcessorEditor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TemplateTimeDomainAudioProcessorEditor)
 };
