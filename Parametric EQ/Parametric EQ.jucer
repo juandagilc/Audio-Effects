@@ -10,7 +10,7 @@
               pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
               pluginAUExportPrefix="ParametricEQAU" pluginRTASCategory="" aaxIdentifier="com.JuanGil.ParametricEQ"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.2.0"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="5.2.1"
               companyName="Juan Gil" companyWebsite="http://juangil.com/" companyEmail="juan@juangil.com"
               companyCopyright="Juan Gil">
   <MAINGROUP id="NfrEue" name="Parametric EQ">
