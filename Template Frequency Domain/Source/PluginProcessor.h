@@ -30,6 +30,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginParameter.h"
+#include "STFT.h"
 
 //==============================================================================
 
@@ -143,45 +144,35 @@ public:
         "Hamming",
     };
 
-    enum windowTypeIndex {
-        windowTypeRectangular = 0,
-        windowTypeBartlett,
-        windowTypeHann,
-        windowTypeHamming,
+    //======================================
+
+    class PassThrough : public STFT
+    {
+    private:
+        void modification() override
+        {
+            fft->perform (timeDomainBuffer, frequencyDomainBuffer, false);
+
+            for (int index = 0; index < fftSize / 2 + 1; ++index) {
+                float magnitude = abs (frequencyDomainBuffer[index]);
+                float phase = arg (frequencyDomainBuffer[index]);
+
+                frequencyDomainBuffer[index].real (magnitude * cosf (phase));
+                frequencyDomainBuffer[index].imag (magnitude * sinf (phase));
+                if (index > 0 && index < fftSize / 2) {
+                    frequencyDomainBuffer[fftSize - index].real (magnitude * cosf (phase));
+                    frequencyDomainBuffer[fftSize - index].imag (magnitude * sinf (-phase));
+                }
+            }
+
+            fft->perform (frequencyDomainBuffer, timeDomainBuffer, true);
+        }
     };
 
     //======================================
 
-    void updateFftSize();
-    void updateHopSize();
-    void updateWindow();
-    void updateWindowScaleFactor();
-
-    //======================================
-
     CriticalSection lock;
-
-    int fftSize;
-    ScopedPointer<dsp::FFT> fft;
-
-    int inputBufferLength;
-    int inputBufferWritePosition;
-    AudioSampleBuffer inputBuffer;
-
-    int outputBufferLength;
-    int outputBufferWritePosition;
-    int outputBufferReadPosition;
-    AudioSampleBuffer outputBuffer;
-
-    HeapBlock<float> fftWindow;
-    HeapBlock<dsp::Complex<float>> fftTimeDomain;
-    HeapBlock<dsp::Complex<float>> fftFrequencyDomain;
-
-    int samplesSinceLastFFT;
-
-    int overlap;
-    int hopSize;
-    float windowScaleFactor;
+    PassThrough stft;
 
     //======================================
 

@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="sxag2f" name="Template Frequency Domain" displaySplashScreen="1"
               reportAppUsage="1" splashScreenColour="Dark" projectType="audioplug"
-              version="1.0.0" bundleIdentifier="com.JuanGil.TemplateFrequencyDomain"
+              version="1.0.1" bundleIdentifier="com.JuanGil.TemplateFrequencyDomain"
               includeBinaryInAppConfig="1" cppLanguageStandard="latest" buildVST="1"
               buildVST3="0" buildAU="1" buildAUv3="0" buildRTAS="0" buildAAX="0"
               buildStandalone="1" enableIAA="0" pluginName="Template Frequency Domain"
@@ -25,6 +25,7 @@
       <FILE id="rpPjxr" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="dUewq8" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="B6RBUK" name="STFT.h" compile="0" resource="0" file="Source/STFT.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
