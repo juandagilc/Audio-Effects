@@ -10,7 +10,7 @@
               pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
               pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0" pluginAUExportPrefix="PanningAU"
               pluginRTASCategory="" aaxIdentifier="com.JuanGil.Panning" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.2.1" companyName="Juan Gil" companyWebsite="http://juangil.com/"
+              jucerVersion="5.3.0" companyName="Juan Gil" companyWebsite="http://juangil.com/"
               companyEmail="juan@juangil.com" companyCopyright="Juan Gil">
   <MAINGROUP id="NfrEue" name="Panning">
     <GROUP id="{B020AB17-7C95-5FEE-2B96-B21A0256861B}" name="Source">
