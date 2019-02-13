@@ -1,108 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="sxag2f" name="Ping-Pong Delay" displaySplashScreen="1" reportAppUsage="1"
-              splashScreenColour="Dark" projectType="audioplug" version="1.0.0"
-              bundleIdentifier="com.JuanGil.PingPongDelay" includeBinaryInAppConfig="1"
-              cppLanguageStandard="latest" buildVST="1" buildVST3="0" buildAU="1"
-              buildAUv3="0" buildRTAS="0" buildAAX="0" buildStandalone="1"
-              enableIAA="0" pluginName="Ping-Pong Delay" pluginDesc="Ping-Pong Delay"
-              pluginManufacturer="Juan Gil" pluginManufacturerCode="JGIL" pluginCode="ppdl"
-              pluginChannelConfigs="" pluginIsSynth="0" pluginWantsMidiIn="1"
-              pluginProducesMidiOut="1" pluginIsMidiEffectPlugin="0" pluginEditorRequiresKeys="0"
-              pluginAUExportPrefix="PingPongDelayAU" pluginRTASCategory=""
-              aaxIdentifier="com.JuanGil.PingPongDelay" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="5.3.0" companyName="Juan Gil" companyWebsite="http://juangil.com/"
-              companyEmail="juan@juangil.com" companyCopyright="Juan Gil">
-  <MAINGROUP id="NfrEue" name="Ping-Pong Delay">
-    <GROUP id="{B020AB17-7C95-5FEE-2B96-B21A0256861B}" name="Source">
-      <FILE id="wYh23x" name="PluginParameter.h" compile="0" resource="0"
+<JUCERPROJECT id="iO13zR" name="Ping-Pong Delay" projectType="audioplug" jucerVersion="5.4.2"
+              companyName="Juan Gil" companyCopyright="https://juangil.com/"
+              companyWebsite="https://juangil.com/" companyEmail="juan@juangil.com"
+              pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn"
+              pluginManufacturerCode="JGIL" pluginCode="ppdl">
+  <MAINGROUP id="DFclFd" name="Template Time Domain">
+    <GROUP id="{C0200978-29EA-0C6B-3307-66F2F8B328DC}" name="Source">
+      <FILE id="WYsnbv" name="PluginParameter.h" compile="0" resource="0"
             file="Source/PluginParameter.h"/>
-      <FILE id="fu0bJM" name="PluginProcessor.cpp" compile="1" resource="0"
+      <FILE id="jvXJBh" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
-      <FILE id="IKOyik" name="PluginProcessor.h" compile="0" resource="0"
+      <FILE id="kOUgn1" name="PluginProcessor.h" compile="0" resource="0"
             file="Source/PluginProcessor.h"/>
-      <FILE id="rpPjxr" name="PluginEditor.cpp" compile="1" resource="0"
+      <FILE id="oh26g7" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
-      <FILE id="dUewq8" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="iGG5gk" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="Ping-Pong Delay"
-                       xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
-                       osxArchitecture="64BitUniversal" enablePluginBinaryCopyStep="1"
-                       vstBinaryLocation="$(PROJECT_DIR)/../../Products" auBinaryLocation="$(PROJECT_DIR)/../../Products"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="Ping-Pong Delay"
-                       xcodeVstBinaryLocation="$(PROJECT_DIR)/../../Products" xcodeAudioUnitBinaryLocation="$(PROJECT_DIR)/../../Products"
-                       osxArchitecture="64BitUniversal" enablePluginBinaryCopyStep="1"
-                       vstBinaryLocation="$(PROJECT_DIR)/../../Products" auBinaryLocation="$(PROJECT_DIR)/../../Products"/>
+        <CONFIGURATION isDebug="1" name="Debug" binaryPath="$(PROJECT_DIR)/../../Products"
+                       vst3BinaryLocation="$(PROJECT_DIR)/../../Products/VST3"/>
+        <CONFIGURATION isDebug="0" name="Release" binaryPath="$(PROJECT_DIR)/../../Products"
+                       vst3BinaryLocation="$(PROJECT_DIR)/../../Products/VST3"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_analytics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_blocks_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_box2d" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_product_unlocking" path="../JUCE/modules"/>
         <MODULEPATH id="juce_video" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2015 targetFolder="Builds/VisualStudio2015">
+    <VS2017 targetFolder="Builds/VisualStudio2017">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="0" isDebug="1" optimisation="1" targetName="Ping-Pong Delay"
-                       vstBinaryLocation="$(ProjectDir)/../../Products"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       debugInformationFormat="ProgramDatabase" enablePluginBinaryCopyStep="1"
-                       linkTimeOptimisation="1" isDebug="0" optimisation="3" targetName="Ping-Pong Delay"
-                       vstBinaryLocation="$(ProjectDir)/../../Products"/>
+        <CONFIGURATION isDebug="1" name="Debug" binaryPath="./Products"/>
+        <CONFIGURATION isDebug="0" name="Release" binaryPath="./Products"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../Documents/Programming/Projects/JUCE/Audio-Effects/JUCE/modules"/>
+        <MODULEPATH id="juce_osc" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_analytics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_blocks_basics" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_box2d" path="../JUCE/modules"/>
+        <MODULEPATH id="juce_product_unlocking" path="../JUCE/modules"/>
         <MODULEPATH id="juce_video" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_cryptography" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../JUCE/modules"/>
       </MODULEPATHS>
-    </VS2015>
+    </VS2017>
   </EXPORTFORMATS>
   <MODULES>
-    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+    <MODULE id="juce_analytics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
-            useGlobalPath="0"/>
-    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_blocks_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_box2d" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_osc" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_product_unlocking" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+    <OSX/>
+  </LIVE_SETTINGS>
+  <JUCEOPTIONS JUCE_VST3_CAN_REPLACE_VST2="0" JUCE_STRICT_REFCOUNTEDPOINTER="1"/>
 </JUCERPROJECT>
