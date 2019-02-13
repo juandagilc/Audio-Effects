@@ -4,8 +4,8 @@
     This code is based on the contents of the book: "Audio Effects: Theory,
     Implementation and Application" by Joshua D. Reiss and Andrew P. McPherson.
 
-    Code by Juan Gil <http://juangil.com/>.
-    Copyright (C) 2017 Juan Gil.
+    Code by Juan Gil <https://juangil.com/>.
+    Copyright (C) 2017-2019 Juan Gil.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
   ==============================================================================
 */
@@ -130,7 +130,7 @@ void WahWahAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
                 envelope = attack * envelopes[channel] + (1.0f - attack) * absIn;
             else
                 envelope = release * envelopes[channel] + (1.0f - release) * absIn;
-                
+
             envelopes.set (channel, envelope);
 
             if (paramMode.getTargetValue() == modeAutomatic) {
@@ -138,7 +138,7 @@ void WahWahAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
                 float centreFrequencyEnv = envelopes[channel];
                 centreFrequency =
                     centreFrequencyLFO + paramMixLFOandEnvelope.getNextValue() * (centreFrequencyEnv - centreFrequencyLFO);
-                
+
                 centreFrequency *= paramFrequency.maxValue - paramFrequency.minValue;
                 centreFrequency += paramFrequency.minValue;
 
@@ -208,14 +208,14 @@ void WahWahAudioProcessor::setStateInformation (const void* data, int sizeInByte
 
 //==============================================================================
 
-bool WahWahAudioProcessor::hasEditor() const
-{
-    return true; // (change this to false if you choose to not supply an editor)
-}
-
 AudioProcessorEditor* WahWahAudioProcessor::createEditor()
 {
     return new WahWahAudioProcessorEditor (*this);
+}
+
+bool WahWahAudioProcessor::hasEditor() const
+{
+    return true; // (change this to false if you choose to not supply an editor)
 }
 
 //==============================================================================
@@ -282,6 +282,8 @@ double WahWahAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
+
+//==============================================================================
 
 int WahWahAudioProcessor::getNumPrograms()
 {

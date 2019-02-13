@@ -4,8 +4,8 @@
     This code is based on the contents of the book: "Audio Effects: Theory,
     Implementation and Application" by Joshua D. Reiss and Andrew P. McPherson.
 
-    Code by Juan Gil <http://juangil.com/>.
-    Copyright (C) 2017 Juan Gil.
+    Code by Juan Gil <https://juangil.com/>.
+    Copyright (C) 2017-2019 Juan Gil.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
   ==============================================================================
 */
@@ -193,14 +193,14 @@ void RingModulationAudioProcessor::setStateInformation (const void* data, int si
 
 //==============================================================================
 
-bool RingModulationAudioProcessor::hasEditor() const
-{
-    return true; // (change this to false if you choose to not supply an editor)
-}
-
 AudioProcessorEditor* RingModulationAudioProcessor::createEditor()
 {
     return new RingModulationAudioProcessorEditor (*this);
+}
+
+bool RingModulationAudioProcessor::hasEditor() const
+{
+    return true; // (change this to false if you choose to not supply an editor)
 }
 
 //==============================================================================
@@ -267,6 +267,8 @@ double RingModulationAudioProcessor::getTailLengthSeconds() const
 {
     return 0.0;
 }
+
+//==============================================================================
 
 int RingModulationAudioProcessor::getNumPrograms()
 {
