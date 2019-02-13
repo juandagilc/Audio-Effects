@@ -55,9 +55,7 @@ The audio effects implemented are:
 ![Panning](Screenshots/Panning.png)
 
 # Clone and build
-These plugins are implemented using [JUCE](https://juce.com/), which provides a framework for building audio plugins for various platforms (Windows and macOS), and in multiple formats (VST, AU, RTAS, and AAX), as well as standalone applications. The VST SDK by [Steinberg Media Technologies GmbH](https://www.steinberg.net/en/company/developers.html) is needed to build the plugins in the VST format. Instructions to make JUCE aware of the VST SDK can be found in the [JUCE website](https://juce.com/doc/tutorial_create_projucer_basic_plugin#tutorial_create_projucer_basic_plugin_download/).
-
-You can run the following commands in the terminal to clone this repository and to checkout the latest versions of JUCE and the VST SDK that were used to build all the projects:
+These plugins are implemented using [JUCE](https://juce.com/), which provides a framework for building audio plugins for various platforms (Windows and macOS), and in multiple formats (VST, AU, RTAS, AAX, etc.), as well as standalone applications. You can run the following commands in the terminal to clone this repository and to checkout the latest version of JUCE that was used to build all the projects:
 ```
 git clone https://github.com/juandagilc/Audio-Effects.git
 cd Audio-Effects/
@@ -65,8 +63,8 @@ git submodule update --init
 ```
 
 # License
-Code by Juan Gil <http://juangil.com/>.
-Copyright &copy; 2017 Juan Gil.
+Code by Juan Gil <https://juangil.com/>.
+Copyright &copy; 2017-2019 Juan Gil.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -79,4 +77,4 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
