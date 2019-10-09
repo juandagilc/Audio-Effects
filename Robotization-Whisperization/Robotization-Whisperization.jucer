@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="iO13zR" name="Robotization-Whisperization" projectType="audioplug"
-              jucerVersion="5.4.2" companyName="Juan Gil" companyCopyright="https://juangil.com/"
+              jucerVersion="5.4.4" companyName="Juan Gil" companyCopyright="https://juangil.com/"
               companyWebsite="https://juangil.com/" companyEmail="juan@juangil.com"
               pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn"
               pluginManufacturerCode="JGIL" pluginCode="rowh">
   <MAINGROUP id="DFclFd" name="Robotization-Whisperization">
     <GROUP id="{C0200978-29EA-0C6B-3307-66F2F8B328DC}" name="Source">
+      <FILE id="BrUYvP" name="STFT.h" compile="0" resource="0" file="Source/STFT.h"/>
       <FILE id="WYsnbv" name="PluginParameter.h" compile="0" resource="0"
             file="Source/PluginParameter.h"/>
       <FILE id="jvXJBh" name="PluginProcessor.cpp" compile="1" resource="0"

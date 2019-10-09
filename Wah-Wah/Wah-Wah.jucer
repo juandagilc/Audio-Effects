@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="iO13zR" name="Wah-Wah" projectType="audioplug" jucerVersion="5.4.2"
+<JUCERPROJECT id="iO13zR" name="Wah-Wah" projectType="audioplug" jucerVersion="5.4.4"
               companyName="Juan Gil" companyCopyright="https://juangil.com/"
               companyWebsite="https://juangil.com/" companyEmail="juan@juangil.com"
               pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn"
