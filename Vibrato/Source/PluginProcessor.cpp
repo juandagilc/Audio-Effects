@@ -14,11 +14,11 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
 
   ==============================================================================
 */
@@ -219,16 +219,18 @@ float VibratoAudioProcessor::lfo (float phase, int waveform)
 
 void VibratoAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml());
+    auto state = parameters.valueTreeState.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
 
 void VibratoAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
-    if (xmlState != nullptr)
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
         if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.state = ValueTree::fromXml (*xmlState);
+            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

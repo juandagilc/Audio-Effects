@@ -14,11 +14,11 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
 
   ==============================================================================
 */
@@ -44,13 +44,13 @@ WahWahAudioProcessor::WahWahAudioProcessor():
     , paramMode (parameters, "Mode", modeItemsUI, modeManual)
     , paramMix (parameters, "Mix", "", 0.0f, 1.0f, 0.5f)
     , paramFrequency (parameters, "Frequency", "Hz", 200.0f, 1300.0f, 300.0f,
-                      [this](float value){ paramFrequency.setValue (value); updateFilters(); return value; })
+                      [this](float value){ paramFrequency.setCurrentAndTargetValue (value); updateFilters(); return value; })
     , paramQfactor (parameters, "Q Factor", "", 0.1f, 20.0f, 10.0f,
-                    [this](float value){ paramQfactor.setValue (value); updateFilters(); return value; })
+                    [this](float value){ paramQfactor.setCurrentAndTargetValue (value); updateFilters(); return value; })
     , paramGain (parameters, "Gain", "dB", 0.0f, 20.0f, 20.0f,
-                 [this](float value){ paramGain.setValue (value); updateFilters(); return value; })
+                 [this](float value){ paramGain.setCurrentAndTargetValue (value); updateFilters(); return value; })
     , paramFilterType (parameters, "Filter type", filterTypeItemsUI, filterTypeResonantLowPass,
-                       [this](float value){ paramFilterType.setValue (value); updateFilters(); return value; })
+                       [this](float value){ paramFilterType.setCurrentAndTargetValue (value); updateFilters(); return value; })
     , paramLFOfrequency (parameters, "LFO Frequency", "Hz", 0.0f, 5.0f, 2.0f)
     , paramMixLFOandEnvelope (parameters, "LFO/Env", "", 0.0f, 1.0f, 0.8f)
     , paramEnvelopeAttack (parameters, "Env. Attack", "ms", 0.1f, 100.0f, 2.0f, [](float value){ return value * 0.001f; })
@@ -146,7 +146,7 @@ void WahWahAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
                 if (phase >= 1.0f)
                     phase -= 1.0f;
 
-                paramFrequency.setValue (centreFrequency);
+                paramFrequency.setCurrentAndTargetValue (centreFrequency);
                 updateFilters();
             }
 
@@ -194,16 +194,18 @@ float WahWahAudioProcessor::calculateAttackOrRelease (float value)
 
 void WahWahAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml());
+    auto state = parameters.valueTreeState.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
 
 void WahWahAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
-    if (xmlState != nullptr)
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
         if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.state = ValueTree::fromXml (*xmlState);
+            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

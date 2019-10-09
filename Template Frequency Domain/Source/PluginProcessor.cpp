@@ -14,11 +14,11 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
 
   ==============================================================================
 */
@@ -45,7 +45,7 @@ TemplateFrequencyDomainAudioProcessor::TemplateFrequencyDomainAudioProcessor():
                     [this](float value){
                         const ScopedLock sl (lock);
                         value = (float)(1 << ((int)value + 5));
-                        paramFftSize.setValue (value);
+                        paramFftSize.setCurrentAndTargetValue (value);
                         stft.updateParameters((int)paramFftSize.getTargetValue(),
                                               (int)paramHopSize.getTargetValue(),
                                               (int)paramWindowType.getTargetValue());
@@ -55,7 +55,7 @@ TemplateFrequencyDomainAudioProcessor::TemplateFrequencyDomainAudioProcessor():
                     [this](float value){
                         const ScopedLock sl (lock);
                         value = (float)(1 << ((int)value + 1));
-                        paramHopSize.setValue (value);
+                        paramHopSize.setCurrentAndTargetValue (value);
                         stft.updateParameters((int)paramFftSize.getTargetValue(),
                                               (int)paramHopSize.getTargetValue(),
                                               (int)paramWindowType.getTargetValue());
@@ -64,7 +64,7 @@ TemplateFrequencyDomainAudioProcessor::TemplateFrequencyDomainAudioProcessor():
     , paramWindowType (parameters, "Window type", windowTypeItemsUI, STFT::windowTypeHann,
                        [this](float value){
                            const ScopedLock sl (lock);
-                           paramWindowType.setValue (value);
+                           paramWindowType.setCurrentAndTargetValue (value);
                            stft.updateParameters((int)paramFftSize.getTargetValue(),
                                                  (int)paramHopSize.getTargetValue(),
                                                  (int)paramWindowType.getTargetValue());
@@ -130,16 +130,18 @@ void TemplateFrequencyDomainAudioProcessor::processBlock (AudioSampleBuffer& buf
 
 void TemplateFrequencyDomainAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml());
+    auto state = parameters.valueTreeState.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
 
 void TemplateFrequencyDomainAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
-    if (xmlState != nullptr)
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
         if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.state = ValueTree::fromXml (*xmlState);
+            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

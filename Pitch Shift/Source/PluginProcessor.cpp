@@ -14,11 +14,11 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
 
   ==============================================================================
 */
@@ -47,7 +47,7 @@ PitchShiftAudioProcessor::PitchShiftAudioProcessor():
                     [this](float value){
                         const ScopedLock sl (lock);
                         value = (float)(1 << ((int)value + 5));
-                        paramFftSize.setValue (value);
+                        paramFftSize.setCurrentAndTargetValue (value);
                         updateFftSize();
                         updateHopSize();
                         updateAnalysisWindow();
@@ -58,7 +58,7 @@ PitchShiftAudioProcessor::PitchShiftAudioProcessor():
                     [this](float value){
                         const ScopedLock sl (lock);
                         value = (float)(1 << ((int)value + 1));
-                        paramHopSize.setValue (value);
+                        paramHopSize.setCurrentAndTargetValue (value);
                         updateFftSize();
                         updateHopSize();
                         updateAnalysisWindow();
@@ -68,7 +68,7 @@ PitchShiftAudioProcessor::PitchShiftAudioProcessor():
     , paramWindowType (parameters, "Window type", windowTypeItemsUI, windowTypeHann,
                        [this](float value){
                            const ScopedLock sl (lock);
-                           paramWindowType.setValue (value);
+                           paramWindowType.setCurrentAndTargetValue (value);
                            updateFftSize();
                            updateHopSize();
                            updateAnalysisWindow();
@@ -246,7 +246,7 @@ void PitchShiftAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuff
 void PitchShiftAudioProcessor::updateFftSize()
 {
     fftSize = (int)paramFftSize.getTargetValue();
-    fft = new dsp::FFT (log2 (fftSize));
+    fft = std::make_unique<dsp::FFT>(log2 (fftSize));
 
     inputBufferLength = fftSize;
     inputBufferWritePosition = 0;
@@ -349,16 +349,18 @@ float PitchShiftAudioProcessor::princArg (const float phase)
 
 void PitchShiftAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    ScopedPointer<XmlElement> xml (parameters.valueTreeState.state.createXml());
+    auto state = parameters.valueTreeState.copyState();
+    std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
 
 void PitchShiftAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    ScopedPointer<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
-    if (xmlState != nullptr)
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+
+    if (xmlState.get() != nullptr)
         if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.state = ValueTree::fromXml (*xmlState);
+            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

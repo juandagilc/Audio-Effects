@@ -11,11 +11,11 @@
 
     This program is distributed in the hope that it will be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
 
   ==============================================================================
 */
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+using Parameter = AudioProcessorValueTreeState::Parameter;
 
 //==============================================================================
 
@@ -56,9 +57,9 @@ public:
     void updateValue (float value)
     {
         if (callback != nullptr)
-            setValue (callback (value));
+            setCurrentAndTargetValue (callback (value));
         else
-            setValue (value);
+            setCurrentAndTargetValue (value);
     }
 
     void parameterChanged (const String& parameterID, float newValue) override
@@ -98,10 +99,11 @@ protected:
         if (logarithmic)
             range.setSkewForCentre (sqrt (minValue * maxValue));
 
-        parametersManager.valueTreeState.createAndAddParameter
+        parametersManager.valueTreeState.createAndAddParameter (std::make_unique<Parameter>
             (paramID, paramName, labelText, range, defaultValue,
              [](float value){ return String (value, 2); },
-             [](const String& text){ return text.getFloatValue(); });
+             [](const String& text){ return text.getFloatValue(); })
+        );
 
         parametersManager.valueTreeState.addParameterListener (paramID, this);
         updateValue (defaultValue);
@@ -182,10 +184,11 @@ public:
         const StringArray toggleStates = {"False", "True"};
         NormalisableRange<float> range (0.0f, 1.0f, 1.0f);
 
-        parametersManager.valueTreeState.createAndAddParameter
+        parametersManager.valueTreeState.createAndAddParameter (std::make_unique<Parameter>
             (paramID, paramName, "", range, (float)defaultState,
              [toggleStates](float value){ return toggleStates[(int)value]; },
-             [toggleStates](const String& text){ return toggleStates.indexOf (text); });
+             [toggleStates](const String& text){ return toggleStates.indexOf (text); })
+        );
 
         parametersManager.valueTreeState.addParameterListener (paramID, this);
         updateValue ((float)defaultState);
@@ -216,10 +219,11 @@ public:
         parametersManager.comboBoxItemLists.add (items);
         NormalisableRange<float> range (0.0f, (float)items.size() - 1.0f, 1.0f);
 
-        parametersManager.valueTreeState.createAndAddParameter
+        parametersManager.valueTreeState.createAndAddParameter (std::make_unique<Parameter>
             (paramID, paramName, "", range, (float)defaultChoice,
              [items](float value){ return items[(int)value]; },
-             [items](const String& text){ return items.indexOf (text); });
+             [items](const String& text){ return items.indexOf (text); })
+        );
 
         parametersManager.valueTreeState.addParameterListener (paramID, this);
         updateValue ((float)defaultChoice);
