@@ -4,7 +4,7 @@
               companyName="Juan Gil" companyCopyright="https://juangil.com/"
               companyWebsite="https://juangil.com/" companyEmail="juan@juangil.com"
               pluginFormats="buildStandalone,buildVST3" pluginCharacteristicsValue="pluginProducesMidiOut,pluginWantsMidiIn"
-              pluginManufacturerCode="JGIL" pluginCode="chor">
+              pluginManufacturerCode="JGIL" pluginCode="chor" displaySplashScreen="1">
   <MAINGROUP id="DFclFd" name="Template Time Domain">
     <GROUP id="{C0200978-29EA-0C6B-3307-66F2F8B328DC}" name="Source">
       <FILE id="WYsnbv" name="PluginParameter.h" compile="0" resource="0"
