@@ -51,7 +51,7 @@
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
 					"patching_rect" : [ 15.0, 135.0, 450.0, 240.0 ],
-					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Compressor-Expander/Products/VST3/Compressor-Expander.vst3", ";" ],
+					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/JUCE/Audio-Effects/Compressor-Expander/Products/VST3/Compressor-Expander.vst3", ";" ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_invisible" : 1,
@@ -79,7 +79,7 @@
 						"snapshot" : 						{
 							"pluginname" : "Compressor-Expander.vst3",
 							"plugindisplayname" : "Compressor-Expander",
-							"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Compressor-Expander/Products/VST3/Compressor-Expander.vst3",
+							"pluginsavedname" : "~/Documents/Programming/JUCE/Audio-Effects/Compressor-Expander/Products/VST3/Compressor-Expander.vst3",
 							"pluginsaveduniqueid" : 0,
 							"version" : 1,
 							"isbank" : 0,
@@ -103,7 +103,7 @@
 									"snapshot" : 									{
 										"pluginname" : "Compressor-Expander.vst3",
 										"plugindisplayname" : "Compressor-Expander",
-										"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Compressor-Expander/Products/VST3/Compressor-Expander.vst3",
+										"pluginsavedname" : "~/Documents/Programming/JUCE/Audio-Effects/Compressor-Expander/Products/VST3/Compressor-Expander.vst3",
 										"pluginsaveduniqueid" : 0,
 										"version" : 1,
 										"isbank" : 0,
@@ -127,7 +127,7 @@
 
 					}
 ,
-					"text" : "vst~ /Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Compressor-Expander/Products/VST3/Compressor-Expander.vst3",
+					"text" : "vst~ /Users/juangil/Documents/Programming/JUCE/Audio-Effects/Compressor-Expander/Products/VST3/Compressor-Expander.vst3",
 					"varname" : "vst~",
 					"viewvisibility" : 1
 				}

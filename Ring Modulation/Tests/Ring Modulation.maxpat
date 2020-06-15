@@ -51,7 +51,7 @@
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
 					"patching_rect" : [ 15.0, 135.0, 435.0, 135.0 ],
-					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Ring Modulation/Products/VST3/Ring Modulation.vst3", ";" ],
+					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/JUCE/Audio-Effects/Ring Modulation/Products/VST3/Ring Modulation.vst3", ";" ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_invisible" : 1,
@@ -79,7 +79,7 @@
 						"snapshot" : 						{
 							"pluginname" : "Ring Modulation.vst3",
 							"plugindisplayname" : "Ring Modulation",
-							"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Ring Modulation/Products/VST3/Ring Modulation.vst3",
+							"pluginsavedname" : "~/Documents/Programming/JUCE/Audio-Effects/Ring Modulation/Products/VST3/Ring Modulation.vst3",
 							"pluginsaveduniqueid" : 0,
 							"version" : 1,
 							"isbank" : 0,
@@ -103,7 +103,7 @@
 									"snapshot" : 									{
 										"pluginname" : "Ring Modulation.vst3",
 										"plugindisplayname" : "Ring Modulation",
-										"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Ring Modulation/Products/VST3/Ring Modulation.vst3",
+										"pluginsavedname" : "~/Documents/Programming/JUCE/Audio-Effects/Ring Modulation/Products/VST3/Ring Modulation.vst3",
 										"pluginsaveduniqueid" : 0,
 										"version" : 1,
 										"isbank" : 0,
@@ -127,7 +127,7 @@
 
 					}
 ,
-					"text" : "vst~ \"/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Ring Modulation/Products/VST3/Ring Modulation.vst3\"",
+					"text" : "vst~ \"/Users/juangil/Documents/Programming/JUCE/Audio-Effects/Ring Modulation/Products/VST3/Ring Modulation.vst3\"",
 					"varname" : "vst~",
 					"viewvisibility" : 1
 				}

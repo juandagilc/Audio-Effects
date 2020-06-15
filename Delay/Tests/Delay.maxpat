@@ -51,7 +51,7 @@
 					"offset" : [ 0.0, 0.0 ],
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
 					"patching_rect" : [ 15.0, 135.0, 390.0, 120.0 ],
-					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Delay/Products/VST3/Delay.vst3", ";" ],
+					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/JUCE/Audio-Effects/Delay/Products/VST3/Delay.vst3", ";" ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_invisible" : 1,
@@ -79,7 +79,7 @@
 						"snapshot" : 						{
 							"pluginname" : "Delay.vst3",
 							"plugindisplayname" : "Delay",
-							"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Delay/Products/VST3/Delay.vst3",
+							"pluginsavedname" : "~/Documents/Programming/JUCE/Audio-Effects/Delay/Products/VST3/Delay.vst3",
 							"pluginsaveduniqueid" : 0,
 							"version" : 1,
 							"isbank" : 0,
@@ -103,7 +103,7 @@
 									"snapshot" : 									{
 										"pluginname" : "Delay.vst3",
 										"plugindisplayname" : "Delay",
-										"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Delay/Products/VST3/Delay.vst3",
+										"pluginsavedname" : "~/Documents/Programming/JUCE/Audio-Effects/Delay/Products/VST3/Delay.vst3",
 										"pluginsaveduniqueid" : 0,
 										"version" : 1,
 										"isbank" : 0,
@@ -127,7 +127,7 @@
 
 					}
 ,
-					"text" : "vst~ /Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Delay/Products/VST3/Delay.vst3",
+					"text" : "vst~ /Users/juangil/Documents/Programming/JUCE/Audio-Effects/Delay/Products/VST3/Delay.vst3",
 					"varname" : "vst~",
 					"viewvisibility" : 1
 				}

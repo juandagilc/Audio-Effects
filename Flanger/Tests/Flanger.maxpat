@@ -52,7 +52,7 @@
 					"outlettype" : [ "signal", "signal", "", "list", "int", "", "", "" ],
 					"patching_rect" : [ 15.0, 135.0, 420.0, 285.0 ],
 					"presentation_linecount" : 3,
-					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Flanger/Products/VST3/Flanger.vst3", ";" ],
+					"save" : [ "#N", "vst~", "loaduniqueid", 0, "/Users/juangil/Documents/Programming/JUCE/Audio-Effects/Flanger/Products/VST3/Flanger.vst3", ";" ],
 					"saved_attribute_attributes" : 					{
 						"valueof" : 						{
 							"parameter_invisible" : 1,
@@ -80,7 +80,7 @@
 						"snapshot" : 						{
 							"pluginname" : "Flanger.vst3",
 							"plugindisplayname" : "Flanger",
-							"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Flanger/Products/VST3/Flanger.vst3",
+							"pluginsavedname" : "~/Documents/Programming/JUCE/Audio-Effects/Flanger/Products/VST3/Flanger.vst3",
 							"pluginsaveduniqueid" : 0,
 							"version" : 1,
 							"isbank" : 0,
@@ -104,7 +104,7 @@
 									"snapshot" : 									{
 										"pluginname" : "Flanger.vst3",
 										"plugindisplayname" : "Flanger",
-										"pluginsavedname" : "~/Documents/Programming/Projects/JUCE/Audio-Effects/Flanger/Products/VST3/Flanger.vst3",
+										"pluginsavedname" : "~/Documents/Programming/JUCE/Audio-Effects/Flanger/Products/VST3/Flanger.vst3",
 										"pluginsaveduniqueid" : 0,
 										"version" : 1,
 										"isbank" : 0,
@@ -128,7 +128,7 @@
 
 					}
 ,
-					"text" : "vst~ /Users/juangil/Documents/Programming/Projects/JUCE/Audio-Effects/Flanger/Products/VST3/Flanger.vst3",
+					"text" : "vst~ /Users/juangil/Documents/Programming/JUCE/Audio-Effects/Flanger/Products/VST3/Flanger.vst3",
 					"varname" : "vst~",
 					"viewvisibility" : 1
 				}
