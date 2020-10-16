@@ -45,7 +45,7 @@ TremoloAudioProcessor::TremoloAudioProcessor():
     , paramFrequency (parameters, "LFO Frequency", "Hz", 0.0f, 10.0f, 2.0f)
     , paramWaveform (parameters, "LFO Waveform", waveformItemsUI, waveformSine)
 {
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 TremoloAudioProcessor::~TremoloAudioProcessor()
@@ -179,7 +179,7 @@ float TremoloAudioProcessor::lfo (float phase, int waveform)
 
 void TremoloAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -189,8 +189,8 @@ void TremoloAudioProcessor::setStateInformation (const void* data, int sizeInByt
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

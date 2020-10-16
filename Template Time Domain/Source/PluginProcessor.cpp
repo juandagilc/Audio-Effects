@@ -46,7 +46,7 @@ TemplateTimeDomainAudioProcessor::TemplateTimeDomainAudioProcessor():
     , parameter3 (parameters, "Parameter 3", false, [](float value){ return value * (-2.0f) + 1.0f; })
     , parameter4 (parameters, "Parameter 4", {"Option A", "Option B"}, 1)
 {
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 TemplateTimeDomainAudioProcessor::~TemplateTimeDomainAudioProcessor()
@@ -126,7 +126,7 @@ void TemplateTimeDomainAudioProcessor::processBlock (AudioSampleBuffer& buffer, 
 
 void TemplateTimeDomainAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -136,8 +136,8 @@ void TemplateTimeDomainAudioProcessor::setStateInformation (const void* data, in
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

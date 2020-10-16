@@ -30,11 +30,11 @@ using Parameter = AudioProcessorValueTreeState::Parameter;
 class PluginParametersManager
 {
 public:
-    PluginParametersManager (AudioProcessor& p) : valueTreeState (p, nullptr)
+    PluginParametersManager (AudioProcessor& p) : apvts (p, nullptr)
     {
     }
 
-    AudioProcessorValueTreeState valueTreeState;
+    AudioProcessorValueTreeState apvts;
     StringArray parameterTypes;
     Array<StringArray> comboBoxItemLists;
 };
@@ -99,13 +99,13 @@ protected:
         if (logarithmic)
             range.setSkewForCentre (sqrt (minValue * maxValue));
 
-        parametersManager.valueTreeState.createAndAddParameter (std::make_unique<Parameter>
+        parametersManager.apvts.createAndAddParameter (std::make_unique<Parameter>
             (paramID, paramName, labelText, range, defaultValue,
              [](float value){ return String (value, 2); },
              [](const String& text){ return text.getFloatValue(); })
         );
 
-        parametersManager.valueTreeState.addParameterListener (paramID, this);
+        parametersManager.apvts.addParameterListener (paramID, this);
         updateValue (defaultValue);
     }
 
@@ -184,13 +184,13 @@ public:
         const StringArray toggleStates = {"False", "True"};
         NormalisableRange<float> range (0.0f, 1.0f, 1.0f);
 
-        parametersManager.valueTreeState.createAndAddParameter (std::make_unique<Parameter>
+        parametersManager.apvts.createAndAddParameter (std::make_unique<Parameter>
             (paramID, paramName, "", range, (float)defaultState,
              [toggleStates](float value){ return toggleStates[(int)value]; },
              [toggleStates](const String& text){ return toggleStates.indexOf (text); })
         );
 
-        parametersManager.valueTreeState.addParameterListener (paramID, this);
+        parametersManager.apvts.addParameterListener (paramID, this);
         updateValue ((float)defaultState);
     }
 
@@ -219,13 +219,13 @@ public:
         parametersManager.comboBoxItemLists.add (items);
         NormalisableRange<float> range (0.0f, (float)items.size() - 1.0f, 1.0f);
 
-        parametersManager.valueTreeState.createAndAddParameter (std::make_unique<Parameter>
+        parametersManager.apvts.createAndAddParameter (std::make_unique<Parameter>
             (paramID, paramName, "", range, (float)defaultChoice,
              [items](float value){ return items[(int)value]; },
              [items](const String& text){ return items.indexOf (text); })
         );
 
-        parametersManager.valueTreeState.addParameterListener (paramID, this);
+        parametersManager.apvts.addParameterListener (paramID, this);
         updateValue ((float)defaultChoice);
     }
 

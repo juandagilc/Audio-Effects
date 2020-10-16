@@ -49,7 +49,7 @@ CompressorExpanderAudioProcessor::CompressorExpanderAudioProcessor():
     , paramMakeupGain (parameters, "Makeup gain", "dB", -12.0f, 12.0f, 0.0f)
     , paramBypass (parameters, "Bypass")
 {
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 CompressorExpanderAudioProcessor::~CompressorExpanderAudioProcessor()
@@ -184,7 +184,7 @@ float CompressorExpanderAudioProcessor::calculateAttackOrRelease (float value)
 
 void CompressorExpanderAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -194,8 +194,8 @@ void CompressorExpanderAudioProcessor::setStateInformation (const void* data, in
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

@@ -57,7 +57,7 @@ WahWahAudioProcessor::WahWahAudioProcessor():
     , paramEnvelopeRelease (parameters, "Env. Release", "ms", 10.0f, 1000.0f, 300.0f, [](float value){ return value * 0.001f; })
 {
     centreFrequency = paramFrequency.getTargetValue();
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 WahWahAudioProcessor::~WahWahAudioProcessor()
@@ -194,7 +194,7 @@ float WahWahAudioProcessor::calculateAttackOrRelease (float value)
 
 void WahWahAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -204,8 +204,8 @@ void WahWahAudioProcessor::setStateInformation (const void* data, int sizeInByte
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

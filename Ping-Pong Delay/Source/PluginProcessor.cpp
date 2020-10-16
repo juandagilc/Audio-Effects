@@ -46,7 +46,7 @@ PingPongDelayAudioProcessor::PingPongDelayAudioProcessor():
     , paramFeedback (parameters, "Feedback", "", 0.0f, 0.9f, 0.7f)
     , paramMix (parameters, "Mix", "", 0.0f, 1.0f, 1.0f)
 {
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 PingPongDelayAudioProcessor::~PingPongDelayAudioProcessor()
@@ -151,7 +151,7 @@ void PingPongDelayAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiB
 
 void PingPongDelayAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -161,8 +161,8 @@ void PingPongDelayAudioProcessor::setStateInformation (const void* data, int siz
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

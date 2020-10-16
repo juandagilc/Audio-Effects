@@ -45,7 +45,7 @@ RingModulationAudioProcessor::RingModulationAudioProcessor():
     , paramFrequency (parameters, "Carrier frequency", "Hz", 10.0f, 1000.0f, 200.0f)
     , paramWaveform (parameters, "Carrier waveform", waveformItemsUI, waveformSine)
 {
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 RingModulationAudioProcessor::~RingModulationAudioProcessor()
@@ -179,7 +179,7 @@ float RingModulationAudioProcessor::lfo (float phase, int waveform)
 
 void RingModulationAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -189,8 +189,8 @@ void RingModulationAudioProcessor::setStateInformation (const void* data, int si
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

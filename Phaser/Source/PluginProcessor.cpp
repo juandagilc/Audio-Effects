@@ -51,7 +51,7 @@ PhaserAudioProcessor::PhaserAudioProcessor():
     , paramLFOwaveform (parameters, "LFO Waveform", waveformItemsUI, waveformSine)
     , paramStereo (parameters, "Stereo", true)
 {
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 PhaserAudioProcessor::~PhaserAudioProcessor()
@@ -213,7 +213,7 @@ float PhaserAudioProcessor::lfo (float phase, int waveform)
 
 void PhaserAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -223,8 +223,8 @@ void PhaserAudioProcessor::setStateInformation (const void* data, int sizeInByte
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

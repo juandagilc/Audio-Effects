@@ -49,7 +49,7 @@ DistortionAudioProcessor::DistortionAudioProcessor():
     , paramTone (parameters, "Tone", "dB", -24.0f, 24.0f, 12.0f,
                  [this](float value){ paramTone.setCurrentAndTargetValue (value); updateFilters(); return value; })
 {
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 DistortionAudioProcessor::~DistortionAudioProcessor()
@@ -177,7 +177,7 @@ void DistortionAudioProcessor::updateFilters()
 
 void DistortionAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -187,8 +187,8 @@ void DistortionAudioProcessor::setStateInformation (const void* data, int sizeIn
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================

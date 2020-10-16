@@ -47,7 +47,7 @@ PhaserAudioProcessorEditor::PhaserAudioProcessorEditor (PhaserAudioProcessor& p)
 
                 SliderAttachment* aSliderAttachment;
                 sliderAttachments.add (aSliderAttachment =
-                    new SliderAttachment (processor.parameters.valueTreeState, parameter->paramID, *aSlider));
+                    new SliderAttachment (processor.parameters.apvts, parameter->paramID, *aSlider));
 
                 components.add (aSlider);
                 editorHeight += sliderHeight;
@@ -62,7 +62,7 @@ PhaserAudioProcessorEditor::PhaserAudioProcessorEditor (PhaserAudioProcessor& p)
 
                 ButtonAttachment* aButtonAttachment;
                 buttonAttachments.add (aButtonAttachment =
-                    new ButtonAttachment (processor.parameters.valueTreeState, parameter->paramID, *aButton));
+                    new ButtonAttachment (processor.parameters.apvts, parameter->paramID, *aButton));
 
                 components.add (aButton);
                 editorHeight += buttonHeight;
@@ -79,7 +79,7 @@ PhaserAudioProcessorEditor::PhaserAudioProcessorEditor (PhaserAudioProcessor& p)
 
                 ComboBoxAttachment* aComboBoxAttachment;
                 comboBoxAttachments.add (aComboBoxAttachment =
-                    new ComboBoxAttachment (processor.parameters.valueTreeState, parameter->paramID, *aComboBox));
+                    new ComboBoxAttachment (processor.parameters.apvts, parameter->paramID, *aComboBox));
 
                 components.add (aComboBox);
                 editorHeight += comboBoxHeight;

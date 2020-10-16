@@ -50,7 +50,7 @@ ParametricEQAudioProcessor::ParametricEQAudioProcessor():
     , paramFilterType (parameters, "Filter type", filterTypeItemsUI, filterTypePeakingNotch,
                        [this](float value){ paramFilterType.setCurrentAndTargetValue (value); updateFilters(); return value; })
 {
-    parameters.valueTreeState.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
+    parameters.apvts.state = ValueTree (Identifier (getName().removeCharacters ("- ")));
 }
 
 ParametricEQAudioProcessor::~ParametricEQAudioProcessor()
@@ -124,7 +124,7 @@ void ParametricEQAudioProcessor::updateFilters()
 
 void ParametricEQAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    auto state = parameters.valueTreeState.copyState();
+    auto state = parameters.apvts.copyState();
     std::unique_ptr<XmlElement> xml (state.createXml());
     copyXmlToBinary (*xml, destData);
 }
@@ -134,8 +134,8 @@ void ParametricEQAudioProcessor::setStateInformation (const void* data, int size
     std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
 
     if (xmlState.get() != nullptr)
-        if (xmlState->hasTagName (parameters.valueTreeState.state.getType()))
-            parameters.valueTreeState.replaceState (ValueTree::fromXml (*xmlState));
+        if (xmlState->hasTagName (parameters.apvts.state.getType()))
+            parameters.apvts.replaceState (ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================
