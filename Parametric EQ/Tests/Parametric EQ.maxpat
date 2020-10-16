@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 1,
-			"revision" : 0,
+			"revision" : 7,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 78.0, 772.0, 938.0 ],
+		"rect" : [ 34.0, 79.0, 772.0, 937.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -37,6 +37,7 @@
 		"tags" : "",
 		"style" : "",
 		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"autosave" : 1,
@@ -98,7 +99,7 @@
 									"name" : "Parametric EQ",
 									"origin" : "Parametric EQ.vst3",
 									"type" : "VST3",
-									"subtype" : "AudioEffect",
+									"subtype" : "MidiEffect",
 									"embed" : 1,
 									"snapshot" : 									{
 										"pluginname" : "Parametric EQ.vst3",
@@ -118,7 +119,7 @@
 										"filename" : "Parametric EQ.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "e3f68cccfffa46594aa8a6ce6fed2aef"
+										"snapshotfileid" : "1f1bec8a3cef4a18dab54925f888984a"
 									}
 
 								}
@@ -181,11 +182,13 @@
 			}
 , 			{
 				"box" : 				{
+					"basictuning" : 440,
 					"data" : 					{
 						"clips" : [ 							{
 								"absolutepath" : "brushes.aif",
 								"filename" : "brushes.aif",
 								"filekind" : "audiofile",
+								"id" : "u403001396",
 								"selection" : [ 0.0, 1.0 ],
 								"loop" : 1,
 								"content_state" : 								{
@@ -210,12 +213,21 @@
  ]
 					}
 ,
+					"followglobaltempo" : 0,
+					"formantcorrection" : 0,
 					"id" : "obj-3",
 					"maxclass" : "playlist~",
+					"mode" : "basic",
 					"numinlets" : 1,
 					"numoutlets" : 5,
+					"originallength" : [ 0.0, "ticks" ],
+					"originaltempo" : 120.0,
 					"outlettype" : [ "signal", "signal", "signal", "", "dictionary" ],
-					"patching_rect" : [ 15.0, 15.0, 150.0, 30.0 ]
+					"parameter_enable" : 0,
+					"patching_rect" : [ 15.0, 15.0, 150.0, 30.0 ],
+					"pitchcorrection" : 0,
+					"quality" : "basic",
+					"timestretch" : [ 0 ]
 				}
 
 			}
@@ -294,7 +306,8 @@
 			"parameterbanks" : 			{
 
 			}
-
+,
+			"inherited_shortname" : 1
 		}
 ,
 		"dependency_cache" : [ 			{

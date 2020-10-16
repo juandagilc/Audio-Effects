@@ -4,13 +4,13 @@
 		"appversion" : 		{
 			"major" : 8,
 			"minor" : 1,
-			"revision" : 0,
+			"revision" : 7,
 			"architecture" : "x64",
 			"modernui" : 1
 		}
 ,
 		"classnamespace" : "box",
-		"rect" : [ 34.0, 78.0, 772.0, 938.0 ],
+		"rect" : [ 34.0, 79.0, 772.0, 937.0 ],
 		"bglocked" : 0,
 		"openinpresentation" : 0,
 		"default_fontsize" : 12.0,
@@ -37,6 +37,7 @@
 		"tags" : "",
 		"style" : "",
 		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
 					"autosave" : 1,
@@ -98,7 +99,7 @@
 									"name" : "Delay",
 									"origin" : "Delay.vst3",
 									"type" : "VST3",
-									"subtype" : "AudioEffect",
+									"subtype" : "MidiEffect",
 									"embed" : 1,
 									"snapshot" : 									{
 										"pluginname" : "Delay.vst3",
@@ -118,7 +119,7 @@
 										"filename" : "Delay.maxsnap",
 										"filepath" : "~/Documents/Max 7/Snapshots",
 										"filepos" : -1,
-										"snapshotfileid" : "9c70882e30114310252428ef1a9d9033"
+										"snapshotfileid" : "ad989881cc40860f99f137aade1fabe7"
 									}
 
 								}
@@ -181,11 +182,13 @@
 			}
 , 			{
 				"box" : 				{
+					"basictuning" : 440,
 					"data" : 					{
 						"clips" : [ 							{
 								"absolutepath" : "brushes.aif",
 								"filename" : "brushes.aif",
 								"filekind" : "audiofile",
+								"id" : "u397001182",
 								"selection" : [ 0.0, 1.0 ],
 								"loop" : 1,
 								"content_state" : 								{
@@ -210,12 +213,21 @@
  ]
 					}
 ,
+					"followglobaltempo" : 0,
+					"formantcorrection" : 0,
 					"id" : "obj-3",
 					"maxclass" : "playlist~",
+					"mode" : "basic",
 					"numinlets" : 1,
 					"numoutlets" : 5,
+					"originallength" : [ 0.0, "ticks" ],
+					"originaltempo" : 120.0,
 					"outlettype" : [ "signal", "signal", "signal", "", "dictionary" ],
-					"patching_rect" : [ 15.0, 15.0, 150.0, 30.0 ]
+					"parameter_enable" : 0,
+					"patching_rect" : [ 15.0, 15.0, 150.0, 30.0 ],
+					"pitchcorrection" : 0,
+					"quality" : "basic",
+					"timestretch" : [ 0 ]
 				}
 
 			}
@@ -294,7 +306,8 @@
 			"parameterbanks" : 			{
 
 			}
-
+,
+			"inherited_shortname" : 1
 		}
 ,
 		"dependency_cache" : [ 			{
