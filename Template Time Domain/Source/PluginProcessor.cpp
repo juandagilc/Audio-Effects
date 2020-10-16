@@ -101,10 +101,10 @@ void TemplateTimeDomainAudioProcessor::processBlock (AudioSampleBuffer& buffer, 
     //======================================
 
     MidiBuffer processedMidi;
-    MidiMessage message;
-    int time;
+    for (const MidiMessageMetadata meta : midiMessages) {
+        MidiMessage message = meta.getMessage();
+        int time = meta.samplePosition;
 
-    for (MidiBuffer::Iterator iter (midiMessages); iter.getNextEvent (message, time);) {
         if (message.isNoteOn()) {
             uint8 newVel = (uint8)(parameter1.getTargetValue());
             message = MidiMessage::noteOn (message.getChannel(), message.getNoteNumber(), newVel);
