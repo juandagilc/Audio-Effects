@@ -64,7 +64,7 @@ git submodule update --init
 
 # License
 Code by Juan Gil <https://juangil.com/>.
-Copyright &copy; 2017-2019 Juan Gil.
+Copyright &copy; 2017-2020 Juan Gil.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

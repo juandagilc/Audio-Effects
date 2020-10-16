@@ -5,7 +5,7 @@
     Implementation and Application" by Joshua D. Reiss and Andrew P. McPherson.
 
     Code by Juan Gil <https://juangil.com/>.
-    Copyright (C) 2017-2019 Juan Gil.
+    Copyright (C) 2017-2020 Juan Gil.
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
